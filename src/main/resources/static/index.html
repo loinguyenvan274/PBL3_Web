@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nhập thông tin</title>
+</head>
+
+<body>
+    <p>Nhập dữ liệu:</p>
+    <form id="dataForm">
+        <input type="text" id="userInput" name="userInput">
+        <button type="button" onclick="sendData()">Gửi</button>
+    </form>
+
+    <p id="response"></p>
+    <button type="button" onclick="getData()">Signal from Server</button>
+    <p id="Signal"></p>
+    <script>
+        function sendData() {
+            let inputValue = document.getElementById("userInput").value;
+
+            fetch('/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'userInput=' + encodeURIComponent(inputValue)
+            })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("response").innerText = data;
+                })
+                .catch(error => console.error('Lỗi:', error));
+        }
+
+        function getData() {
+            fetch('/data_from_server/{out}')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("Signal").innerText = data;
+                })
+                .catch(error => {
+                    document.getElementById("Signal").innerText = "ERROR";
+                });
+
+
+        }
+    </script>
+</body>
+
+</html>
