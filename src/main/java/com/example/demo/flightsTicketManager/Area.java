@@ -1,60 +1,75 @@
 package com.example.demo.flightsTicketManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Area {
-    private String idArea;
-    private int planeCount;
-    private int crewEmployee;
-    private int atcEmployee;
+    private String Id_Area;
+    private int Plane_Count;
+    private int Crew_Employee;
+    private int ATC_Employee;
 
     public Area() {
     }
 
-    public Area(String idArea, int planeCount, int crewEmployee, int atcEmployee) {
-        this.idArea = idArea;
-        this.planeCount = planeCount;
-        this.crewEmployee = crewEmployee;
-        this.atcEmployee = atcEmployee;
+    public Area(String Id_Area, int Plane_Count, int Crew_Employee, int ATC_Employee) {
+        this.Id_Area = Id_Area;
+        this.Plane_Count = Plane_Count;
+        this.Crew_Employee = Crew_Employee;
+        this.ATC_Employee = ATC_Employee;
     }
 
-    public String getIdArea() {
-        return idArea;
+    public String getKey() {
+        return Id_Area;
     }
 
-    public void setIdArea(String idArea) {
-        this.idArea = idArea;
+    public List<String> valueString() {
+        List<String> value = new ArrayList<>();
+        value.add(Integer.toString(Plane_Count));
+        value.add(Integer.toString(Crew_Employee));
+        value.add(Integer.toString(ATC_Employee));
+        return value;
     }
 
-    public int getPlaneCount() {
-        return planeCount;
+    public String getId_Area() {
+        return Id_Area;
     }
 
-    public void setPlaneCount(int planeCount) {
-        this.planeCount = planeCount;
+    public void setId_Area(String Id_Area) {
+        this.Id_Area = Id_Area;
     }
 
-    public int getCrewEmployee() {
-        return crewEmployee;
+    public int getPlane_Count() {
+        return Plane_Count;
     }
 
-    public void setCrewEmployee(int crewEmployee) {
-        this.crewEmployee = crewEmployee;
+    public void setPlane_Count(int Plane_Count) {
+        this.Plane_Count = Plane_Count;
     }
 
-    public int getAtcEmployee() {
-        return atcEmployee;
+    public int getCrew_Employee() {
+        return Crew_Employee;
     }
 
-    public void setAtcEmployee(int atcEmployee) {
-        this.atcEmployee = atcEmployee;
+    public void setCrew_Employee(int Crew_Employee) {
+        this.Crew_Employee = Crew_Employee;
+    }
+
+    public int getATC_Employee() {
+        return ATC_Employee;
+    }
+
+    public void setATC_Employee(int ATC_Employee) {
+        this.ATC_Employee = ATC_Employee;
     }
 
     @Override
     public String toString() {
         return "Area{" +
-                "idArea='" + idArea + '\'' +
-                ", planeCount=" + planeCount +
-                ", crewEmployee=" + crewEmployee +
-                ", atcEmployee=" + atcEmployee +
+                "Id_Area='" + Id_Area + '\'' +
+                ", Plane_Count=" + Plane_Count +
+                ", Crew_Employee=" + Crew_Employee +
+                ", ATC_Employee=" + ATC_Employee +
                 '}';
     }
 }

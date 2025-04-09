@@ -1,152 +1,174 @@
 package com.example.demo.flightsTicketManager;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Flight {
-    private String idFlight;
-    private String idPlane;
-    private String idArea;
-    private int seatCount;
-    private int currentSeat;
-    private String departureDay;
-    private String departureTime;
-    private String estimatedArrivalDay;
-    private String estimatedArrivalTime;
-    private String from;
-    private String to;
-    private Timestamp createdAt;
+    private String Id_Flight;
+    private String Id_Plane;
+    private String Id_Area;
+    private int Seat_Count;
+    private int Current_Seat;
+    private String DEPARTURE_DAY;
+    private String DEPARTURE_TIME;
+    private String ESTIMATED_ARRIVAL_DAY;
+    private String ESTIMATED_ARRIVAL_TIME;
+    private String F_R_O_M;
+    private String T_O;
+    private Timestamp created_at;
 
     public Flight() {
     }
 
-    public Flight(String idFlight, String idPlane, String idArea, int seatCount, int currentSeat,
-            String departureDay, String departureTime, String estimatedArrivalDay, String estimatedArrivalTime,
-            String from, String to, Timestamp createdAt) {
-        this.idFlight = idFlight;
-        this.idPlane = idPlane;
-        this.idArea = idArea;
-        this.seatCount = seatCount;
-        this.currentSeat = currentSeat;
-        this.departureDay = departureDay;
-        this.departureTime = departureTime;
-        this.estimatedArrivalDay = estimatedArrivalDay;
-        this.estimatedArrivalTime = estimatedArrivalTime;
-        this.from = from;
-        this.to = to;
-        this.createdAt = createdAt;
+    public Flight(String Id_Flight, String Id_Plane, String Id_Area, int Seat_Count, int Current_Seat,
+            String DEPARTURE_DAY, String DEPARTURE_TIME, String ESTIMATED_ARRIVAL_DAY, String ESTIMATED_ARRIVAL_TIME,
+            String F_R_O_M, String T_O, Timestamp created_at) {
+        this.Id_Flight = Id_Flight;
+        this.Id_Plane = Id_Plane;
+        this.Id_Area = Id_Area;
+        this.Seat_Count = Seat_Count;
+        this.Current_Seat = Current_Seat;
+        this.DEPARTURE_DAY = DEPARTURE_DAY;
+        this.DEPARTURE_TIME = DEPARTURE_TIME;
+        this.ESTIMATED_ARRIVAL_DAY = ESTIMATED_ARRIVAL_DAY;
+        this.ESTIMATED_ARRIVAL_TIME = ESTIMATED_ARRIVAL_TIME;
+        this.F_R_O_M = F_R_O_M;
+        this.T_O = T_O;
+        this.created_at = created_at;
     }
 
-    public String getIdFlight() {
-        return idFlight;
+    public String getKey() {
+        return Id_Flight;
     }
 
-    public void setIdFlight(String idFlight) {
-        this.idFlight = idFlight;
+    public List<String> valueString() {
+        List<String> value = new ArrayList<>();
+        value.add(Id_Plane);
+        value.add(Id_Area);
+        value.add(String.valueOf(Seat_Count));
+        value.add(String.valueOf(Current_Seat));
+        value.add(DEPARTURE_DAY);
+        value.add(DEPARTURE_TIME);
+        value.add(ESTIMATED_ARRIVAL_DAY);
+        value.add(ESTIMATED_ARRIVAL_TIME);
+        value.add(F_R_O_M);
+        value.add(T_O);
+        value.add(created_at.toString());
+        return value;
     }
 
-    public String getIdPlane() {
-        return idPlane;
+    public String getId_Flight() {
+        return Id_Flight;
     }
 
-    public void setIdPlane(String idPlane) {
-        this.idPlane = idPlane;
+    public void setId_Flight(String Id_Flight) {
+        this.Id_Flight = Id_Flight;
     }
 
-    public String getIdArea() {
-        return idArea;
+    public String getId_Plane() {
+        return Id_Plane;
     }
 
-    public void setIdArea(String idArea) {
-        this.idArea = idArea;
+    public void setId_Plane(String Id_Plane) {
+        this.Id_Plane = Id_Plane;
     }
 
-    public int getSeatCount() {
-        return seatCount;
+    public String getId_Area() {
+        return Id_Area;
     }
 
-    public void setSeatCount(int seatCount) {
-        this.seatCount = seatCount;
+    public void setId_Area(String Id_Area) {
+        this.Id_Area = Id_Area;
     }
 
-    public int getCurrentSeat() {
-        return currentSeat;
+    public int getSeat_Count() {
+        return Seat_Count;
     }
 
-    public void setCurrentSeat(int currentSeat) {
-        this.currentSeat = currentSeat;
+    public void setSeat_Count(int Seat_Count) {
+        this.Seat_Count = Seat_Count;
     }
 
-    public String getDepartureDay() {
-        return departureDay;
+    public int getCurrent_Seat() {
+        return Current_Seat;
     }
 
-    public void setDepartureDay(String departureDay) {
-        this.departureDay = departureDay;
+    public void setCurrent_Seat(int Current_Seat) {
+        this.Current_Seat = Current_Seat;
     }
 
-    public String getDepartureTime() {
-        return departureTime;
+    public String getDEPARTURE_DAY() {
+        return DEPARTURE_DAY;
     }
 
-    public void setDepartureTime(String departureTime) {
-        this.departureTime = departureTime;
+    public void setDEPARTURE_DAY(String DEPARTURE_DAY) {
+        this.DEPARTURE_DAY = DEPARTURE_DAY;
     }
 
-    public String getEstimatedArrivalDay() {
-        return estimatedArrivalDay;
+    public String getDEPARTURE_TIME() {
+        return DEPARTURE_TIME;
     }
 
-    public void setEstimatedArrivalDay(String estimatedArrivalDay) {
-        this.estimatedArrivalDay = estimatedArrivalDay;
+    public void setDEPARTURE_TIME(String DEPARTURE_TIME) {
+        this.DEPARTURE_TIME = DEPARTURE_TIME;
     }
 
-    public String getEstimatedArrivalTime() {
-        return estimatedArrivalTime;
+    public String getESTIMATED_ARRIVAL_DAY() {
+        return ESTIMATED_ARRIVAL_DAY;
     }
 
-    public void setEstimatedArrivalTime(String estimatedArrivalTime) {
-        this.estimatedArrivalTime = estimatedArrivalTime;
+    public void setESTIMATED_ARRIVAL_DAY(String ESTIMATED_ARRIVAL_DAY) {
+        this.ESTIMATED_ARRIVAL_DAY = ESTIMATED_ARRIVAL_DAY;
     }
 
-    public String getFrom() {
-        return from;
+    public String getESTIMATED_ARRIVAL_TIME() {
+        return ESTIMATED_ARRIVAL_TIME;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
+    public void setESTIMATED_ARRIVAL_TIME(String ESTIMATED_ARRIVAL_TIME) {
+        this.ESTIMATED_ARRIVAL_TIME = ESTIMATED_ARRIVAL_TIME;
     }
 
-    public String getTo() {
-        return to;
+    public String getF_R_O_M() {
+        return F_R_O_M;
     }
 
-    public void setTo(String to) {
-        this.to = to;
+    public void setF_R_O_M(String F_R_O_M) {
+        this.F_R_O_M = F_R_O_M;
     }
 
-    public Timestamp getCreatedAt() {
-        return createdAt;
+    public String getT_O() {
+        return T_O;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+    public void setT_O(String T_O) {
+        this.T_O = T_O;
+    }
+
+    public Timestamp getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(Timestamp created_at) {
+        this.created_at = created_at;
     }
 
     @Override
     public String toString() {
-        return "Flights{" +
-                "idFlight='" + idFlight + '\'' +
-                ", idPlane='" + idPlane + '\'' +
-                ", idArea='" + idArea + '\'' +
-                ", seatCount=" + seatCount +
-                ", currentSeat=" + currentSeat +
-                ", departureDay='" + departureDay + '\'' +
-                ", departureTime='" + departureTime + '\'' +
-                ", estimatedArrivalDay='" + estimatedArrivalDay + '\'' +
-                ", estimatedArrivalTime='" + estimatedArrivalTime + '\'' +
-                ", from='" + from + '\'' +
-                ", to='" + to + '\'' +
-                ", createdAt=" + createdAt +
+        return "Flight{" +
+                "Id_Flight='" + Id_Flight + '\'' +
+                ", Id_Plane='" + Id_Plane + '\'' +
+                ", Id_Area='" + Id_Area + '\'' +
+                ", Seat_Count=" + Seat_Count +
+                ", Current_Seat=" + Current_Seat +
+                ", DEPARTURE_DAY='" + DEPARTURE_DAY + '\'' +
+                ", DEPARTURE_TIME='" + DEPARTURE_TIME + '\'' +
+                ", ESTIMATED_ARRIVAL_DAY='" + ESTIMATED_ARRIVAL_DAY + '\'' +
+                ", ESTIMATED_ARRIVAL_TIME='" + ESTIMATED_ARRIVAL_TIME + '\'' +
+                ", F_R_O_M='" + F_R_O_M + '\'' +
+                ", T_O='" + T_O + '\'' +
+                ", created_at=" + created_at +
                 '}';
     }
 }

@@ -3,12 +3,16 @@ package com.example.demo.org;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-// HikariConfig : thư viện quản lí kết nối cơ sở dữ liệu 
+// @SpringBootApplication
+// HikariConfig : thư viện quản lí kết nối cơ sở dữ liệu
 public class Main {
     private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=FLIGHTS;encrypt=false";
     private static final String USER = "hau_admin";
@@ -51,3 +55,6 @@ public class Main {
         closeDataSource();
     }
 }
+// Đưa vào cache , đọc những cột cần thiết
+// update vào sql theo định kì
+// ...

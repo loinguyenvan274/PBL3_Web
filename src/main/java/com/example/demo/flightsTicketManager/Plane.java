@@ -1,86 +1,103 @@
 package com.example.demo.flightsTicketManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Plane {
     public enum Status {
         MAINTENANCE, NORMAL
     }
 
-    private String idPlane;
-    private String idArea;
-    private String namePlane;
-    private Status status;
-    private int flightHours;
-    private int seatCount;
+    private String Id_Plane;
+    private String Id_Area;
+    private String Name_Plane;
+    private Status Status;
+    private int Flight_Hours;
+    private int Seat_Count;
 
     public Plane() {
     }
 
-    public Plane(String idPlane, String idArea, String namePlane, Status status, int flightHours, int seatCount) {
-        this.idPlane = idPlane;
-        this.idArea = idArea;
-        this.namePlane = namePlane;
-        this.status = status;
-        this.flightHours = flightHours;
-        this.seatCount = seatCount;
+    public Plane(String Id_Plane, String Id_Area, String Name_Plane, Status Status, int Flight_Hours, int Seat_Count) {
+        this.Id_Plane = Id_Plane;
+        this.Id_Area = Id_Area;
+        this.Name_Plane = Name_Plane;
+        this.Status = Status;
+        this.Flight_Hours = Flight_Hours;
+        this.Seat_Count = Seat_Count;
     }
 
-    public String getIdPlane() {
-        return idPlane;
+    public String getKey() {
+        return Id_Plane;
     }
 
-    public void setIdPlane(String idPlane) {
-        this.idPlane = idPlane;
+    public List<String> valueString() {
+        List<String> value = new ArrayList<>();
+        value.add(Id_Area);
+        value.add(Name_Plane);
+        value.add(Status.toString());
+        value.add(String.valueOf(Flight_Hours));
+        value.add(String.valueOf(Seat_Count));
+        return value;
     }
 
-    public String getIdArea() {
-        return idArea;
+    public String getId_Plane() {
+        return Id_Plane;
     }
 
-    public void setIdArea(String idArea) {
-        this.idArea = idArea;
+    public void setId_Plane(String Id_Plane) {
+        this.Id_Plane = Id_Plane;
     }
 
-    public String getNamePlane() {
-        return namePlane;
+    public String getId_Area() {
+        return Id_Area;
     }
 
-    public void setNamePlane(String namePlane) {
-        this.namePlane = namePlane;
+    public void setId_Area(String Id_Area) {
+        this.Id_Area = Id_Area;
+    }
+
+    public String getName_Plane() {
+        return Name_Plane;
+    }
+
+    public void setName_Plane(String Name_Plane) {
+        this.Name_Plane = Name_Plane;
     }
 
     public Status getStatus() {
-        return status;
+        return Status;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatus(Status Status) {
+        this.Status = Status;
     }
 
-    public int getFlightHours() {
-        return flightHours;
+    public int getFlight_Hours() {
+        return Flight_Hours;
     }
 
-    public void setFlightHours(int flightHours) {
-        this.flightHours = flightHours;
+    public void setFlight_Hours(int Flight_Hours) {
+        this.Flight_Hours = Flight_Hours;
     }
 
-    public int getSeatCount() {
-        return seatCount;
+    public int getSeat_Count() {
+        return Seat_Count;
     }
 
-    public void setSeatCount(int seatCount) {
-        this.seatCount = seatCount;
+    public void setSeat_Count(int Seat_Count) {
+        this.Seat_Count = Seat_Count;
     }
 
     @Override
     public String toString() {
         return "Plane{" +
-                "idPlane='" + idPlane + '\'' +
-                ", idArea='" + idArea + '\'' +
-                ", namePlane='" + namePlane + '\'' +
-                ", status=" + status +
-                ", flightHours=" + flightHours +
-                ", seatCount=" + seatCount +
+                "Id_Plane='" + Id_Plane + '\'' +
+                ", Id_Area='" + Id_Area + '\'' +
+                ", Name_Plane='" + Name_Plane + '\'' +
+                ", Status=" + Status +
+                ", Flight_Hours=" + Flight_Hours +
+                ", Seat_Count=" + Seat_Count +
                 '}';
     }
 }
