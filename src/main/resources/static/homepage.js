@@ -30,17 +30,24 @@ function selectLocation() {
 };
 
 function Show_list_location() {
-    const a = document.getElementsByClassName("Text_From");
-    const b = document.getElementsByClassName("List_Location");
-    a.addEventListener('click', () => {
-        const position = a.getBoundingClientRect();
-        b.style.right = `&{position.right + window.scrollX}px`;
-        b.style.top = `&{position.bottom + window.scrollY}py`;
-        b.style.display = (b.style.display == 'block') ? 'none' : 'block';
-    });
-    document.addEventListener('click', (e) => {
-        if (!a.contains(e.target) && !b.contains(e.target)) {
-            b.style.display = 'none';
+    const size = document.querySelector(".Find_Flights_Form");
+    const a = document.querySelector(".Text_From");
+    const b = document.querySelector(".List_Location");
+    const e = document.querySelector(".Start_Infor");
+    if (!a || !b || !size) return;
+    const c = a.getBoundingClientRect();
+    const d = size.getBoundingClientRect();
+    b.style.height = d.height + "px";
+    b.style.width = d.width + "px";
+    b.style.position = "absolute";
+    b.style.top = (c.top + c.height) + "px";
+    b.style.left = (e.getBoundingClientRect().left) + "px";
+    b.style.display = "block";
+    // click ra ngoài thì ẩn đi
+    document.addEventListener("click", function (event) {
+        if (!a.contains(event.target) && !b.contains(event.target)) {
+            b.style.display = "none";
         }
     });
 }
+
