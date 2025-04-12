@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>Vé Máy Bay Giá Rẻ</title>
     <link rel="stylesheet" href="homepage.css">
-    <script src="homepage.js"></script>
 </head>
 
 <body>
@@ -36,7 +35,7 @@
     </div>
     <div id="Content">
         <div class="HomeContent">
-            <div class="HomeContent_Top">
+            <div class=" HomeContent_Top">
                 <form class="Find_Flights_Form">
                     <div class="Title_Form">Hãy Nhập Chuyến Bạn Muốn</div>
                     <div class="Radio_Form">
@@ -49,17 +48,22 @@
                     </div>
                     <div class="Start_Infor">
                         <div class="iconF"></div>
-                        <div class="Text_From" onclick="Show_list_location()" aria-placeholder="Diem khoi hanh"></div>
+                        <div class="Text_From" onclick="Show_list_location()"> Điểm khởi hành</div>
                         <div class="Text_Departure_D">Ngày đi</div>
+                        <div class="List_Location"></div>
                     </div>
+                    <div class="End_Infor">
+                        <div class="iconFR"></div>
+                        <div class="Text_To" onclick="Show_list_location_arrive()"> Điểm đến</div>
+                        <div class="Text_Return_Day">Ngày về</div>
+                        <div class="List_Location_arrive"></div>
+                    </div>
+                    <div class="Customer_Count"></div>
+                    <div class="Find_Flights_Button"></div>
                 </form>
             </div>
-            <div class="End_Infor"></div>
-            <div class="Customer_Count"></div>
-            <div class="Find_Flights_Button"></div>
-            </form>
             <div class="Calendar"></div>
-            <div class="List_Location"></div>
+
         </div>
         <div class="HomeContent_Botton"></div>
     </div>
@@ -67,6 +71,8 @@
     <div class="HomeContent3">3</div>
     <div class="HomeContent4">4</div>
     </div>
+    <script src="homepage.js"></script>
+
 </body>
 
 </html>

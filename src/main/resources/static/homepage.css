@@ -162,6 +162,7 @@ body>div {}
 }
 
 .Text_From {
+    /* position: relative; */
     border-right: solid black 0.5px;
 }
 
@@ -180,9 +181,89 @@ body>div {}
 
 .List_Location {
     display: none;
+    position: absolute;
     z-index: 10;
-    height: 400px;
-    width: 300px;
-    background-color: red;
+    height: 300px;
+    width: 100%;
+    top: 108%;
+    left: 0;
+    border-radius: 10px;
+    background-color: white;
     overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.List_Location::-webkit-scrollbar {
+    width: 3px;
+    /* Độ rộng của thanh cuộn dọc */
+    height: 6px;
+    /* Độ cao của thanh cuộn ngang (nếu có) */
+}
+
+.List_Location::-webkit-scrollbar-thumb {
+    background-color: #888;
+    /* Màu của thanh cuộn */
+    border-radius: 10px;
+    /* Bo tròn thanh cuộn */
+}
+
+.List_Location::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+    /* Màu khi hover vào thanh cuộn */
+}
+
+.List_Location::-webkit-scrollbar-track {
+    background-color: #24ef24;
+    /* Màu nền của track (đường dẫn thanh cuộn) */
+    border-radius: 10px;
+    /* Bo tròn track */
+}
+
+.location-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    cursor: pointer;
+    font-size: 16px;
+    border-bottom: solid black 0.2px;
+}
+
+.End_Infor {
+    display: grid;
+    grid-template-columns: 15% 60% 25%;
+    background-color: white;
+    margin: 15px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.End_Infor>div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Text_To {
+    border-right: solid black 0.5px;
+}
+
+.List_Location_arrive {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    height: 300px;
+    width: 100%;
+    top: 108%;
+    left: 0;
+    border-radius: 10px;
+    background-color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.Text_Return_Day {
+    user-select: none;
+    outline: none;
 }
