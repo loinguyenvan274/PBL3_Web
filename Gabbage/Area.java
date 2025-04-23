@@ -3,11 +3,50 @@ package com.example.demo.flightsTicketManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "Area")
 public class Area {
+    @Id
     private String Id_Area;
     private int Plane_Count;
     private int Crew_Employee;
     private int ATC_Employee;
+    @OneToMany(mappedBy = "Id_Area", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private List<Plane> planes = new ArrayList<>();
+    @OneToMany(mappedBy = "Id_Area", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private List<Crew> crews = new ArrayList<>();
+    @OneToMany(mappedBy = "Id_Area", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private List<Air_Traffic_Controller_Employee> atcs = new ArrayList<>();
+
+    public List<Plane> getPlanes() {
+        return planes;
+    }
+
+    public void setPlane(List<Plane> planes) {
+        this.planes = planes;
+    }
+
+    public List<Crew> getCrew() {
+        return crews;
+    }
+
+    public void setCrew(List<Crew> crews) {
+        this.crews = crews;
+    }
+
+    public List<Air_Traffic_Controller_Employee> getATC() {
+        return atcs;
+    }
+
+    public void setATC(List<Air_Traffic_Controller_Employee> atcs) {
+        this.atcs = atcs;
+    }
 
     public Area() {
     }

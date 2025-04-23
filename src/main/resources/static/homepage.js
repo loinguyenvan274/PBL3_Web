@@ -1,24 +1,25 @@
 const locationOption = [
-    "Hà Nội",
-    "TP. Hồ Chí Minh",
-    "Đà Nẵng",
-    "Hải Phòng",
-    "Cần Thơ",
-    "Nha Trang (Khánh Hòa)",
-    "Huế (Thừa Thiên Huế)",
-    "Vinh (Nghệ An)",
-    "Thanh Hóa",
-    "Quảng Ninh (Vân Đồn)",
-    "Quy Nhơn (Bình Định)",
-    "Buôn Ma Thuột (Đắk Lắk)",
-    "Pleiku (Gia Lai)",
-    "Đà Lạt (Lâm Đồng)",
-    "Phú Quốc (Kiên Giang)",
-    "Cà Mau",
-    "Điện Biên",
-    "Rạch Giá (Kiên Giang)",
-    "Tuy Hòa (Phú Yên)"
+    "HN",               // Hà Nội
+    "TPHCM",            // TP. Hồ Chí Minh
+    "ĐN",               // Đà Nẵng
+    "HP",               // Hải Phòng
+    "CT",               // Cần Thơ
+    "NT-KH",            // Nha Trang (Khánh Hòa)
+    "H-TTH",            // Huế (Thừa Thiên Huế)
+    "V-NA",             // Vinh (Nghệ An)
+    "TH",               // Thanh Hóa
+    "QN-VD",            // Quảng Ninh (Vân Đồn)
+    "QN-BĐ",            // Quy Nhơn (Bình Định)
+    "BMT-ĐL",           // Buôn Ma Thuột (Đắk Lắk)
+    "PL-GL",            // Pleiku (Gia Lai)
+    "ĐL-LĐ",            // Đà Lạt (Lâm Đồng)
+    "PQ-KG",            // Phú Quốc (Kiên Giang)
+    "CM",               // Cà Mau
+    "ĐB",               // Điện Biên
+    "RG-KG",            // Rạch Giá (Kiên Giang)
+    "TH-PY"             // Tuy Hòa (Phú Yên)
 ];
+
 // function selectLocation() {
 //     const select = document.getElementsByClassName("Strt_Location");
 //     locationOption.forEach(lct => {
@@ -141,4 +142,8 @@ function Show_list_location_arrive() {
         }
     });
 }
+function LayThongTinChuyenBay() {
+    const departure = document.querySelector(".Text_From").textContent;
+    const arrival = document.querySelector(".Text_To").textContent;
 
+}

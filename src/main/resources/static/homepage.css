@@ -267,3 +267,10 @@ body>div {}
     user-select: none;
     outline: none;
 }
+
+.Button_Find {
+    width: 200px;
+    height: 50px;
+    border: coral;
+    border-radius: 30px;
+}

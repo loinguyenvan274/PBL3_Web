@@ -36,6 +36,7 @@
     <div id="Content">
         <div class="HomeContent">
             <div class=" HomeContent_Top">
+                <div class="ThongTinChuyenBay" style="display: block;"></div>
                 <form class="Find_Flights_Form">
                     <div class="Title_Form">Hãy Nhập Chuyến Bạn Muốn</div>
                     <div class="Radio_Form">
@@ -49,17 +50,20 @@
                     <div class="Start_Infor">
                         <div class="iconF"></div>
                         <div class="Text_From" onclick="Show_list_location()"> Điểm khởi hành</div>
-                        <div class="Text_Departure_D">Ngày đi</div>
+                        <div class="Text_Departure_D"></div>
                         <div class="List_Location"></div>
                     </div>
                     <div class="End_Infor">
                         <div class="iconFR"></div>
                         <div class="Text_To" onclick="Show_list_location_arrive()"> Điểm đến</div>
-                        <div class="Text_Return_Day">Ngày về</div>
+                        <div class="Text_Return_Day"></div>
                         <div class="List_Location_arrive"></div>
                     </div>
                     <div class="Customer_Count"></div>
-                    <div class="Find_Flights_Button"></div>
+                    <div class="Find_Flights_Button">
+                        <input type="button" name="" value="Tìm chuyến bay" id="" class="Button_Find"
+                            onclick="LayThongTinChuyenBay()">
+                    </div>
                 </form>
             </div>
             <div class="Calendar"></div>
