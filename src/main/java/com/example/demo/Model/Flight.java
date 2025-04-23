@@ -1,6 +1,9 @@
-package com.example.demo.flightsTicketManager;
+package com.example.demo.Model;
 
 import jakarta.persistence.*;
+
+import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +25,14 @@ public class Flight {
     private int currentSeat;
 
     // Dùng Timestamp thay cho chuỗi ngày/giờ
+    @Column(name = "Departure_Date")
+    private Date departureDate;
     @Column(name = "Departure_Time")
-    private Timestamp departureTime;
+    private Time departureTime;
+    @Column(name = "Arrival_Date")
+    private Date arrivalDate;
     @Column(name = "Estimated_Arrival_Time")
-    private Timestamp estimatedArrivalTime;
+    private Time estimatedArrivalTime;
 
     @Column(name = "F_R_O_M")
     private String fromLocation;
@@ -39,7 +46,7 @@ public class Flight {
     }
 
     public Flight(Plane plane, int currentSeat,
-            Timestamp departureTime, Timestamp estimatedArrivalTime,
+            Time departureTime, Time estimatedArrivalTime,
             String fromLocation, String toLocation, Timestamp createdAt) {
         this.plane = plane;
         this.currentSeat = currentSeat;
@@ -90,19 +97,19 @@ public class Flight {
         this.currentSeat = currentSeat;
     }
 
-    public Timestamp getDepartureTime() {
+    public Time getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(Timestamp departureTime) {
+    public void setDepartureTime(Time departureTime) {
         this.departureTime = departureTime;
     }
 
-    public Timestamp getEstimatedArrivalTime() {
+    public Time getEstimatedArrivalTime() {
         return estimatedArrivalTime;
     }
 
-    public void setEstimatedArrivalTime(Timestamp estimatedArrivalTime) {
+    public void setEstimatedArrivalTime(Time estimatedArrivalTime) {
         this.estimatedArrivalTime = estimatedArrivalTime;
     }
 

@@ -1,4 +1,4 @@
-package com.example.demo.flightsTicketManager;
+package com.example.demo.Model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,7 +20,7 @@ import java.util.List;
 public class Plane {
 
     public enum Status {
-        MAINTENANCE, NORMAL
+        MAINTENANCE, Normal
     }
 
     @Id

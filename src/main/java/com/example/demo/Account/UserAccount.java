@@ -1,7 +1,9 @@
 package com.example.demo.Account;
 
 import org.springframework.data.repository.config.CustomRepositoryImplementationDetector;
-import com.example.demo.flightsTicketManager.Customer;
+
+import com.example.demo.Model.Customer;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;

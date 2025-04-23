@@ -1,0 +1,35 @@
+package com.example.demo.Service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.Account.UserAccount;
+import com.example.demo.Repository.UserAccRepo;
+
+import jakarta.servlet.http.HttpSession;
+
+@Service
+public class UserAccService {
+    UserAccRepo userAccRepo;
+
+    @Autowired
+    public UserAccService(UserAccRepo userAccRepo) {
+        this.userAccRepo = userAccRepo;
+    }
+
+    // public boolean checkLogin(String username, String password) {
+    //     HttpSession session = request.get; // Assuming you have a session object available
+    //     if (username == "admin" && password == "admin") {
+    //         session.setAttribute("Role", "admin");
+    //         return true;
+    //     } else {
+    //         UserAccount userAccount = userAccRepo.findByUsernameAndPassword(username, password);
+    //         if (userAccount != null) {
+    //             session.setAttribute("Role", "user");
+    //             return true;
+    //         } else {
+    //             return false;
+    //         }
+    //     }
+    // }
+}

@@ -1,4 +1,4 @@
-package com.example.demo.flightsTicketManager;
+package com.example.demo.Model;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
