@@ -35,7 +35,6 @@ public class FlightController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate departureDate) {
         return flightService.getFlightByFromAndToAndDepartureDate(fromLocation, toLocation,
                 Date.valueOf(departureDate));
-
     }
 
 }
