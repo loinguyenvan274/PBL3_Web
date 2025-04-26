@@ -16,6 +16,9 @@ public class SeatService {
         this.seatRepo = seatRepo;
     }
 
+    public SeatService() {
+    }
+
     public List<Seat> getAllSeat() {
         return seatRepo.findAll();
     }
@@ -41,7 +44,9 @@ public class SeatService {
     }
 
     public void addSeat(Seat seat) {
-        seatRepo.save(seat);
+        if (!seatRepo.existsById(seat.getIdSeat())) {
+            seatRepo.save(seat);
+        }
     }
 
     public void updateSeat(Seat seat) {

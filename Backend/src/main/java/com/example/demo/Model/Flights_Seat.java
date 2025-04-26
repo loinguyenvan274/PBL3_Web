@@ -38,6 +38,12 @@ public class Flights_Seat {
         this.seatStatus = seatStatus.toString();
     }
 
+    public Flights_Seat(Flight flight, Seat seat) {
+        this.idFlight = flight;
+        this.idSeat = seat;
+        // this.seatStatus = seatStatus;
+    }
+
     public Flight getKey() {
         return idFlight;
     }

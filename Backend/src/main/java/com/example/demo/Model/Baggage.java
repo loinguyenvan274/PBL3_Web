@@ -80,4 +80,9 @@ public class Baggage {
                 ", baggageWeight=" + baggageWeight +
                 '}';
     }
+
+    public void Copy(Baggage baggage) {
+        this.baggageType = baggage.getBaggageType().toString();
+        this.baggageWeight = baggage.getBaggageWeight();
+    }
 }

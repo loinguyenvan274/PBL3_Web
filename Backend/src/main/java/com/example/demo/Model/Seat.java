@@ -40,6 +40,13 @@ public class Seat {
         this.plane = plane;
     }
 
+    public Seat(String seatNumber, SeatType seatType, Plane plane) {
+
+        this.seatNumber = seatNumber;
+        this.seatType = seatType.toString();
+        this.plane = plane;
+    }
+
     public int getKey() {
         return idSeat;
     }

@@ -70,7 +70,17 @@ public class Customer {
         this.country = country;
         this.dayOfBirth = dayOfBirth;
         this.createdAt = new Timestamp(System.currentTimeMillis());
-        ;
+
+    }
+
+    public Customer(String fullName, String tel, String email, String country, Date dayOfBirth) {
+        this.fullName = fullName;
+        this.tel = tel;
+        this.email = email;
+        this.country = country;
+        this.dayOfBirth = dayOfBirth;
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+
     }
 
     public int getKey() {

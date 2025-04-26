@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.example.demo.Repository.Flights_SeatRepo;
 import com.example.demo.Model.Flights_Seat;
 import java.util.List;
+import com.example.demo.Model.Flight;
+import com.example.demo.Model.Seat;
+import com.example.demo.Enum.SeatStatus;
 
 @Service
 public class Flights_SeatService {
@@ -14,6 +17,8 @@ public class Flights_SeatService {
     // public Flights_SeatService(Flights_SeatRepo flight_seatRepo) {
     // this.flight_seatRepo = flight_seatRepo;
     // }
+    public Flights_SeatService() {
+    }
 
     public List<Flights_Seat> getAllFlight_Seat() {
         return flight_seatRepo.findAll();
@@ -27,4 +32,11 @@ public class Flights_SeatService {
         return flight_seatRepo.findByIdFlight(flightId);
     }
 
+    public void addFlight_Seat(Flight flight, Seat seat) {
+        Flights_Seat flight_seat = new Flights_Seat(flight, seat, SeatStatus.Booked);
+        if (flight_seatRepo.findByIdFlightAndIdSeat(flight_seat.getSeat().getIdSeat(),
+                flight_seat.getFlight().getIdFlight()) == null) {
+            flight_seatRepo.save(flight_seat);
+        }
+    }
 }

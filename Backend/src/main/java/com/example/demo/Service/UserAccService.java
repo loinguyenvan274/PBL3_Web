@@ -1,5 +1,7 @@
 package com.example.demo.Service;
 
+import java.lang.ProcessBuilder.Redirect;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +15,24 @@ public class UserAccService {
     @Autowired
     UserAccRepo userAccRepo;
 
+    public UserAccService() {
+    }
+
     public UserAccService(UserAccRepo userAccRepo) {
         this.userAccRepo = userAccRepo;
+    }
+
+    public int Login(String username, String password) {
+        UserAccount userAccount = userAccRepo.findByUsernameAndPassword(username, password);
+        if (userAccount != null) {
+            if (userAccount.getRole().equals("admin")) {
+                return 1; // Admin
+            } else {
+                return 2; // User
+            }
+        } else {
+            return 0; // Error
+        }
     }
 
     // public boolean checkLogin(String username, String password) {
