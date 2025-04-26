@@ -16,9 +16,10 @@ import com.example.demo.Enum.Status;
 @SpringBootApplication
 public class DemoApplication {
 	// static public FlightRepo flightRepo;
+ private	static ApplicationContext context;
 
 	public static void main(String[] args) {
-		ApplicationContext context = SpringApplication.run(DemoApplication.class, args);
+		context = SpringApplication.run(DemoApplication.class, args);
 
 		FlightService flightService = context.getBean(FlightService.class);
 		PlaneService planeService = context.getBean(PlaneService.class);
@@ -26,4 +27,5 @@ public class DemoApplication {
 		flightService.deleteFlight(10);
 		flightService.getAllFlight().forEach(System.out::println);
 	}
+
 }

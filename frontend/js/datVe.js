@@ -1,6 +1,3 @@
-let backEndURL = 'http://localhost:8080/'
-localStorage.setItem("beURL", backEndURL)
-
 let checkisKhuHoi = document.getElementById("la-khu-hoi")
 let ngayVeInputBox = document.getElementById("ngay-ve-input");
 
@@ -14,7 +11,7 @@ checkisKhuHoi.addEventListener('change', function () {
 
 
 // cap nhật cái mà chọn tỉnh á
-fetch(localStorage.getItem('beURL') + 'getDanhSachDiemBay', {
+fetch(localStorage.getItem('bEUrl') + 'getDanhSachDiemBay', {
     method: "GET"
 }).then(response => {
     if (!response.ok) {
@@ -35,7 +32,7 @@ fetch(localStorage.getItem('beURL') + 'getDanhSachDiemBay', {
 //sumitform timf kiem
 document.getElementById('form-find-chuyen-bay').addEventListener('submit', function (e) {
     e.preventDefault();
-    fetch(localStorage.getItem('beURL') + 'getDanhSachChuyenBay', {
+    fetch(localStorage.getItem('bEUrl') + 'getDanhSachChuyenBay', {
         method: "GET"
     }).then(
         response => {
