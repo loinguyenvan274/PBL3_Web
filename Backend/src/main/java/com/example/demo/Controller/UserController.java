@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import com.example.demo.Model.Ticket;
 // import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpSession;
 // import org.springframework.beans.factory.annotation.Autowired;
 // import Controller;
+import com.example.demo.Service.TicketService;
 
 @Controller
 @RequestMapping("/user")
@@ -46,8 +48,7 @@ public class UserController {
 
     @PostMapping("/book_ticket")
     // post lên các đối tượng : chuyến , vé , ghế , hành lý ,customer ,
-    public ResponseEntity<?> bookTicket(@RequestBody Customer _customer, @RequestBody Flight _flight,
-            @RequestBody Baggage _baggage, @RequestBody Seat _seat,
+    public ResponseEntity<?> bookTicket(@RequestBody Ticket _ticket,
             HttpSession session) {
         // ********* Check session *********
         if (session.getAttribute("Role") != "user" || session.getAttribute("username") == null) {
@@ -55,7 +56,8 @@ public class UserController {
             headers.add("Location", "/login");
             return new ResponseEntity<>(headers, HttpStatus.FOUND);
         }
-
+        TicketService ticketService = new TicketService();
+        ticketService.addTicket(_ticket);
         return ResponseEntity.ok("book ticket success"); // sử lí ở js để chuyến hướng về chuyến của tôi
     }
 }
