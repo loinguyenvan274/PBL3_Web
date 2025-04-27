@@ -8,4 +8,4 @@ function includeHTML() {
       });
   });
 }
-window.onload = includeHTML;
+window.addEventListener('load', includeHTML);
