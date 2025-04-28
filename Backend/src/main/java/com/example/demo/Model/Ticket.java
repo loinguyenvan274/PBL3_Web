@@ -69,6 +69,20 @@ public class Ticket {
         this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 
+    public Ticket(Flight flight, Flight flightReturn, Customer customer,
+            Seat seat, Seat returnFlightSeat, String ticketPrice,
+            Date bookingDay, Baggage baggage) {
+        this.flight = flight;
+        this.flightReturn = flightReturn;
+        this.customer = customer;
+        this.seat = seat;
+        this.returnFlightSeat = returnFlightSeat;
+        this.ticketPrice = ticketPrice;
+        this.bookingDay = bookingDay;
+        this.baggage = baggage;
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+    }
+
     public int getKey() {
         return idTicket;
     }

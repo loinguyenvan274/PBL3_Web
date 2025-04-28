@@ -12,6 +12,13 @@ public class BaggageService {
     @Autowired
     private BaggageRepo baggageRepo;
 
+    public BaggageService(BaggageRepo baggageRepo) {
+        this.baggageRepo = baggageRepo;
+    }
+
+    public BaggageService() {
+    }
+
     public List<Baggage> getAllBaggage() {
         return baggageRepo.findAll();
     }
@@ -22,5 +29,27 @@ public class BaggageService {
 
     public List<Baggage> getBaggageByType(TypeBaggage baggageType) {
         return baggageRepo.findByBaggageType(baggageType);
+    }
+
+    public void addBaggage(Baggage baggage) {
+        if (!baggageRepo.existsById(baggage.getIdBaggage())) {
+            baggageRepo.save(baggage);
+        }
+    }
+
+    public void deleteBaggage(int idBaggage) {
+        if (baggageRepo.existsById(idBaggage)) {
+            baggageRepo.deleteById(idBaggage);
+        }
+    }
+
+    public void updateBaggage(Baggage baggage) {
+        if (baggageRepo.existsById(baggage.getIdBaggage())) {
+            Baggage exist = baggageRepo.findByIdBaggage(baggage.getIdBaggage());
+            exist.Copy(baggage);
+            baggageRepo.save(exist);
+        } else {
+            addBaggage(baggage);
+        }
     }
 }

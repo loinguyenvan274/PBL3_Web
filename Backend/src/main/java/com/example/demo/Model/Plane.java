@@ -48,6 +48,14 @@ public class Plane {
         this.seatCount = seatCount;
     }
 
+    public Plane(int idPlane, String namePlane, Status status, int flightHours, int seatCount) {
+        this.idPlane = idPlane;
+        this.namePlane = namePlane;
+        this.status = status.toString();
+        this.flightHours = flightHours;
+        this.seatCount = seatCount;
+    }
+
     public List<Seat> getSeat() {
         return seats;
     }

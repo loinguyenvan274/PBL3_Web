@@ -17,6 +17,9 @@ public class FlightService {
         this.flightRepo = flightRepo;
     }
 
+    public FlightService() {
+    }
+
     public List<Flight> getAllFlight() {
         return flightRepo.findAll();
     }

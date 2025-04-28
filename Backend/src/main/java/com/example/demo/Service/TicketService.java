@@ -16,6 +16,9 @@ public class TicketService {
     @Autowired
     private TicketRepo ticketRepo;
 
+    public TicketService() {
+    }
+
     public TicketService(TicketRepo ticketRepo) {
         this.ticketRepo = ticketRepo;
     }
@@ -61,7 +64,16 @@ public class TicketService {
     }
 
     public void addTicket(Ticket ticket) {
-        ticketRepo.save(ticket);
+        // add customer , flight_seat, baggage,
+        if (!ticketRepo.existsById(ticket.getIdTicket())) {
+            CustomerService customerService = new CustomerService();
+            customerService.addCustomer(ticket.getCustomer());
+            Flights_SeatService flight_seatService = new Flights_SeatService();
+            flight_seatService.addFlight_Seat(ticket.getFlight(), ticket.getSeat());
+            BaggageService baggageService = new BaggageService();
+            baggageService.addBaggage(ticket.getBaggage());
+            ticketRepo.save(ticket);
+        }
     }
 
     public void updateTicket(Ticket ticket) {

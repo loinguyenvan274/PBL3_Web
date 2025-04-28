@@ -11,6 +11,9 @@ public class CustomerService {
     @Autowired
     private CustomerRepo customerRepo;
 
+    public CustomerService() {
+    }
+
     public CustomerService(CustomerRepo customerRepo) {
         this.customerRepo = customerRepo;
     }
@@ -43,8 +46,10 @@ public class CustomerService {
         customerRepo.deleteById(idCustomer);
     }
 
-    public void addCustomer(Customer customer) {
-        customerRepo.save(customer);
+    public void addCustomer(Customer customer) { // Nếu tồn tài thì không add
+        if (!customerRepo.existsById(customer.getIdCard())) {
+            customerRepo.save(customer);
+        }
     }
 
     public void updateCustomer(Customer customer) {
@@ -57,4 +62,8 @@ public class CustomerService {
         }
     }
 
+    public void addCustomerToTicket(Customer customer) {
+        // Thêm vào vé
+        // nếu id đã tồn tại, tức là có thể đã ở trước đó
+    }
 }

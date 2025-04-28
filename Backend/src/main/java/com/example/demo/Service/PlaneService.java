@@ -14,6 +14,9 @@ public class PlaneService {
     @Autowired
     private PlaneRepo planeRepo;
 
+    public PlaneService() {
+    }
+
     public PlaneService(PlaneRepo planeRepo) {
         this.planeRepo = planeRepo;
     }
@@ -39,7 +42,9 @@ public class PlaneService {
     }
 
     public void addPlane(Plane plane) {
-        planeRepo.save(plane);
+        if (!planeRepo.existsById(plane.getIdPlane())) {
+            planeRepo.save(plane);
+        }
     }
 
     public void updatePlane(Plane plane) {

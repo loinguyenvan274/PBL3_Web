@@ -1,30 +1,51 @@
 package com.example.demo.Account;
 
-import org.springframework.data.repository.config.CustomRepositoryImplementationDetector;
-
-import com.example.demo.Model.Customer;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 
 @Entity
 public class UserAccount {
     @Id
     private String username;
     private String password;
-    @OneToOne
-    @JoinColumn(name = "Id_Card", referencedColumnName = "Id_Card", nullable = false)
-    private Customer custommer;
+    private String role;
+    private String email;
+    // @OneToOne
+    // @JoinColumn(name = "Id_Card", referencedColumnName = "Id_Card", nullable =
+    // false)
+    // private Customer custommer;
 
     public UserAccount() {
     }
 
-    public UserAccount(String username, String password, Customer custommer) {
+    public UserAccount(String username, String password, String email) {// mac dinh user
         this.username = username;
         this.password = password;
-        this.custommer = custommer;
+        this.email = email;
+        this.role = "user";
+    }
+
+    public UserAccount(String username, String password, String role, String email) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getUsername() {
@@ -43,9 +64,6 @@ public class UserAccount {
         this.password = password;
     }
 
-    public Customer getCustommer() {
-        return custommer;
-    }
 }
 // Tạo tk -> Nhậpf UserAccount bao gồm customer
 // đăng nhập -> kiểm tra username và password có đúng không
