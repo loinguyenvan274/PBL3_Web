@@ -1,5 +1,6 @@
-const searchFormData = JSON.parse(sessionStorage.getItem('search-form-data'));
+import { findFlight } from "../../../../APIs/shared/flight.js";
 
+const searchFormData = JSON.parse(sessionStorage.getItem('search-form-data'));
 function renderRouteInfo(data, direction) {
   const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
 
@@ -30,7 +31,7 @@ function renderRouteInfo(data, direction) {
 
 window.addEventListener('load', async function selectFightHandleChange() {
 
-    //set thông báo biển hiệu
+  //set thông báo biển hiệu
   if (searchFormData) {
     renderRouteInfo(searchFormData, 'departure'); // Chiều đi
   }
@@ -44,12 +45,12 @@ window.addEventListener('load', async function selectFightHandleChange() {
       renderRouteInfo(searchFormData, 'return'); // chiều về
     }
     //truyền lại các giá trị mới
-    await loadDataForCard(searchFormData.endLocation.id,searchFormData.beginLocation.id, searchFormData.returnDate);
+    await loadDataForCard(searchFormData.endLocation.id, searchFormData.beginLocation.id, searchFormData.returnDate);
     returnFlightASeat = await selectFlight();
   }
   sessionStorage.setItem('customerSelectedFight', JSON.stringify({ departureFlightASeat, returnFlightASeat }))
 
-  // todo: 
+  window.location.href = 'nhapThongTin.html';
 
 })
 function selectFlight() {
@@ -68,38 +69,18 @@ function selectFlight() {
 }
 
 async function loadDataForCard(fromLocationId, toLocationId, departureDate) {
-  const bEUrl = localStorage.getItem('bEUrl') + 'flight/find_flight';
-  const params = {
-    fromLocationId,
-    toLocationId,
-    departureDate,
-  };
-  const queryString = new URLSearchParams(params).toString();
-  const finalUrl = `${bEUrl}?${queryString}`;
 
-  try {
-    const response = await fetch(finalUrl, {
-      method: "GET",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+  const data = await findFlight(fromLocationId, toLocationId, departureDate);
+  const container = document.querySelector('.flight-list');
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+  // Clear existing content
+  container.innerHTML = '';
 
-    const data = await response.json();
-    const container = document.querySelector('.flight-list');
-
-    // Clear existing content
-    container.innerHTML = '';
-
-    data.forEach(f => {
-      const card = document.createElement('div');
-      card.dataset.flight = JSON.stringify(f);
-      card.className = 'flight-card';
-      card.innerHTML = `
+  data.forEach(f => {
+    const card = document.createElement('div');
+    card.dataset.flight = JSON.stringify(f);
+    card.className = 'flight-card';
+    card.innerHTML = `
         <div class="flight-info">
           <div class="airline-logo">${f.airline}</div>
           <div class="flight-times">
@@ -129,11 +110,7 @@ async function loadDataForCard(fromLocationId, toLocationId, departureDate) {
           </div>
         </div>
       `;
-      container.appendChild(card);
-    });
-
-  } catch (error) {
-    console.error('Error fetching flight data:', error);
-  }
+    container.appendChild(card);
+  });
 }
 

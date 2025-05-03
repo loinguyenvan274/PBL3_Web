@@ -1,47 +1,53 @@
 package com.example.demo.Controller;
 
+import com.example.demo.Model.Flight;
 import com.example.demo.Model.Location;
+import com.example.demo.Model.Plane;
 import com.example.demo.Repository.LocationRepo;
-import org.springframework.web.bind.annotation.*;
+import com.example.demo.Service.FlightService;
+import com.example.demo.Service.PlaneService;
+import com.example.demo.Enum.Status;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
-import com.example.demo.Model.Flight;
-import com.example.demo.Service.FlightService;
-
-import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/flight")
-
 public class FlightController {
+
     @Autowired
     private FlightService flightService;
-
     @Autowired
     LocationRepo locationRepo;
-
-    public FlightController(FlightService fService) {
-        this.flightService = fService;
+    ///
+    // Thêm chuyến bay mới
+    @PostMapping("")
+    public void addFlight(@RequestBody Flight flight) {
+        flightService.addFlight(flight);
+    }
+    // Cập nhật chuyến bay (nếu có thì update, không có thì tạo mới)
+    @PutMapping("/{id}")
+    public void updateFlight(@PathVariable int id, @RequestBody Flight flight) {
+        flight.setIdFlight(id);
+        flightService.updateFlight(flight);
+    }
+    // Xoá chuyến bay
+    @DeleteMapping("/{id}")
+    public void deleteFlight(@PathVariable int id) {
+        flightService.deleteFlight(id);
     }
 
-    @CrossOrigin(origins = "*")
-    @GetMapping("/find_flight_by_id/{idFlight}")
+    @GetMapping("/{idFlight}")
     public Flight findFlightById(@PathVariable int idFlight) {
         return flightService.getFlightById(idFlight);
     }
 
-    @CrossOrigin(origins = "*")
     @GetMapping("/find_flight")
     public List<Flight> searchFlights(
             @RequestParam int fromLocationId,
@@ -51,19 +57,10 @@ public class FlightController {
         Location from = locationRepo.findById(fromLocationId).orElseThrow();
         Location to = locationRepo.findById(toLocationId).orElseThrow();
         return flightService.getFlightByFromAndToAndDepartureDate(from, to, java.sql.Date.valueOf(departureDate));
-
     }
-
-    // public ResponseEntity<?> findFlight(@RequestParam String fromLocation, @RequestParam String toLocation,
-    //         @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate departureDate, HttpSession session) {
-    //     // ********* Check session *********
-    //     if (session.getAttribute("Role") != "user" ||
-    //             session.getAttribute("username") == null) {
-    //         HttpHeaders headers = new HttpHeaders();
-    //         headers.add("Location", "/login");
-    //         return new ResponseEntity<>(headers, HttpStatus.FOUND);
-    //     }
-    //     return ResponseEntity.ok(flightService.getFlightByFromAndToAndDepartureDate(fromLocation, toLocation,
-    //             Date.valueOf(departureDate)));
-    // }
+    // Lấy toàn bộ chuyến bay
+    @GetMapping("/all_flights")
+    public List<Flight> allFlights() {
+        return flightService.getAllFlight();
+    }
 }

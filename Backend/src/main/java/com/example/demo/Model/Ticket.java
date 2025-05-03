@@ -1,20 +1,15 @@
 package com.example.demo.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idTicket")
 @Table(name = "Ticket")
 public class Ticket {
 
@@ -31,18 +26,27 @@ public class Ticket {
     private Flight flightReturn;
 
     @ManyToOne
-    @JoinColumn(name = "Id_Card", referencedColumnName = "Id_Card", nullable = false)
+    @JoinColumn(name = "id_customer", referencedColumnName = "Id_Card", nullable = false)
     private Customer customer;
 
     @OneToOne
-    @JoinColumn(name = "Id_Seat", referencedColumnName = "Id_Seat", nullable = false)
-    private Seat seat;
+    @JoinColumns({
+            @JoinColumn(name = "departure_flight_id", referencedColumnName = "id_flight"),
+            @JoinColumn(name = "departure_id_seat", referencedColumnName = "id_seat")
+    })
+    private Flights_Seat departureSeat;
 
     @OneToOne
-    @JoinColumn(name = "Id_Seat_Return", referencedColumnName = "Id_Seat", nullable = true)
-    private Seat returnFlightSeat;
+    @JoinColumns({
+            @JoinColumn(name = "return_flight_id", referencedColumnName = "id_flight"),
+            @JoinColumn(name = "return_id_seat", referencedColumnName = "id_seat")
+    })
+    private Flights_Seat returnSeat;
 
-    private String ticketPrice;
+    @Column(name = "price")
+    private Long price;
+
+    @Column(name = "booking_day")
     private Date bookingDay;
 
     @OneToOne
@@ -53,54 +57,6 @@ public class Ticket {
 
     public Ticket() {
     }
-
-    public Ticket(int idTicket, Flight flight, Flight flightReturn, Customer customer,
-            Seat seat, Seat returnFlightSeat, String ticketPrice,
-            Date bookingDay, Baggage baggage) {
-        this.idTicket = idTicket;
-        this.flight = flight;
-        this.flightReturn = flightReturn;
-        this.customer = customer;
-        this.seat = seat;
-        this.returnFlightSeat = returnFlightSeat;
-        this.ticketPrice = ticketPrice;
-        this.bookingDay = bookingDay;
-        this.baggage = baggage;
-        this.createdAt = new Timestamp(System.currentTimeMillis());
-    }
-
-    public Ticket(Flight flight, Flight flightReturn, Customer customer,
-            Seat seat, Seat returnFlightSeat, String ticketPrice,
-            Date bookingDay, Baggage baggage) {
-        this.flight = flight;
-        this.flightReturn = flightReturn;
-        this.customer = customer;
-        this.seat = seat;
-        this.returnFlightSeat = returnFlightSeat;
-        this.ticketPrice = ticketPrice;
-        this.bookingDay = bookingDay;
-        this.baggage = baggage;
-        this.createdAt = new Timestamp(System.currentTimeMillis());
-    }
-
-    public int getKey() {
-        return idTicket;
-    }
-
-    public List<String> valueString() {
-        List<String> value = new ArrayList<>();
-        value.add(String.valueOf(flight != null ? flight.getIdFlight() : "null"));
-        value.add(String.valueOf(flightReturn != null ? flightReturn.getIdFlight() : "null"));
-        value.add(String.valueOf(customer != null ? customer.getIdCard() : "null"));
-        value.add(String.valueOf(seat != null ? seat.getIdSeat() : "null"));
-        value.add(String.valueOf(returnFlightSeat != null ? returnFlightSeat.getIdSeat() : "null"));
-        value.add(ticketPrice);
-        value.add(bookingDay.toString());
-        value.add(String.valueOf(baggage != null ? baggage.getIdBaggage() : "null"));
-        return value;
-    }
-
-    // Getters and Setters
 
     public int getIdTicket() {
         return idTicket;
@@ -134,36 +90,36 @@ public class Ticket {
         this.customer = customer;
     }
 
-    public Seat getSeat() {
-        return seat;
+    public Flights_Seat getDepartureSeat() {
+        return departureSeat;
     }
 
-    public void setSeat(Seat seat) {
-        this.seat = seat;
+    public void setDepartureSeat(Flights_Seat departureSeat) {
+        this.departureSeat = departureSeat;
     }
 
-    public Seat getReturnFlightSeat() {
-        return returnFlightSeat;
+    public Flights_Seat getReturnSeat() {
+        return returnSeat;
     }
 
-    public void setReturnFlightSeat(Seat returnFlightSeat) {
-        this.returnFlightSeat = returnFlightSeat;
+    public void setReturnSeat(Flights_Seat returnSeat) {
+        this.returnSeat = returnSeat;
     }
 
-    public String getTicketPrice() {
-        return ticketPrice;
+    public Long getPrice() {
+        return price;
     }
 
-    public void setTicketPrice(String ticketPrice) {
-        this.ticketPrice = ticketPrice;
+    public void setPrice(Long price) {
+        this.price = price;
     }
 
-    public String getBookingDay() {
-        return bookingDay.toString();
+    public Date getBookingDay() {
+        return bookingDay;
     }
 
-    public void setBookingDay(String bookingDay) {
-        this.bookingDay = Date.valueOf(bookingDay);
+    public void setBookingDay(Date bookingDay) {
+        this.bookingDay = bookingDay;
     }
 
     public Baggage getBaggage() {
@@ -183,30 +139,29 @@ public class Ticket {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Ticket ticket)) return false;
+        return idTicket == ticket.idTicket;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(idTicket);
+    }
+
+    @Override
     public String toString() {
         return "Ticket{" +
                 "idTicket=" + idTicket +
                 ", flight=" + flight +
                 ", flightReturn=" + flightReturn +
                 ", customer=" + customer +
-                ", seat=" + seat +
-                ", returnFlightSeat=" + returnFlightSeat +
-                ", ticketPrice='" + ticketPrice + '\'' +
-                ", bookingDay='" + bookingDay + '\'' +
+                ", departureSeat=" + departureSeat +
+                ", returnSeat=" + returnSeat +
+                ", price=" + price +
+                ", bookingDay=" + bookingDay +
                 ", baggage=" + baggage +
                 ", createdAt=" + createdAt +
                 '}';
-    }
-
-    public void Copy(Ticket ticket) {
-        this.flight = ticket.getFlight();
-        this.flightReturn = ticket.getFlightReturn();
-        this.customer = ticket.getCustomer();
-        this.seat = ticket.getSeat();
-        this.returnFlightSeat = ticket.getReturnFlightSeat();
-        this.ticketPrice = ticket.getTicketPrice();
-        this.bookingDay = Date.valueOf(ticket.getBookingDay());
-        this.baggage = ticket.getBaggage();
-        this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 }
