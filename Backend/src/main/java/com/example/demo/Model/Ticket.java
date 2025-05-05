@@ -18,16 +18,12 @@ public class Ticket {
     private int idTicket;
 
     @ManyToOne
-    @JoinColumn(name = "Id_Flight", referencedColumnName = "Id_Flight", nullable = false)
-    private Flight flight;
-
-    @ManyToOne
-    @JoinColumn(name = "Id_Flight_Return", referencedColumnName = "Id_Flight", nullable = true)
-    private Flight flightReturn;
-
-    @ManyToOne
     @JoinColumn(name = "id_customer", referencedColumnName = "Id_Card", nullable = false)
     private Customer customer;
+
+    @ManyToOne
+    @JoinColumn(name = "trip_id", nullable = false)
+    private Trip trip;
 
     @OneToOne
     @JoinColumns({
@@ -43,20 +39,15 @@ public class Ticket {
     })
     private Flights_Seat returnSeat;
 
+
     @Column(name = "price")
     private Long price;
 
-    @Column(name = "booking_day")
-    private Date bookingDay;
-
     @OneToOne
-    @JoinColumn(name = "Id_Baggage", referencedColumnName = "Id_Baggage", nullable = true)
+    @JoinColumn(name = "Id_Baggage", referencedColumnName = "Id_Baggage")
     private Baggage baggage;
 
     private Timestamp createdAt;
-
-    public Ticket() {
-    }
 
     public int getIdTicket() {
         return idTicket;
@@ -66,28 +57,20 @@ public class Ticket {
         this.idTicket = idTicket;
     }
 
-    public Flight getFlight() {
-        return flight;
-    }
-
-    public void setFlight(Flight flight) {
-        this.flight = flight;
-    }
-
-    public Flight getFlightReturn() {
-        return flightReturn;
-    }
-
-    public void setFlightReturn(Flight flightReturn) {
-        this.flightReturn = flightReturn;
-    }
-
     public Customer getCustomer() {
         return customer;
     }
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public Trip getTrip() {
+        return trip;
+    }
+
+    public void setTrip(Trip trip) {
+        this.trip = trip;
     }
 
     public Flights_Seat getDepartureSeat() {
@@ -112,14 +95,6 @@ public class Ticket {
 
     public void setPrice(Long price) {
         this.price = price;
-    }
-
-    public Date getBookingDay() {
-        return bookingDay;
-    }
-
-    public void setBookingDay(Date bookingDay) {
-        this.bookingDay = bookingDay;
     }
 
     public Baggage getBaggage() {
@@ -153,13 +128,11 @@ public class Ticket {
     public String toString() {
         return "Ticket{" +
                 "idTicket=" + idTicket +
-                ", flight=" + flight +
-                ", flightReturn=" + flightReturn +
                 ", customer=" + customer +
+                ", trip=" + trip +
                 ", departureSeat=" + departureSeat +
                 ", returnSeat=" + returnSeat +
                 ", price=" + price +
-                ", bookingDay=" + bookingDay +
                 ", baggage=" + baggage +
                 ", createdAt=" + createdAt +
                 '}';

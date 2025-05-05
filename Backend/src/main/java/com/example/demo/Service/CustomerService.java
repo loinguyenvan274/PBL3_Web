@@ -52,15 +52,15 @@ public class CustomerService {
         }
     }
 
-    public void updateCustomer(Customer customer) {
-        if (customerRepo.existsById(customer.getIdCustomer())) {
-            Customer exist = customerRepo.findByIdCard(customer.getIdCustomer());
-            exist.Copy(customer);
-            customerRepo.save(exist);
-        } else {
-            addCustomer(customer);
-        }
-    }
+//    public void updateCustomer(Customer customer) {
+//        if (customerRepo.existsById(customer.getIdCustomer())) {
+//            Customer exist = customerRepo.findByIdCard(customer.getIdCustomer());
+//            exist.Copy(customer);
+//            customerRepo.save(exist);
+//        } else {
+//            addCustomer(customer);
+//        }
+//    }
 
     public void addCustomerToTicket(Customer customer) {
         // Thêm vào vé
