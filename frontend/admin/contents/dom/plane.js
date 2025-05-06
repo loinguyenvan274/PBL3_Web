@@ -4,7 +4,7 @@ import {
     addPlane,
     updatePlane,
     deletePlane
-} from '../../../APIs/admin/plane.js';
+} from '../../../APIs/plane.js';
 
 let selectedPlane;
 
@@ -92,7 +92,6 @@ async function handelCUSubmit(e) {
     }
     loadPlanForTable(await getAllPlanes());
     console.log(selectedPlane);
-    console.log(plane);
 }
 
 
