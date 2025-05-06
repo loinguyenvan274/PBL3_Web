@@ -18,12 +18,12 @@ public class Flights_Seat {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "Id_Flight")
+    @JoinColumn(name = "Id_Flight", referencedColumnName = "Id_Flight",nullable = false)
     private Flight flight;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "Id_Seat")
+    @JoinColumn(name = "Id_Seat",referencedColumnName = "Id_Seat",nullable = false)
     private Seat seat;
 
     @Column(name = "Seat_Status")

@@ -18,11 +18,11 @@ public class Ticket {
     private int idTicket;
 
     @ManyToOne
-    @JoinColumn(name = "id_customer", referencedColumnName = "Id_Card", nullable = false)
+    @JoinColumn(name = "id_customer", referencedColumnName = "id_customer", nullable = false)
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "trip_id", nullable = false)
+    @JoinColumn(name = "trip_id",referencedColumnName = "id_trip", nullable = false)
     private Trip trip;
 
     @OneToOne

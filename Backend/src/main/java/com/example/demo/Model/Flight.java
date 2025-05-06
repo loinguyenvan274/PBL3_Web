@@ -44,17 +44,17 @@ public class Flight {
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Flights_Seat> flightsSeatList;
 
-    @OneToMany(mappedBy = "flightReturn", cascade = CascadeType.ALL,orphanRemoval = true)
-    private  List<Ticket> boughtTicket;
+//    @OneToMany(mappedBy = "flightReturn", cascade = CascadeType.ALL,orphanRemoval = true)
+//    private  List<Ticket> boughtTicket;
 
-
-    public List<Ticket> getBoughtTicket() {
-        return boughtTicket;
-    }
-
-    public void setBoughtTicket(List<Ticket> boughtTicket) {
-        this.boughtTicket = boughtTicket;
-    }
+//
+//    public List<Ticket> getBoughtTicket() {
+//        return boughtTicket;
+//    }
+//
+//    public void setBoughtTicket(List<Ticket> boughtTicket) {
+//        this.boughtTicket = boughtTicket;
+//    }
 
     private Timestamp createdAt;
 

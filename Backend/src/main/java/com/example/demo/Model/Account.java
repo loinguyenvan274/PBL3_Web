@@ -15,6 +15,9 @@ public class Account {
     @Column(name = "id_account")
     private int idAccount;
 
+    @Column(name = "full_name")
+    private String fullName;
+
     @Column(name = "email",unique = true)
     private String email;
 
@@ -23,9 +26,6 @@ public class Account {
 
     @Column(name = "phone")
     private String phone;
-
-    @Column(name = "full_name")
-    private String fullName;
 
     @Column(name = "day_of_birth")
     private Date dayOfBirth;
@@ -148,6 +148,18 @@ public class Account {
                 ", createdAt=" + createdAt +
                 ", role=" + role +
                 '}';
+    }
+    public void copyFrom(Account other) {
+        if (other == null) return;
+
+        this.fullName = other.fullName;
+        this.email = other.email;
+        this.password = other.password;
+        this.phone = other.phone;
+        this.dayOfBirth = other.dayOfBirth;
+        this.country = other.country;
+        this.sex = other.sex;
+        this.role = other.role; // shallow copy
     }
 }
 // Tạo tk -> Nhậpf Account bao gồm customer

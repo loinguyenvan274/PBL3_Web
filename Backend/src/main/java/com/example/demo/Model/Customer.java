@@ -34,12 +34,13 @@ public class Customer {
     @Column(name = "Day_Of_Birth")
     private Date dayOfBirth;
 
-    @Enumerated(EnumType.STRING) // Lưu dưới dạng chuỗi trong DB (ví dụ: "INDIVIDUAL")
+    @Enumerated(EnumType.STRING)
     @Column(name = "Customer_Type")
     private CustomerCategory customerType;
 
-   @JoinColumn(name = "account", referencedColumnName = "id_account",nullable = true)
-   private Account account;
+    @ManyToOne
+    @JoinColumn(name = "account", referencedColumnName = "id_account",nullable = true)
+    private Account account;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Payment> payments = new ArrayList<>();
