@@ -2,7 +2,6 @@ package com.example.demo.Model;
 
 import jakarta.persistence.*;
 
-import java.lang.ref.Reference;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Objects;
@@ -15,14 +14,14 @@ public class Account {
     @Column(name = "id_account")
     private int idAccount;
 
-    @Column(name = "full_name")
-    private String fullName;
-
     @Column(name = "email",unique = true)
     private String email;
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "full_name")
+    private String fullName;
 
     @Column(name = "phone")
     private String phone;
@@ -40,7 +39,7 @@ public class Account {
     private Timestamp createdAt;
 
     @OneToOne
-    @JoinColumn(name = "role", referencedColumnName = "id_role", nullable = true)
+    @JoinColumn(name = "role", referencedColumnName = "id_role", nullable = true,unique = false)
     private Role role;
 
     public int getIdAccount() {
