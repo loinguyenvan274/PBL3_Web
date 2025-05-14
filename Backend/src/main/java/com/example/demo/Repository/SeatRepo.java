@@ -19,6 +19,8 @@ public interface SeatRepo extends JpaRepository<Seat, Integer> {
     @Query("SELECT s FROM Seat s WHERE s.plane.idPlane = ?1")
     List<Seat> findByPlane(int idPlane);
 
+    int countByPlane(Plane plane);
+
 
     List<Seat> findBySeatType(String seatType);
 

@@ -2,6 +2,7 @@ package com.example.demo.Service;
 
 import java.util.List;
 
+import com.example.demo.Repository.SeatRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,8 @@ import com.example.demo.Enum.Status;
 public class PlaneService {
     @Autowired
     private PlaneRepo planeRepo;
+    @Autowired
+    private SeatRepo seatRepo;
 
     public PlaneService() {
     }
@@ -22,7 +25,9 @@ public class PlaneService {
     }
 
     public List<Plane> getAllPlane() {
-        return planeRepo.findAll();
+        List<Plane> allPlane =  planeRepo.findAll();
+       allPlane.forEach(plane -> plane.setSeatCount(seatRepo.countByPlane(plane)));
+        return allPlane;
     }
 
     public Plane getPlaneById(int idPlane) {

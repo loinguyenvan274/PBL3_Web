@@ -1,5 +1,6 @@
 package com.example.demo.Repository;
 
+import com.example.demo.DTO.FlightSeatDTO;
 import com.example.demo.Model.Flights_Seat;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +17,8 @@ public interface Flights_SeatRepo extends JpaRepository<Flights_Seat, Integer> {
 //    Flights_Seat findByIdFlightAndIdSeat(@Param("flightId") int flightId, @Param("seatId") int seatId);
 //
 //    // đưa ra danh sách ghế + trạng thái của chuyến đó
-//    @Query("SELECT fs FROM Flights_Seat fs WHERE fs.idFlight.id = :flightId")
-//    List<Flights_Seat> findByIdFlight(@Param("flightId") int flightId);
 
+    @Query("SELECT new com.example.demo.DTO.FlightSeatDTO(fs.seat, fs.seatStatus) " +
+            "FROM Flights_Seat fs WHERE fs.flight.id = :flightId")
+    List<FlightSeatDTO> findFlightSeatsByFlightId(@Param("flightId") int flightId);
 }

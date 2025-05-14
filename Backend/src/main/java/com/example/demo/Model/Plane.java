@@ -1,16 +1,6 @@
 package com.example.demo.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import com.example.demo.Enum.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -33,10 +23,15 @@ public class Plane {
     @Column(name = "Flight_Hours")
     private int flightHours;
 
+    @Transient
+    private int seatCount;
+
     @OneToMany(mappedBy = "plane", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     List<Seat> seats = new ArrayList<>();
 
     @OneToMany(mappedBy = "plane", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Flight> flights;
 
     public Plane() {
@@ -125,6 +120,14 @@ public class Plane {
         this.namePlane = plane.namePlane;
         this.status = plane.status;
         this.flightHours = plane.flightHours;
+    }
+
+    public int getSeatCount() {
+        return seatCount;
+    }
+
+    public void setSeatCount(int seatCount) {
+        this.seatCount = seatCount;
     }
 
     @Override

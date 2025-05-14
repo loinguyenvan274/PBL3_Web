@@ -24,6 +24,12 @@ public class Trip {
     @Column(name = "booking_day", nullable = false)
     private Date bookingDay;
 
+    public Trip(Flight departureFlight, Flight returnFlight) {
+        this.departureFlight = departureFlight;
+        this.returnFlight = returnFlight;
+        this.bookingDay = new Date();
+    }
+
     public int getId() {
         return id;
     }

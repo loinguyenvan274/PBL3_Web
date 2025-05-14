@@ -1,6 +1,7 @@
 package com.example.demo.Model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
@@ -42,9 +43,12 @@ public class Flight {
     @JoinColumn(name = "T_O", referencedColumnName = "id", nullable = false)
     private Location toLocation;
 
-
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore()
     private List<Flights_Seat> flightsSeatList;
+
+
+
     // @OneToMany(mappedBy = "flightReturn", cascade =
     // CascadeType.ALL,orphanRemoval = true)
     // private List<Ticket> boughtTicket;

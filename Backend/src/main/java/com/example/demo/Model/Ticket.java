@@ -1,5 +1,6 @@
 package com.example.demo.Model;
 
+import com.example.demo.Enum.TicketType;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -23,6 +24,10 @@ public class Ticket {
     @ManyToOne
     @JoinColumn(name = "trip_id", referencedColumnName = "id_trip", nullable = false)
     private Trip trip;
+    
+    @Column(name = "ticket_type")
+    @Enumerated(EnumType.STRING)
+    private TicketType ticketType;
 
     @OneToOne
     @JoinColumns({
@@ -51,6 +56,18 @@ public class Ticket {
     private Booking booking;
 
     private Timestamp createdAt;
+
+    public Ticket() {
+    }
+
+    public Ticket(Trip trip, Customer customer, TicketType ticketType, Flights_Seat departureSeat, Flights_Seat returnSeat) {
+        this.trip = trip;
+        this.customer = customer;
+        this.ticketType = ticketType;
+        this.departureSeat = departureSeat;
+        this.returnSeat = returnSeat;
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+    }
 
     public int getIdTicket() {
         return idTicket;
@@ -126,6 +143,22 @@ public class Ticket {
     @Override
     public int hashCode() {
         return Objects.hashCode(idTicket);
+    }
+
+    public TicketType getTicketType() {
+        return ticketType;
+    }
+
+    public void setTicketType(TicketType ticketType) {
+        this.ticketType = ticketType;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
     }
 
     @Override

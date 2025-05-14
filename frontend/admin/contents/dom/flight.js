@@ -3,7 +3,8 @@ import {
     addFlight,
     updateFlight,
     deleteFlight,
-    getAllFlights
+    getAllFlights,
+    getFlightSeatsByFlightId
 } from '../../../APIs/flight.js';
 
 import {
@@ -49,9 +50,10 @@ export default async function loadFlightJS() {
     });
 
     //show sơ đồ ghế
-    viewSeatMapBtn.addEventListener("click", () => {
+    viewSeatMapBtn.addEventListener("click", async () => {
+        console.log(selectedFlight);
         if (!selectedFlight) return;
-        showSeatMap(selectedFlight);
+        showSeatMap(await getFlightSeatsByFlightId(selectedFlight.idFlight));
     });
 
     removeBtn.addEventListener("click", async () => {
@@ -94,7 +96,7 @@ export default async function loadFlightJS() {
     loadFlightsTable(await getAllFlights());
 }
 
-function showSeatMap(flight) {
+function showSeatMap(flight_seats) {
     //show sơ đồ ghế
     const seat_map_view_container = document.getElementById('seat-map-view-container');
     seat_map_view_container.classList.remove("hidden");
@@ -117,7 +119,7 @@ function showSeatMap(flight) {
     seat_map.appendChild(head_seat_map);
 
     //tìm số hàng lơn nhất và số ghế lớn nhất
-    const seatNumbers = flight.flightsSeatList.map(flight_seat => flight_seat.seat.seatNumber);
+    const seatNumbers = flight_seats.map(flight_seat => flight_seat.seat.seatNumber);
 
     // seatNumbers.sort((a, b) => {
     //     const [numA, charA] = [parseInt(a), a.match(/[A-Z]/i)[0]];
@@ -144,13 +146,13 @@ function showSeatMap(flight) {
         }
     });
     const rowNumber = maxNumber;
-    const rowSeat = maxLetter.charCodeAt(0) - 'A'.charCodeAt(0);
+    const rowSeat = maxLetter.charCodeAt(0) - 'A'.charCodeAt(0) + 1;
 
     for (let i = 0; i < rowSeat; i++) {
-        const row = document.createElement('div');
-        row.className = "text-center font-semibold";
-        row.innerHTML = String.fromCharCode(65 + i);
-        seat_map_row.appendChild(row);
+        const column = document.createElement('div');
+        column.className = "text-center font-semibold";
+        column.innerHTML = String.fromCharCode(65 + i);
+        seat_map_row.appendChild(column);
     }
 
     for (let i = 0; i < rowNumber; i++) {
@@ -162,14 +164,14 @@ function showSeatMap(flight) {
                 </div>`;
         seat_map.appendChild(row);
         const current_row_seat = row.querySelector(`#seat-map-row-${i}`);
-        for (let j = 0; j < rowSeat.value; j++) {
+        for (let j = 0; j < rowSeat; j++) {
             const seat = document.createElement('div');
             seat.className = "text-center font-semibold bg-blue-500 hover:bg-white text-white px-4 py-2 rounded-md";
             seat.setAttribute('seat', 'economy-seat');
             seat.setAttribute('seat-number', `${i}${String.fromCharCode(65 + j)}`);
 
-            if (getSeatByNumber(flight, `${i}${String.fromCharCode(65 + j)}`)) {
-                const seatObject = getSeatByNumber(flight, `${i}${String.fromCharCode(65 + j)}`);
+            const seatObject = getSeatByNumber(flight_seats, `${i}${String.fromCharCode(65 + j)}`);
+            if (seatObject) {
                 if (seatObject.seatType == 'BUSINESS') {
                     seat.className = "text-center font-semibold bg-yellow-500 hover:bg-white text-white px-4 py-2 rounded-md";
                 }
@@ -186,8 +188,8 @@ function showSeatMap(flight) {
         }
     }
 }
-function getSeatByNumber(flight, seatNumber) {
-    const result = flight.flightsSeatList.find(
+function getSeatByNumber(flight_seats, seatNumber) {
+    const result = flight_seats.find(
         flight_seat => flight_seat.seat.seatNumber === seatNumber
     );
     return result ? result.seat : null;

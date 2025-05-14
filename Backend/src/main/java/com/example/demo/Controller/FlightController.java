@@ -1,19 +1,18 @@
 package com.example.demo.Controller;
 
+import com.example.demo.DTO.FlightSeatDTO;
 import com.example.demo.Model.Flight;
+import com.example.demo.Model.Flights_Seat;
 import com.example.demo.Model.Location;
-import com.example.demo.Model.Plane;
 import com.example.demo.Repository.LocationRepo;
 import com.example.demo.Service.FlightService;
-import com.example.demo.Service.PlaneService;
-import com.example.demo.Enum.Status;
+import com.example.demo.Service.Flights_SeatService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -24,7 +23,10 @@ public class FlightController {
     @Autowired
     private FlightService flightService;
     @Autowired
-    LocationRepo locationRepo;
+    private LocationRepo locationRepo;
+
+    @Autowired
+    private Flights_SeatService flights_seatService;
     ///
     // Thêm chuyến bay mới
     @PostMapping("")
@@ -63,4 +65,10 @@ public class FlightController {
     public List<Flight> allFlights() {
         return flightService.getAllFlight();
     }
+
+    @GetMapping("/flight_seats")
+    public List<FlightSeatDTO> getFlightSeats(@RequestParam int flightId){
+       return flights_seatService.getFlightSeatsByIdFlight(flightId);
+    }
+
 }

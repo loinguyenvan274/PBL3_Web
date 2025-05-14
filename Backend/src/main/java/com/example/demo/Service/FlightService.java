@@ -1,14 +1,17 @@
 package com.example.demo.Service;
 
 import com.example.demo.Enum.SeatStatus;
+import com.example.demo.Enum.SeatType;
 import com.example.demo.Model.*;
 import com.example.demo.Repository.FlightRepo;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.example.demo.Repository.PlaneRepo;
 import com.example.demo.Repository.SeatRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,18 +44,18 @@ public class FlightService {
         flightRepo.deleteById(idFlight);
     }
 
+    @Transactional()
     public void addFlight(Flight flight) {
         // Lấy tất cả ghế từ máy bay đã tồn tại
-
-
         List<Seat> seats = seatRepo.findByPlane(flight.getPlane().getIdPlane());
+
+        // ?? ở đây thì seats ở trạng thái gì
 
         // Tạo danh sách các Flights_Seat và liên kết với chuyến bay
         List<Flights_Seat> flightSeats = new ArrayList<>();
         for (Seat seat : seats) {
             flightSeats.add(new Flights_Seat(flight, seat, SeatStatus.NOT_BOOKED));
         }
-
         // Cập nhật danh sách Flights_Seat vào chuyến bay
         flight.setFlightsSeatList(flightSeats);
 
@@ -79,6 +82,13 @@ public class FlightService {
     public List<Flight> getFlightByFromAndToAndDepartureDate(Location fromLocation, Location toLocation,
                                                              Date departureDate) {
         return flightRepo.findByFromLocationAndToLocationAndDepartureDate(fromLocation, toLocation, departureDate);
+    }
+    public List<Flights_Seat> getAvailbleSlot(int idFlight, SeatType seatType) {
+        Flight flight = flightRepo.findByIdFlight(idFlight);
+        List<Flights_Seat> flightSeats = flight.getFlightsSeatList();
+        return flightSeats.stream()
+                .filter(fs -> fs.getSeatStatus() == SeatStatus.NOT_BOOKED && ( fs.getSeat().getSeatType() == seatType || seatType == null))
+                .collect(Collectors.toList());
     }
 
 }

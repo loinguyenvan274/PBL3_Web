@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import jakarta.persistence.*;
 import com.example.demo.Enum.SeatStatus;
+import com.example.demo.Enum.SeatType;
 
 @Entity
 @Table(name = "Flights_Seat")
@@ -97,4 +98,18 @@ public class Flights_Seat {
                 ", seatStatus='" + seatStatus + '\'' +
                 '}';
     }
+    public String getSeatNumber() {
+        return seat.getSeatNumber();
+    }
+    public void setSeatNumber(String seatNumber) {
+        seat.setSeatNumber(seatNumber);
+    }   
+    public SeatType getSeatType() {
+        return seat.getSeatType();
+    }
+    public void setSeatType(SeatType seatType) {
+        seat.setSeatType(seatType);
+    }
+    
+    
 }

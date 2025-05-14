@@ -332,7 +332,7 @@ function loadPlanForTable(planes) {
             <td class="border px-2 py-1">${element.namePlane}</td>
             <td class="border px-2 py-1">${element.status}</td>
             <td class="border px-2 py-1">${element.flightHours}</td>
-            <td class="border px-2 py-1">${element.seats.length}</td>
+            <td class="border px-2 py-1">${element.seatCount}</td>
         `
         newRow.addEventListener('click', () => {
             const rows = table.querySelectorAll('tr');

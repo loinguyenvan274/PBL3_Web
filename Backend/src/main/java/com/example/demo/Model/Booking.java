@@ -32,6 +32,23 @@ public class Booking {
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ticket> tickets;
 
+    public Booking() {
+    }
+
+    public Booking( Customer customer,List<Ticket> tickets, PaymentMethod paymentMethod) {
+        this.tickets = tickets;
+        this.customer = customer;
+        this.paymentMethod = paymentMethod;
+    }
+
+    public List<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
+    }
+
     public int getId() {
         return id;
     }
