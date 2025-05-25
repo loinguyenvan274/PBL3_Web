@@ -22,12 +22,16 @@ public class Account {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    @OneToOne(mappedBy = "account")
-    private Customer customer;
-
     @OneToOne
-    @JoinColumn(name = "role", referencedColumnName = "id_role", nullable = true,unique = false)
+    @JoinColumn(name = "role", referencedColumnName = "id_role", nullable = true)
     private Role role;
+
+    public Account() {}
+
+    public Account(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
     public Timestamp getCreatedAt() {
         return createdAt;
@@ -37,13 +41,6 @@ public class Account {
         this.createdAt = createdAt;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
 
     public Role getRole() {
         return role;

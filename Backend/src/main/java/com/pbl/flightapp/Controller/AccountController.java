@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,9 +25,13 @@ public class AccountController {
 
     // Lấy tất cả account dạng DTO
     @GetMapping("/all_account_by_email")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public List<AccountDTO> getAllAccountByEmail(@RequestParam String email) {
-        return accountService.getAllAccountByEmail(email);
+//    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public List<AccountDTO> getAllAccountByEmail(@RequestParam String email, @RequestParam String requestCreatedAt) {
+        Timestamp createdAt = null;
+        if (requestCreatedAt != null && !requestCreatedAt.isEmpty()) {
+            createdAt = Timestamp.valueOf(requestCreatedAt); // cần đúng định dạng: yyyy-MM-dd HH:mm:ss
+        }
+        return accountService.getAllAccountByEmail(email,createdAt);
     }
 
     // Lấy account theo id
@@ -37,14 +42,32 @@ public class AccountController {
 
     // Tạo account mới
     @PostMapping
-    public Account createAccount(@RequestBody Account account) {
-        return accountService.createAccount(account);
+    public Account createAccount(@RequestBody AccountRequest accountRequest) {
+        return accountService.createAccount(new Account(accountRequest.getEmail(), accountRequest.getPassword()), accountRequest.getRoleId());
+    }
+
+   static class AccountRequest{
+        private String email;
+        private String password;
+        private long roleId;
+        public String getEmail() {
+            return email;}
+        public String getPassword() {
+            return password;}
+        public long getRoleId() {
+            return roleId;}
+        public void setEmail(String email) {
+            this.email = email;}
+        public void setPassword(String password) {
+            this.password = password;}
+        public void setRoleId(long roleId) {
+            this.roleId = roleId;}
     }
 
     // Cập nhật account theo id
     @PutMapping("/{id}")
-    public Account updateAccount(@PathVariable int id, @RequestBody Account account) {
-        return accountService.updateAccount(id, account);
+    public Account updateAccount(@PathVariable int id, @RequestBody AccountRequest accountRequest) {
+        return accountService.updateAccount(id, new Account(accountRequest.getEmail(), accountRequest.getPassword()), accountRequest.getRoleId());
     }
 
     // Xóa account theo id

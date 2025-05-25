@@ -3,25 +3,22 @@ package com.pbl.flightapp.DTO;
 import java.sql.Timestamp;
 import com.pbl.flightapp.Model.Role;
 
-
 public class AccountDTO {
     private int idAccount;
     private String email;
     private String password;
     private Timestamp createdAt;
-    private CustomerDTO customer;
     private Role role;
 
     public AccountDTO() {
     }
 
-    public AccountDTO(int idAccount, String email, String password, Timestamp createdAt, CustomerDTO customer,
-        Role role) {
+    public AccountDTO(int idAccount, String email, String password, Timestamp createdAt,
+            Role role) {
         this.idAccount = idAccount;
         this.email = email;
         this.password = password;
         this.createdAt = createdAt;
-        this.customer = customer;
         this.role = role;
     }
 
@@ -55,14 +52,6 @@ public class AccountDTO {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public CustomerDTO getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(CustomerDTO customer) {
-        this.customer = customer;
     }
 
     public Role getRole() {

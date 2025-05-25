@@ -50,12 +50,12 @@ public class BookingRequest {
         this.departureFlightId = departureFlightId;
     }
 
-    public Integer getReturnFlightId() {
-        return returnFlightId;
-    }
-
+    
     public void setReturnFlightId(Integer returnFlightId) {
         this.returnFlightId = returnFlightId;
     }
-
+    
+    public Integer getReturnFlightId() { 
+        return returnFlightId;
+    }
 }
