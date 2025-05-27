@@ -1,25 +1,34 @@
 package com.pbl.flightapp.DTO;
 
 import java.sql.Timestamp;
+
+import com.pbl.flightapp.Model.Account;
 import com.pbl.flightapp.Model.Role;
+import com.pbl.flightapp.Model.User; 
 
 public class AccountDTO {
     private int idAccount;
-    private String email;
+    private String username;
     private String password;
     private Timestamp createdAt;
     private Role role;
+    private User user;
 
     public AccountDTO() {
     }
 
-    public AccountDTO(int idAccount, String email, String password, Timestamp createdAt,
-            Role role) {
+    public AccountDTO(int idAccount, String username, String password, Timestamp createdAt,
+            Role role, User user) {
         this.idAccount = idAccount;
-        this.email = email;
+        this.username = username;
         this.password = password;
-        this.createdAt = createdAt;
         this.role = role;
+        this.user = user;
+        this.createdAt = createdAt;
+    }
+
+    public Account getAccount() {
+        return new Account(username, password);
     }
 
     public int getIdAccount() {
@@ -30,12 +39,12 @@ public class AccountDTO {
         this.idAccount = idAccount;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -52,6 +61,14 @@ public class AccountDTO {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Role getRole() {

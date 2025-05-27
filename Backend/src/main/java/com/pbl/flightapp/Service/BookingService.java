@@ -2,7 +2,7 @@ package com.pbl.flightapp.Service;
 
 import java.util.List;
 
-import com.pbl.flightapp.Repository.CustomerRepo;
+import com.pbl.flightapp.Repository.UserRepo;
 import com.pbl.flightapp.requestObj.BookingRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 
 import com.pbl.flightapp.Model.Booking;
-import com.pbl.flightapp.Model.Customer;
+import com.pbl.flightapp.Model.User;
 import com.pbl.flightapp.Model.Ticket;
 import com.pbl.flightapp.Repository.BookingRepo;
 
@@ -22,7 +22,7 @@ public class BookingService {
     @Autowired
     private TicketService ticketService;
     @Autowired
-    private CustomerRepo customerRepo;
+    private UserRepo userRepo;
 
 
     // @Transactional
@@ -49,9 +49,9 @@ public class BookingService {
         booking.setPaymentMethod(bookingRequest.getPaymentMethod());
         
         // Set the first customer as the booking customer
-        Customer bookingCustomer = bookingRequest.getTickets().getFirst().getCustomer();
-        bookingCustomer = customerRepo.save(bookingCustomer);
-        booking.setCustomer(bookingCustomer);
+        User bookingUser = bookingRequest.getTickets().getFirst().getUser();
+        bookingUser = userRepo.save(bookingUser);
+        booking.setUser(bookingUser);
         booking = bookingRepo.save(booking);
 
         List<Ticket> createdTickets = ticketService.addTickets(bookingRequest, booking);

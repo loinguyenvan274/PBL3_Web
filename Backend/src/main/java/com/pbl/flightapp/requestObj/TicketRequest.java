@@ -1,9 +1,9 @@
 package com.pbl.flightapp.requestObj;
 
-import com.pbl.flightapp.Model.Customer;
+import com.pbl.flightapp.Model.User;
 
 public class TicketRequest {
-  private Customer customer;
+  private User user;
   private String seatId;
   private ReturnTicket returnTicket;
 
@@ -19,12 +19,12 @@ public class TicketRequest {
     }
   }
 
-  public Customer getCustomer() {
-    return customer;
+  public User getUser() {
+    return user;
   }
 
-  public void setCustomer(Customer customer) {
-    this.customer = customer;
+  public void setUser(User user) {
+    this.user = user;
   }
 
 

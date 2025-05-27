@@ -1,6 +1,6 @@
 import loadPlane from '../contents/dom/plane.js';
 import loadFlightJS from '../contents/dom/flight.js';
-import loadAccountView from '../contents/dom/accountView.js';
+import loadAccountView from '../contents/dom/account_view.js';
 import loadRoleView from '../contents/dom/roleView.js';
 
 const barButtons = {

@@ -1,11 +1,15 @@
 import {BASE_URL} from "./init.js"
 const API_BASE = BASE_URL + '/plane';
+import axios from 'axios';
 
 // Lấy danh sách tất cả máy bay
 export async function getAllPlanes() {
     try {
-        const res = await fetch(API_BASE + '/all_plane');
-        return await res.json();
+        const res = await axios.get(API_BASE + '/all_plane', {
+            withCredentials: true
+        });
+        return res.data;
+
     } catch (error) {
         console.error("Lỗi khi lấy danh sách máy bay:", error);
     }
@@ -15,8 +19,10 @@ export async function getAllPlanes() {
 // Lấy thông tin 1 máy bay theo ID
 export async function getPlaneById(id) {
     try {
-        const res = await fetch(`${API_BASE}/${id}`);
-        return await res.json();
+        const res = await axios.get(`${API_BASE}/${id}`, {
+            withCredentials: true
+        });
+        return res.data;
     } catch (error) {
         console.error("Lỗi khi lấy thông tin máy bay:", error);
     }
@@ -26,10 +32,11 @@ export async function getPlaneById(id) {
 // Thêm máy bay mới
 export async function addPlane(plane) {
     try {
-        await fetch(API_BASE, {
+        await axios.post(API_BASE, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(plane)
+            body: JSON.stringify(plane),
+            withCredentials: true
         });
     } catch (error) {
         console.error("Lỗi khi thêm máy bay:", error);
@@ -39,10 +46,11 @@ export async function addPlane(plane) {
 // Cập nhật máy bay
 export async function updatePlane(plane) {
     try {
-        await fetch(API_BASE, {
+        await axios.put(API_BASE, {
             method: "PUT", 
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(plane)
+            body: JSON.stringify(plane),
+            withCredentials: true
         });
     } catch (error) {
         console.error("Lỗi khi cập nhật máy bay:", error);
@@ -52,9 +60,10 @@ export async function updatePlane(plane) {
 // Xóa máy bay theo ID
 export async function deletePlane(id) {
     try {
-        await fetch(`${API_BASE}/${id}`, {
-            method: "DELETE"
+       const response = await axios.delete(`${API_BASE}/${id}`, {
+            withCredentials: true
         });
+        return response.data;
     } catch (error) {
         console.error("Lỗi khi xóa máy bay:", error);
     }

@@ -10,6 +10,7 @@ import com.pbl.flightapp.Service.PlaneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -47,24 +48,28 @@ public class PlaneController {
 
     // Create a new plane
     @PostMapping("")
+    @PreAuthorize("hasPermission(null, 'MANAGE_PLANE')")
     public void addPlane(@RequestBody Plane plane) {
         planeService.addPlane(plane);
     }
 
     // Update a plane
     @PutMapping("")
+    @PreAuthorize("hasPermission(null, 'MANAGE_PLANE')")
     public void updatePlane(@RequestBody Plane plane) {
         planeService.updatePlane(plane);
     }
 
     // Delete a plane by ID
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasPermission(null, 'MANAGE_PLANE')")
     public void deletePlane(@PathVariable int id) {
         planeService.deletePlane(id);
     }
 
     // Update only the status of a plane
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasPermission(null, 'MANAGE_PLANE')")
     public void updatePlaneStatus(@PathVariable int id, @RequestParam Status status) {
         planeService.updatePlaneStatus(id, status);
     }

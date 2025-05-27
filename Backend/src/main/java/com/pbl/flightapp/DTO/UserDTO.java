@@ -1,5 +1,7 @@
 package com.pbl.flightapp.DTO;
 
+import org.hibernate.usertype.UserType;
+
 public class UserDTO {
     private int idUser;
     private String fullName;
@@ -7,6 +9,7 @@ public class UserDTO {
     private String address;
     private String email;
     private String dateOfBirth;
+    private UserType userType; 
 
     public UserDTO() {
     }

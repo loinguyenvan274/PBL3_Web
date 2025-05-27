@@ -1,6 +1,8 @@
 package com.pbl.flightapp.Enum;
 
 public enum Permission {
+    MANAGE_FLIGHT("Quản lý chuyến bay"),
+    MANAGE_PLANE("Quản lý máy bay"),
     CREATE_FLIGHT("Tạo chuyến bay"),
     DELETE_FLIGHT("Xóa chuyến bay"),
     VIEW_FLIGHT("Xem danh sách chuyến bay"),

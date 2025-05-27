@@ -16,8 +16,8 @@ public class Booking {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer", referencedColumnName = "id_customer", nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "customer", referencedColumnName = "id_user", nullable = false)
+    private User customer;
 
     @Column(name = "amount")
     private Long amount;
@@ -35,7 +35,7 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking( Customer customer,List<Ticket> tickets, PaymentMethod paymentMethod) {
+    public Booking( User customer,List<Ticket> tickets, PaymentMethod paymentMethod) {
         this.tickets = tickets;
         this.customer = customer;
         this.paymentMethod = paymentMethod;
@@ -57,12 +57,12 @@ public class Booking {
         this.id = id;
     }
 
-    public Customer getCustomer() {
+    public User getUser() {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setUser(User user) {
+        this.customer = user;
     }
 
     public Long getAmount() {

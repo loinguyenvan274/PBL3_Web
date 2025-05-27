@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
+@Table(name = "account")
 public class Account {
 
     @Id
@@ -13,23 +14,27 @@ public class Account {
     @Column(name = "id_account")
     private int idAccount;
  
-    @Column(name = "email",unique = true)
-    private String email;
+    @Column(name = "username",unique = true,nullable = false)
+    private String username;
 
-    @Column(name = "password")
+    @Column(name = "password",nullable = false)
     private String password;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id", referencedColumnName = "id_user", nullable = true, unique = true)
+    private User user;
+
+    @ManyToOne
     @JoinColumn(name = "role", referencedColumnName = "id_role", nullable = true)
     private Role role;
 
     public Account() {}
 
-    public Account(String email, String password) {
-        this.email = email;
+    public Account(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 
@@ -58,12 +63,20 @@ public class Account {
         this.idAccount = idAccount;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -89,7 +102,7 @@ public class Account {
     public String toString() {
         return "Account{" +
                 "idAccount=" + idAccount +
-                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", createdAt=" + createdAt +
                 ", role=" + role +
@@ -97,10 +110,9 @@ public class Account {
     }
     public void copyFrom(Account other) {
         if (other == null) return;
-
-        this.email = other.email;
+        this.username = other.username;
         this.password = other.password;
-        this.role = other.role; // shallow copy
+        // this.role = other.role; // shallow copy
     }
 }
 // Tạo tk -> Nhậpf Account bao gồm customer

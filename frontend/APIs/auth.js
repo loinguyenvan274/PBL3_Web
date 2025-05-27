@@ -5,8 +5,10 @@ import axios from 'axios';
 // Đăng nhập
 export const login = async (email, password) => {
     try {
-        const response = await axios.get(`${BASE_URL}/login`, {
-            params: { email, password },
+        const response = await axios.post(`${BASE_URL}/login`, {
+            username: email,
+            password: password
+        }, {
             withCredentials: true
         });
         return response;

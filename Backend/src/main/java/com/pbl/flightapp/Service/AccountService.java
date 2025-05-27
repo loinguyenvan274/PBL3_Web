@@ -1,16 +1,22 @@
 package com.pbl.flightapp.Service;
 
 import com.pbl.flightapp.DTO.AccountDTO;
+import com.pbl.flightapp.Enum.UserType;
 import com.pbl.flightapp.Model.Account;
 import com.pbl.flightapp.Model.Role;
+import com.pbl.flightapp.Model.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pbl.flightapp.Repository.AccountRepo;
 import com.pbl.flightapp.Repository.RoleRepo;
+import com.pbl.flightapp.Repository.UserRepo;
+import com.pbl.flightapp.appExc.AccountException;
+import com.pbl.flightapp.appExc.UserException;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -23,52 +29,103 @@ public class AccountService {
     private AccountRepo accountRepo;
     @Autowired
     private RoleRepo roleRepo;
+    @Autowired
+    private UserRepo userRepo;
 
     // Lấy tất cả account
-    public List<AccountDTO> getAllAccountByEmail(String email, Timestamp createdAt) {
-        if(email!=null && email.isEmpty())
-            email=null;
-        return accountRepo.findAccountDTOs(email, createdAt);
+    public List<AccountDTO> getAllAccountByUsername(String username, Integer roleId) {
+        if (username != null && username.isEmpty())
+            username = null;
+        return accountRepo.findAccountDTOs(username, roleId);
     }
+
+    private void validateAccount(Account account) throws AccountException {
+        Account existingAccount = accountRepo.findByUsername(account.getUsername());
+        if (existingAccount != null && !existingAccount.equals(account))
+            throw new AccountException("Username already exists", "USERNAME_ALREADY_EXISTS");
+        if (account.getUsername() == null || account.getUsername().isEmpty())
+            throw new AccountException("Username is required", "USERNAME_REQUIRED");
+        if (account.getPassword() == null || account.getPassword().isEmpty())
+            throw new AccountException("Password is required", "PASSWORD_REQUIRED");
+    }
+    
 
     // Tạo mới account
     @Transactional
-    public Account createAccount(Account account, long roleId) {
-        BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
-        Role role = roleRepo.findById(roleId).orElse(null);
-        if (role == null) {
-            System.out.println("Role not found");
-            throw new IllegalArgumentException("Role not found");
+    public Account createAccount(AccountDTO createAccountRequest) throws AccountException ,UserException{
+        Account account = createAccountRequest.getAccount();
+        User user = createAccountRequest.getUser();
+        Role requestRole = createAccountRequest.getRole();
+        validateAccount(account);
+        UserService.validateUser(user);
+        Long roleId = null;
+        if (requestRole != null)
+            roleId = requestRole.getId();
+       
+        Role role = null;
+        user.setUserType(UserType.CUSTOMER);
+        if (roleId != null) {
+            role = roleRepo.findById(roleId).orElse(null);
+            user.setUserType(UserType.ADMIN);
+            if (role == null) {
+                System.out.println("Role not found");
+                throw new AccountException("Role not found", "ROLE_NOT_FOUND");
+            }
         }
         account.setRole(role);
-        account.setPassword(bcrypt.encode(account.getPassword()));
+        account.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
         account.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        return accountRepo.save(account);
+        try {
+            account.setUser(userRepo.save(user));
+        } catch (DataIntegrityViolationException e) {
+            throw new AccountException("Email or card number or phone already exists", "EMAIL_OR_CARD_NUMBER_OR_PHONE_ALREADY_EXISTS");
+        }catch (Exception e) {
+            e.printStackTrace(); // In ra để biết lỗi thật
+            throw new AccountException("Unknown error saving user: " + e.getMessage(), "UNKNOWN_USER_SAVE_ERROR");
+        }
+        try {
+            return accountRepo.save(account);
+        } catch (DataIntegrityViolationException  e) {
+            throw new AccountException("Username already exists", "USERNAME_ALREADY_EXISTS");
+        } catch (Exception e) {
+            throw new AccountException("Error creating account", "ERROR_CREATING_ACCOUNT");
+        }
     }
+    
 
     // Lấy account theo id
     public Optional<Account> getAccountById(int id) {
         return accountRepo.findById(id);
     }
 
-    public Optional<Account> getByEmail(String email) {
-        return Optional.ofNullable(accountRepo.findByEmail(email));
+    public Optional<Account> getByUsername(String username) {
+        return Optional.ofNullable(accountRepo.findByUsername(username));
     }
 
+    //chi cập nhật account và role không cập nhật user
     // Cập nhật account
-    public Account updateAccount(int id, Account updatedAccount, long roleId) {
-        Role role = roleRepo.findById(roleId).orElse(null);
-        if (role == null) {
-            System.out.println("Role not found");
-            throw new IllegalArgumentException("Role not found");
+    @Transactional
+    public Account updateAccount(int id, Account updatedAccount) throws AccountException {
+        updatedAccount.setIdAccount(id);
+        validateAccount(updatedAccount);
+        Account account = accountRepo.findById(id).orElse(null);
+        if (account == null) {
+            throw new AccountException("Account not found", "ACCOUNT_NOT_FOUND");
         }
-        return accountRepo.findById(id).map(account -> {
-            account.copyFrom(updatedAccount);
-            BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
-            account.setPassword(bcrypt.encode(account.getPassword()));
+        account.copyFrom(updatedAccount);
+        account.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
+        if(updatedAccount.getRole() != null){
+            Role role = roleRepo.findById(updatedAccount.getRole().getId()).orElse(null);
+            if (role == null) {
+                throw new AccountException("Role not found", "ROLE_NOT_FOUND");
+            }
             account.setRole(role);
-            return accountRepo.save(account);
-        }).orElse(null);
+            account.getUser().setUserType(UserType.ADMIN);
+        }else{
+            account.setRole(null);
+            account.getUser().setUserType(UserType.CUSTOMER);
+        }
+        return account;
     }
 
     // Xóa account

@@ -13,13 +13,17 @@ import java.util.List;
 
 @Repository
 public interface AccountRepo extends JpaRepository<Account, Integer> {
-    Account findByEmail(String email);
+    Account findByUsername(String username);
 //    Account findByUsername(String username);
-   @Query("SELECT new com.pbl.flightapp.DTO.AccountDTO(a.idAccount, a.email, a.password, a.createdAt, a.role) " +
-       "FROM Account a " +
-       "WHERE (:email IS NULL OR a.email = :email) " +
-       "AND (:createdAt IS NULL OR a.createdAt = :createdAt)")
-   List<AccountDTO> findAccountDTOs(@Param("email") String email,@Param("createdAt") Timestamp createdAt);
+@Query("SELECT new com.pbl.flightapp.DTO.AccountDTO(a.idAccount, a.username, a.password, a.createdAt, a.role, null) " +
+        "FROM Account a " +
+        "LEFT JOIN a.role r " +
+        "WHERE (:username IS NULL OR a.username = :username) " +
+        "AND (:roleId IS NULL OR r.id = :roleId)")
+List<AccountDTO> findAccountDTOs(@Param("username") String username, @Param("roleId") Integer roleId);
+//        "WHERE (:username IS NULL OR a.username = :username) " )
+//        "AND (:roleId IS NULL OR (a.role IS NOT NULL AND a.role.id = :roleId))")
+
 //
 //    Account findByUsernameAndPassword(String username, String password);
 

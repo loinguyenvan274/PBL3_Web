@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.pbl.flightapp.Enum.UserType;
+import com.pbl.flightapp.Enum.userSex;
+
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -22,7 +24,7 @@ public class User {
     @Column(name = "Full_Name", nullable = false)
     private String fullName;
 
-    @Column(name = "phone")
+    @Column(name = "phone",unique = true)
     private String phone;
 
     @Column(name = "email",unique = true)
@@ -35,7 +37,8 @@ public class User {
     private String address;
 
     @Column(name = "sex")
-    private boolean sex;
+    @Enumerated(EnumType.STRING)
+    private userSex sex;
 
     @Column(name = "Day_Of_Birth")
     private Date dayOfBirth;
@@ -110,14 +113,14 @@ public class User {
         this.address = address;
     }
 
-    public boolean isSex() {
+    public userSex getSex() {
         return sex;
     }
 
-    public void setSex(boolean sex) {
+    public void setSex(userSex sex) {
         this.sex = sex;
     }
-    public void copyFrom(User other) {
+    public void copyFromNotCopyType(User other) {
         this.fullName = other.fullName;
         this.phone = other.phone;
         this.email = other.email;

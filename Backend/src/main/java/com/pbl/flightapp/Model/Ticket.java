@@ -18,8 +18,8 @@ public class Ticket {
     private int idTicket;
 
     @ManyToOne
-    @JoinColumn(name = "id_customer", referencedColumnName = "id_customer", nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "id_user", referencedColumnName = "id_user", nullable = false)
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "flight_id", nullable = false)
@@ -55,8 +55,8 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(Customer customer, Flight flight, TicketType ticketType, Flights_Seat seat, ReturnTicket returnTicket) {
-        this.customer = customer;
+    public Ticket(User user, Flight flight, TicketType ticketType, Flights_Seat seat, ReturnTicket returnTicket) {
+        this.user = user;
         this.flight = flight;
         this.ticketType = ticketType;
         this.seat = seat;
@@ -72,12 +72,12 @@ public class Ticket {
         this.idTicket = idTicket;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public User getUser() {
+        return user;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Flight getFlight() {
@@ -160,7 +160,7 @@ public class Ticket {
     public String toString() {
         return "Ticket{" +
                 "idTicket=" + idTicket +
-                ", customer=" + customer +
+                ", user=" + user +
                 ", seat=" + seat +
                 ", price=" + price +
                 ", baggage=" + baggage +

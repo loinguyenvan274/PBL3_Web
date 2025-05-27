@@ -23,7 +23,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.SignatureAlgorithm;
-
+import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -52,21 +52,29 @@ public class JwtService {
         return null;
     }
 
-    public String generateToken(String email, String password) throws LoginFailedException {
-        Optional<Account> account = accountService.getByEmail(email);
+    public String generateToken(String username, String password) throws LoginFailedException {
+        Optional<Account> account = accountService.getByUsername(username);
         if (account.isEmpty()) {
             throw new LoginFailedException("Account not found", null, "EMAIL_NOT_FOUND");
         }
         if (!new BCryptPasswordEncoder().matches(password, account.get().getPassword())) {
             throw new LoginFailedException("Password is incorrect", null, "PASSWORD_INCORRECT");
         }
-        Set<String> permissions = account.get().getRole().getPermissions().stream().map(Permission::name)
-                .collect(Collectors.toSet());
 
         Map<String, Object> claims = new HashMap<>();
+        Set<String> permissions = new HashSet<>();
+        if (account.get().getRole() != null) {
+            permissions = account.get().getRole().getPermissions().stream().map(Permission::name)
+                    .collect(Collectors.toSet());
+            claims.put("role", account.get().getRole().getName());
+        } else {
+            claims.put("role", "CUSTOMER");
+        }
+
         claims.put("permissions", permissions);
+
         return Jwts.builder()
-                .setSubject(email) // phần payload: sub = username
+                .setSubject(username) // phần payload: sub = username
                 .setIssuedAt(new Date()) // thời điểm tạo token
                 .setClaims(claims)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // hạn token
@@ -87,14 +95,12 @@ public class JwtService {
     }
 
     public String getUsername(String token) {
-      return handleDataInClaim(token, (claims) -> claims.getBody().getSubject());
+        return handleDataInClaim(token, (claims) -> claims.getBody().getSubject());
     }
 
     @SuppressWarnings("unchecked")
     public Set<String> getPermissions(String token) {
-        List<Object> rawPermissions = handleDataInClaim(token, claims ->
-                claims.getBody().get("permissions", List.class) // Lấy về dưới dạng List
-        );
+        List<Object> rawPermissions = handleDataInClaim(token, claims -> claims.getBody().get("permissions", List.class));
         return rawPermissions.stream()
                 .map(Object::toString)
                 .collect(Collectors.toSet());

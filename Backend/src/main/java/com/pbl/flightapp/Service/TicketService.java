@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.pbl.flightapp.Repository.TicketRepo;
-import com.pbl.flightapp.Repository.CustomerRepo;
+import com.pbl.flightapp.Repository.UserRepo;
 import com.pbl.flightapp.Repository.FlightRepo;
 import com.pbl.flightapp.Repository.Flights_SeatRepo;
 import com.pbl.flightapp.Repository.ReturnTicketRepo;
@@ -27,7 +27,7 @@ public class TicketService {
     @Autowired
     private TicketRepo ticketRepo;
     @Autowired
-    private CustomerRepo customerRepo;
+    private UserRepo userRepo;
     @Autowired
     private FlightRepo flightRepo;
     @Autowired
@@ -162,10 +162,10 @@ public class TicketService {
                 returnTicketRepo.save(returnTicket);    
             }
 
-            Customer customer = ticketRequest.getCustomer();
-            customer = customerRepo.save(customer);
+            User user = ticketRequest.getUser();
+            user = userRepo.save(user);
 
-            Ticket ticket = new Ticket(customer, departureFlight, departureTicketType, departureSeat, returnTicket);
+            Ticket ticket = new Ticket(user, departureFlight, departureTicketType, departureSeat, returnTicket);
             if(returnTicket != null) {
                 returnTicket.setTicket(ticket);
             }

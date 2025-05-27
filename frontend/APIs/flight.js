@@ -5,7 +5,9 @@ const API_BASE = BASE_URL + '/flight';
 
 // Lấy thông tin 1 chuyến bay theo ID
 export async function getFlightById(id) {
-  const res = await fetch(`${API_BASE}/${id}`);
+  const res = await fetch(`${API_BASE}/${id}`, {
+    credentials: 'include'
+  });
   return await res.json();
 }
 
@@ -14,7 +16,8 @@ export async function addFlight(flight) {
   await fetch(API_BASE, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(flight)
+    body: JSON.stringify(flight),
+    credentials: 'include'
   });
 }
 
@@ -23,20 +26,24 @@ export async function updateFlight(id, flight) {
   await fetch(`${API_BASE}/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(flight)
+    body: JSON.stringify(flight),
+    credentials: 'include'
   });
 }
 
 // Xoá chuyến bay theo ID
 export async function deleteFlight(id) {
   await fetch(`${API_BASE}/${id}`, {
-    method: "DELETE"
+    method: "DELETE",
+    credentials: 'include'
   });
 }
 
 
 export async function getAllFlights() {
-  const res = await fetch(API_BASE + '/all_flights');
+  const res = await fetch(API_BASE + '/all_flights', {
+    credentials: 'include'
+  });
   return await res.json();
 }
 
@@ -46,6 +53,7 @@ export async function getFlightSeatsByFlightId(flightId) {
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include'
   });
   return await response.json();
 }
@@ -67,6 +75,7 @@ export async function findFlight(fromLocationId, toLocationId, departureDate) {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include'
     });
 
     if (!response.ok) {

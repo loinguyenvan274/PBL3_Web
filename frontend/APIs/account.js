@@ -4,19 +4,20 @@ import axios from 'axios';
 const API_URL = BASE_URL + '/account';
 
 // Lấy tất cả account theo email và createdAt
-export const getAllAccountByEmail = async (username, createdAt) => {
+export const getAllAccountByEmail = async (username, roleId) => {
     try {
-        const response = await axios.get(`${API_URL}/all_account_by_email`, {
+        const response = await axios.get(`${API_URL}/find-account-by-email`, {
             params: {
                 username: username,
-                requestCreatedAt: createdAt
+                roleId: roleId
             },
             withCredentials: true
         });
         return response.data;
     } catch (error) {
         // throw error;
-        console.log(error);
+        
+        console.log(error.response);
         return [];
     }
 };
@@ -30,7 +31,7 @@ export const getAccountById = async (id) => {
         return response.data;
     } catch (error) {
         // throw error;
-        console.log(error);
+        console.log(error.response);
         return null;
     }
 };
@@ -41,11 +42,11 @@ export const createAccount = async (account) => {
         const response = await axios.post(API_URL, account, {
             withCredentials: true
         });
-        return response;
+        return response.data;
     } catch (error) {
         // throw error;
-        console.log(error);
-        return null;
+        console.log(error.response);
+        return [];
     }
 };
 
@@ -57,8 +58,8 @@ export const updateAccount = async (id, account) => {
         });
         return response.data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        console.log(error.response);
+        return null;
     }
 };
 
@@ -70,7 +71,7 @@ export const deleteAccount = async (id) => {
         });
         return response.data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        console.log(error.response);
+        return null;
     }
 };
