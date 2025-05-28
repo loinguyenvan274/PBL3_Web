@@ -1,4 +1,4 @@
-import { findFlight } from "../../../../APIs/flight.js";
+import { findFlight } from "../../../APIs/flight.js";
 
 const searchFormData = JSON.parse(sessionStorage.getItem('search-form-data'));
 function renderRouteInfo(data, direction) {
@@ -60,7 +60,7 @@ function selectFlight() {
         btCard.addEventListener('click', () => {
           resolve({
             flight: JSON.parse(card.dataset.flight),
-            styleSeat: btCard.getAttribute("styleSeat")
+            TicketType: btCard.getAttribute("TicketType")
           });
         }, { once: true });
       });
@@ -105,14 +105,14 @@ async function loadDataForCard(fromLocationId, toLocationId, departureDate) {
         <div class="duration">
           <div class="direct">Bay thẳng</div>
         </div>
-        <div class="button-card-1" stylebutton="buttonCard" styleSeat="common">
+        <div class="button-card-1" stylebutton="buttonCard" TicketType="ECONOMY">
           <div class="price">
             <p>PHỔ THÔNG</p>
             <div class="price-amount">${f.commonFare}</div>
             <p>VND</p>
           </div>
         </div>
-        <div class="button-card-2" stylebutton="buttonCard" styleSeat="vip">
+        <div class="button-card-2" stylebutton="buttonCard" TicketType="BUSINESS">
           <div class="price">
             <p>THƯƠNG GIA</p>
             <div class="price-amount">${f.vipFare}</div>

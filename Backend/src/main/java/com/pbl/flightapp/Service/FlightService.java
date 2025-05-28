@@ -1,5 +1,6 @@
 package com.pbl.flightapp.Service;
 
+import com.pbl.flightapp.DTO.FlightDTO;
 import com.pbl.flightapp.Enum.SeatStatus;
 import com.pbl.flightapp.Enum.SeatType;
 import com.pbl.flightapp.Enum.TicketType;
@@ -81,6 +82,14 @@ public class FlightService {
             addFlight(flight);
         }
     }
+    public FlightDTO getFlightDTO(int idFlight) {
+        Flight flight = flightRepo.findByIdFlight(idFlight);
+        if (flight == null) 
+            return null;
+        FlightDTO flightDTO = new FlightDTO();
+        flightDTO.copyFrom(flight);
+        return flightDTO;
+    }
 
     // public List<Flight> getFlightByFromAndTo(String fromLocation, String
     // toLocation) {
@@ -97,19 +106,22 @@ public class FlightService {
         Flight flight = flightRepo.findByIdFlight(idFlight);
         List<Flights_Seat> flightSeats = flight.getFlightsSeatList();
         return flightSeats.stream()
-                .filter(fs -> fs.getSeatStatus() == seatStatus
+                .filter(fs ->( fs.getSeatStatus() == seatStatus || seatStatus== null)
                         && (fs.getSeat().getSeatType() == seatType || seatType == null))
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public List<Ticket> getTicketsOfFlight(Integer flightId, TicketType ticketType) {
+    public List<Ticket> getBookedTickets(Integer flightId, TicketType ticketType) {
 
         List<Ticket> tickets = ticketRepo.findByFlight_IdFlight(flightId);
         List<ReturnTicket> returnTickets = returnTicketRepo.findByFlight_IdFlight(flightId);
         for (ReturnTicket returnTicket : returnTickets) {
             tickets.add(returnTicket.getTicket());
         }
+        tickets = tickets.stream()
+                .filter(ticket -> ticket.getTicketType() == ticketType || ticketType == null)
+                .collect(Collectors.toList());
         return tickets;
     }
 
@@ -117,16 +129,14 @@ public class FlightService {
     // ghế thì ghế có thể đặt trước hoặc không. nên phải kiểm tra qua vé. ta chỉ
     // biết số vé tối đa của từng loại theo ghế
     public int getAvailableSlots(int flightId, TicketType ticketType) {
-        SeatType seatType = null;
-        if (ticketType == TicketType.ECONOMY) {
-            seatType = SeatType.ECONOMY;
-        } else if (ticketType == TicketType.BUSINESS) {
+        SeatType seatType = SeatType.ECONOMY;
+         if (ticketType == TicketType.BUSINESS) {
             seatType = SeatType.BUSINESS;
         }
-        List<Flights_Seat> availableSeats = getFlightSeats(flightId, seatType, null);
-        List<Ticket> tickets = getTicketsOfFlight(flightId, ticketType);
+        List<Flights_Seat> allFSOfSeatType = getFlightSeats(flightId, seatType, null);
+        List<Ticket> bookedTickets = getBookedTickets(flightId, ticketType);
         // Trả về số lượng ghế trống
-        return availableSeats.size() - tickets.size();
+        return allFSOfSeatType.size() - bookedTickets.size();
     }
 
 }

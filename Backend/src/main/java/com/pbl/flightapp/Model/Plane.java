@@ -27,8 +27,7 @@ public class Plane {
     private int seatCount;
 
     @OneToMany(mappedBy = "plane", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    List<Seat> seats = new ArrayList<>();
+    private List<Seat> seats = new ArrayList<>();
 
     @OneToMany(mappedBy = "plane", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonIgnore
@@ -115,8 +114,7 @@ public class Plane {
         this.flightHours = flightHours;
     }
 
-    public void Copy(Plane plane) {
-        this.idPlane = plane.idPlane;
+    public void CopyFrom(Plane plane) {
         this.namePlane = plane.namePlane;
         this.status = plane.status;
         this.flightHours = plane.flightHours;

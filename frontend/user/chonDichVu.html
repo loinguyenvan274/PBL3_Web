@@ -11,14 +11,17 @@
 
 <body>
     <div data-include="share/header.html"></div>
+    <div class=" container">
+        <br>
+    </div>
     <div class="container">
         <div class="section">
             <div class="section-title">Các chuyến bay</div>
-       
+
         </div>
 
         <div class="section" id="section-customers">
-            <div class="section-title" >Hành khách</div>
+            <div class="section-title">Hành khách</div>
         </div>
 
         <div class="section">
@@ -41,24 +44,23 @@
                     <div class="service-description">0₫ VND</div>
                     <button class="btn">CHỌN CHỖ</button>
                 </div>
-                <img src="/api/placeholder/400/320" alt="Chọn chỗ ngồi" class="service-image">
             </div>
         </div>
 
         <div class="section">
             <div class="price-info">
                 <div class="price-title">Tổng số tiền:</div>
-                <div class="price-value">2.499.000 VND</div>
+                <div id="total-price" class="price-value"> VND</div>
             </div>
         </div>
 
         <div style="text-align: right; margin-top: 20px; margin-bottom: 20px;">
-            <button class="btn">TIẾP TỤC</button>
+            <button class="btn" id="bt-thanh-toan">Thanh toán</button>
         </div>
 
     </div>
     <div data-include="share/footer.html"></div>
-    <script src="js/DOM/chonDichVu.js"></script>
+    <script type="module" src="js/DOM/chonDichVu.js"></script>
 </body>
 
 </html>

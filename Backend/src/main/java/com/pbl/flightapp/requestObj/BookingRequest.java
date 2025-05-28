@@ -42,6 +42,7 @@ public class BookingRequest {
     public void setReturnTicketType(TicketType returnTicketType) {
         this.returnTicketType = returnTicketType;
     }
+
     public Integer getDepartureFlightId() {
         return departureFlightId;
     }
@@ -50,12 +51,11 @@ public class BookingRequest {
         this.departureFlightId = departureFlightId;
     }
 
-    
     public void setReturnFlightId(Integer returnFlightId) {
         this.returnFlightId = returnFlightId;
     }
-    
-    public Integer getReturnFlightId() { 
+
+    public Integer getReturnFlightId() {
         return returnFlightId;
     }
 }

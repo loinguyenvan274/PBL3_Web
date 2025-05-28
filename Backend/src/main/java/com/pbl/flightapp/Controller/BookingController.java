@@ -2,6 +2,9 @@ package com.pbl.flightapp.Controller;
 
 
 import com.pbl.flightapp.Model.Booking;
+
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pbl.flightapp.Service.BookingService;
 import com.pbl.flightapp.requestObj.BookingRequest;
-
+import com.pbl.flightapp.DTO.BookingDTO;
+import java.util.HashMap;
+import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
 @RestController
 @RequestMapping("/bookings")
 public class BookingController {
@@ -42,5 +48,15 @@ public class BookingController {
     public void deleteBooking(@PathVariable int id){
         bookingService.deleteBooking(id);
     }
-
+    @GetMapping("findByCustomerId/{customerId}")
+    public List<BookingDTO> findByCustomerId(@PathVariable int customerId){
+        return bookingService.findByCustomerId(customerId);
+    }
+    @GetMapping("/fromDate/{fromDate}/toDate/{toDate}")
+    public List<BookingDTO> findByFromDate(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+        return bookingService.findByFromDate(fromDate, toDate);
+    }
+    
 }

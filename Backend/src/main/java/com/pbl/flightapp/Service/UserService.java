@@ -3,6 +3,7 @@ package com.pbl.flightapp.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.pbl.flightapp.Repository.UserRepo;
+import com.pbl.flightapp.DTO.UserDTO;
 import com.pbl.flightapp.Model.User;
 import java.util.List;
 import com.pbl.flightapp.appExc.UserException;
@@ -20,8 +21,28 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
-    public List<User> getAllUser() {
-        return userRepo.findAll();
+    public List<UserDTO> getAllUser(String email) {
+        if(email!=null && email.isEmpty())
+            email = null;
+        return userRepo.findUser(email);
+    }
+    
+    @Transactional
+    public User createUser(User user) throws UserException {
+        validateUser(user);        
+        return userRepo.save(user);
+    }
+
+    @Transactional
+    public User createUpdateUser(User user) throws UserException {
+        User userExist = userRepo.findByEmail(user.getEmail());
+        if(userExist == null) userExist = userRepo.findByCardNumber(user.getCardNumber());
+        if(userExist == null) userExist = userRepo.findByPhone(user.getPhone());
+        
+        if(userExist != null) {
+            return updateUser(userExist.getIdUser(), user);
+        }
+        return createUser(user);
     }
     @Transactional
     public User updateUser(int id, User updatedUser) throws UserException {
@@ -36,6 +57,14 @@ public class UserService {
     static void validateUser(User user) throws UserException {
         if (user.getFullName() == null || user.getFullName().isEmpty())
             throw new UserException("Full name is required", "FULL_NAME_REQUIRED");
+    }
+    @Transactional
+    public boolean deleteUser(int id) {
+        if (userRepo.existsById(id)) {
+            userRepo.deleteById(id);
+            return true;
+        }
+        return false;
     }
 /*
 

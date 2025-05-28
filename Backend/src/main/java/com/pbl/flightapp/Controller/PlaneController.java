@@ -57,7 +57,7 @@ public class PlaneController {
     @PutMapping("")
     @PreAuthorize("hasPermission(null, 'MANAGE_PLANE')")
     public void updatePlane(@RequestBody Plane plane) {
-        planeService.updatePlane(plane);
+        planeService.updatePlane(plane.getIdPlane(), plane);
     }
 
     // Delete a plane by ID

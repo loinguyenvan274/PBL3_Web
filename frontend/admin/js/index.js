@@ -2,7 +2,9 @@ import loadPlane from '../contents/dom/plane.js';
 import loadFlightJS from '../contents/dom/flight.js';
 import loadAccountView from '../contents/dom/account_view.js';
 import loadRoleView from '../contents/dom/roleView.js';
-
+import loadUserView from '../contents/dom/user_view.js';
+import loadCreateBookingView from '../contents/dom/create_booking_view.js';
+import loadBookedView from '../contents/dom/booked_view.js';
 const barButtons = {
     planeBarBtn: {
         html: 'contents/plane.html',
@@ -13,13 +15,25 @@ const barButtons = {
         jsFunction: loadFlightJS
 
     },
-    accountBarBtn:{
+    accountBarBtn: {
         html: 'contents/accountView.html',
         jsFunction: loadAccountView,
     },
-    roleBarBtn:{
+    roleBarBtn: {
         html: 'contents/roleView.html',
         jsFunction: loadRoleView,
+    },
+    userBarBtn: {
+        html: 'contents/user_view.html',
+        jsFunction: loadUserView,
+    },
+    createBookingBarBtn: {
+        html: 'contents/create_booking_view.html',
+        jsFunction: loadCreateBookingView,
+    },
+    viewBookedBarBtn: {
+        html: 'contents/booked_view.html',
+        jsFunction: loadBookedView,
     }
 }
 
@@ -42,4 +56,22 @@ window.addEventListener('load', () => {
 })
 window.setContent = setContent;
 
+window.addEventListener('error', function (event) {
+    console.error("Lỗi xảy ra:");
+    console.log("Message:", event.message);
+    console.log("File:", event.filename);
+    console.log("Line:", event.lineno);
+    console.log("Column:", event.colno);
+    console.log("Error Object:", event.error);
+});
 
+window.addEventListener('unhandledrejection', function (event) {
+    console.error("Lỗi Promise không được bắt:");
+    console.log("Reason:", event.reason);
+    if (event.reason.response.data.code == 'LOGIN_REQUIRED') {
+        alert('Vui lòng đăng nhập lại');
+        // window.location.href = '/login/';
+    } else {
+        alert('Lỗi: ' + event.reason.response.data.message);
+    }
+});

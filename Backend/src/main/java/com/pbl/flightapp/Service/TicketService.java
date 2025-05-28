@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.pbl.flightapp.Enum.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.pbl.flightapp.Repository.TicketRepo;
@@ -36,6 +37,8 @@ public class TicketService {
     private FlightService flightService;
     @Autowired
     private ReturnTicketRepo returnTicketRepo;
+    @Autowired
+    private UserService userService;
 
     // @Autowired
     // private TicketRepo ticketRepo;
@@ -89,18 +92,20 @@ public class TicketService {
 
     // todo: check if the seat is available
     private boolean isCustomerLimitExceeded(int flightId, TicketType ticketType, int numOfCustomer) {
-        return flightService.getAvailableSlots(flightId, ticketType) >= numOfCustomer;
+        return flightService.getAvailableSlots(flightId, ticketType) < numOfCustomer;
     }
+
     private void checkCustomerLimit(BookingRequest bookingRequest) {
-        if (isCustomerLimitExceeded(bookingRequest.getDepartureFlightId(), bookingRequest.getDepartureTicketType(), bookingRequest.getTickets().size())) {
+        if (isCustomerLimitExceeded(bookingRequest.getDepartureFlightId(), bookingRequest.getDepartureTicketType(),
+                bookingRequest.getTickets().size())) {
             throw new RuntimeException("Not enough seats available");
         }
-        if (bookingRequest.getReturnFlightId() != null && isCustomerLimitExceeded(bookingRequest.getReturnFlightId(), bookingRequest.getReturnTicketType(), bookingRequest.getTickets().size())) {
+        if (bookingRequest.getReturnFlightId() != null && isCustomerLimitExceeded(bookingRequest.getReturnFlightId(),
+                bookingRequest.getReturnTicketType(), bookingRequest.getTickets().size())) {
             throw new RuntimeException("Not enough seats available");
         }
 
     }
-
 
     /*
      * @param requestTickets: list of tickets
@@ -113,8 +118,17 @@ public class TicketService {
      * 
      * @return list of tickets save in db
      */
+
     @Transactional
-    private List<Ticket> processCreateTicket(BookingRequest bookingRequest, Booking booking) {
+    List<Ticket> addTickets(BookingRequest bookingRequest, Booking booking) {
+        // bước kiểm tra
+        try {
+            checkCustomerLimit(bookingRequest);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        // bước thực hiện
+        // 注意： departureSeatId は seatNumber である
         List<TicketRequest> requestTickets = bookingRequest.getTickets();
         Integer departureFlightId = bookingRequest.getDepartureFlightId();
         Integer returnFlightId = bookingRequest.getReturnFlightId();
@@ -130,11 +144,11 @@ public class TicketService {
                 .getFlightSeats(departureFlightId, seatType, SeatStatus.NOT_BOOKED).stream()
                 .collect(Collectors.toMap(seat -> seat.getSeat().getSeatNumber(), seat -> seat));
         Map<String, Flights_Seat> returnSeats = null;
-        if(returnFlightId != null) {
+        if (returnFlightId != null) {
             returnFlight = flightRepo.findByIdFlight(returnFlightId);
             returnSeats = flightService
-                .getFlightSeats(returnFlightId, seatType, SeatStatus.NOT_BOOKED).stream()
-                .collect(Collectors.toMap(seat -> seat.getSeat().getSeatNumber(), seat -> seat));
+                    .getFlightSeats(returnFlightId, seatType, SeatStatus.NOT_BOOKED).stream()
+                    .collect(Collectors.toMap(seat -> seat.getSeat().getSeatNumber(), seat -> seat));
         }
 
         Flights_Seat departureSeat = null;
@@ -144,29 +158,28 @@ public class TicketService {
             returnTicket = null;
             if (ticketRequest.getSeatId() != null) {
                 departureSeat = departureSeats.get(ticketRequest.getSeatId());
-                if(departureSeat == null) {
+                if (departureSeat == null) {
                     throw new RuntimeException("Seat not available");
                 }
                 departureSeat.setSeatStatus(SeatStatus.BOOKED);
             }
-            if(ticketRequest.getReturnTicket() != null) {
+            if (ticketRequest.getReturnTicket() != null) {
                 Flights_Seat returnSeat = null;
-                if(ticketRequest.getReturnTicket().getSeatId() != null) {
+                if (ticketRequest.getReturnTicket().getSeatId() != null) {
                     returnSeat = returnSeats.get(ticketRequest.getReturnTicket().getSeatId());
-                    if(returnSeat == null) {
+                    if (returnSeat == null) {
                         throw new RuntimeException("Seat not available");
                     }
                     returnSeat.setSeatStatus(SeatStatus.BOOKED);
                 }
                 returnTicket = new ReturnTicket(null, returnFlight, returnTicketType, returnSeat);
-                returnTicketRepo.save(returnTicket);    
             }
 
-            User user = ticketRequest.getUser();
-            user = userRepo.save(user);
+            ticketRequest.getUser().setUserType(UserType.CUSTOMER);
+            User user = userService.createUpdateUser(ticketRequest.getUser());
 
             Ticket ticket = new Ticket(user, departureFlight, departureTicketType, departureSeat, returnTicket);
-            if(returnTicket != null) {
+            if (returnTicket != null) {
                 returnTicket.setTicket(ticket);
             }
             ticket.setBooking(booking);
@@ -175,18 +188,6 @@ public class TicketService {
             tickets.add(ticket);
         }
         return tickets;
-    }
-
-    List<Ticket> addTickets(BookingRequest bookingRequest, Booking booking) {
-        // bước kiểm tra
-        try {
-            checkCustomerLimit(bookingRequest);
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        // bước thực hiện
-        // 注意： departureSeatId は seatNumber である
-        return processCreateTicket(bookingRequest, booking);
     }
 }
 

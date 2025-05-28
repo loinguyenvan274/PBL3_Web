@@ -50,7 +50,7 @@ export default async function loadAccountView() {
     editAccountBtn.addEventListener("click", () => {
         // if (!selectedAccount) return;
         showEditAccountForm(roleOptions);
-        
+
         fillEditAccountForm(selectedAccount);
     });
 
@@ -140,7 +140,7 @@ function showEditAccountForm(roleOptions) {
             const accountData = {
                 username: accountForm.email.value,
                 password: accountForm.password.value,
-                role: accountForm.role.value == 'customerAccount' ?  null : { id: accountForm.role.value }
+                role: accountForm.role.value == 'customerAccount' ? null : { id: accountForm.role.value }
             };
             await updateAccount(selectedAccount.idAccount, accountData);
             container.classList.add("hidden");
@@ -283,7 +283,7 @@ function fillForm(account) {
 }
 function fillEditAccountForm(account) {
     let valueRole = 'customerAccount';
-    if(account.role != null) {
+    if (account.role != null) {
         valueRole = account.role.id;
     }
     const form = document.getElementById("account-form");

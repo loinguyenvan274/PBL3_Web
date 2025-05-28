@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.pbl.flightapp.appExc.AccountException;
+import com.pbl.flightapp.appExc.NotFoundException;
 import com.pbl.flightapp.appExc.PermissionException;
 
 
@@ -32,7 +33,6 @@ public class GlobalExceptionHandler {
         Map<String, String> error = new HashMap<>();
         error.put("message", "Lỗi không xác định: " + e.getMessage());
         error.put("code", "UNKNOWN_ERROR");
-
         // In log hoặc stacktrace để tiện debug
         e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
@@ -42,7 +42,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handlePermissionException(PermissionException e) {
         Map<String, String> error = new HashMap<>();
         error.put("message", e.getMessage());
-        error.put("code", "PERMISSION_DENIED");
+        error.put("code", e.getErrorCode());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> handleNotFoundException(NotFoundException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", e.getMessage());
+        error.put("code", e.getCode());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 }

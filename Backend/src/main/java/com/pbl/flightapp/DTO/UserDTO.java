@@ -1,6 +1,9 @@
 package com.pbl.flightapp.DTO;
 
-import org.hibernate.usertype.UserType;
+import java.util.Date;
+
+import com.pbl.flightapp.Enum.UserType;
+import com.pbl.flightapp.Model.User;
 
 public class UserDTO {
     private int idUser;
@@ -8,19 +11,24 @@ public class UserDTO {
     private String phone;
     private String address;
     private String email;
-    private String dateOfBirth;
-    private UserType userType; 
+    private Date dateOfBirth;
+    private UserType userType;
+    private String cardNumber;
+    private String sex;
 
     public UserDTO() {
     }
 
-    public UserDTO(int idUser, String fullName, String phone, String address, String email, String dateOfBirth) {
-        this.idUser = idUser;
-        this.fullName = fullName;
-        this.phone = phone;
-        this.address = address;
-        this.email = email;
-        this.dateOfBirth = dateOfBirth;
+    public UserDTO(User user) {
+        this.idUser = user.getIdUser();
+        this.fullName = user.getFullName();
+        this.phone = user.getPhone();
+        this.address = user.getAddress();
+        this.email = user.getEmail();
+        this.dateOfBirth = user.getDayOfBirth();
+        this.userType = user.getUserType();
+        this.cardNumber = user.getCardNumber();
+        this.sex = user.getSex().toString();
     }
 
     public int getIdUser() {
@@ -63,11 +71,36 @@ public class UserDTO {
         this.email = email;
     }
 
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
+    public String getCardNumber() {
+        return cardNumber;
+    }
+
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
 }

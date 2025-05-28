@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.pbl.flightapp.appExc.PermissionException;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,9 +43,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null,
                     authorities);
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
+        } 
         // chuyển tiếp request và response đến filter tiếp theo
         filterChain.doFilter(request, response);
     }

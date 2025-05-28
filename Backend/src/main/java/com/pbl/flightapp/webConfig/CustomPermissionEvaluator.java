@@ -22,7 +22,7 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(auth -> auth.equals(permission.toString()));
         if (!isAccess) {
-            throw new PermissionException("Bạn không có quyền truy cập vào tài nguyên này");
+            throw new PermissionException("Bạn không có quyền truy cập vào tài nguyên này", "PERMISSION_DENIED");
         }
         return true;
     }

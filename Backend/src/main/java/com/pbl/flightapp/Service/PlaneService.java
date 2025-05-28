@@ -2,10 +2,11 @@ package com.pbl.flightapp.Service;
 
 import java.util.List;
 
-import com.pbl.flightapp.Repository.SeatRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.pbl.flightapp.Repository.SeatRepo;
 import com.pbl.flightapp.Repository.PlaneRepo;
 import com.pbl.flightapp.Model.Plane;
 import com.pbl.flightapp.Enum.Status;
@@ -25,8 +26,8 @@ public class PlaneService {
     }
 
     public List<Plane> getAllPlane() {
-        List<Plane> allPlane =  planeRepo.findAll();
-       allPlane.forEach(plane -> plane.setSeatCount(seatRepo.countByPlane(plane)));
+        List<Plane> allPlane = planeRepo.findAll();
+        allPlane.forEach(plane -> plane.setSeatCount(seatRepo.countByPlane(plane)));
         return allPlane;
     }
 
@@ -38,28 +39,25 @@ public class PlaneService {
         return planeRepo.findByNamePlane(namePlane);
     }
 
-//    public List<Plane> getPlaneBySeatCount(int seatCount) {
-//        return planeRepo.findBySeatCount(seatCount);
-//    }
+    // public List<Plane> getPlaneBySeatCount(int seatCount) {
+    // return planeRepo.findBySeatCount(seatCount);
+    // }
 
     public void deletePlane(int idPlane) {
         planeRepo.deleteById(idPlane);
     }
 
     public void addPlane(Plane plane) {
-        if (!planeRepo.existsById(plane.getIdPlane())) {
-            planeRepo.save(plane);
-        }
+        planeRepo.save(plane);
     }
 
-    public void updatePlane(Plane plane) {
-        if (planeRepo.existsById(plane.getIdPlane())) {
-            Plane exist = planeRepo.findByIdPlane(plane.getIdPlane());
-            exist = plane;
-            planeRepo.save(exist);
-        } else {
-            addPlane(plane);
+    @Transactional
+    public void updatePlane(int idPlane, Plane plane) {
+        Plane exist = planeRepo.findByIdPlane(idPlane);
+        if (exist == null) {
+            throw new RuntimeException("Plane not found");
         }
+        exist.CopyFrom(plane);
     }
 
     public void updatePlaneStatus(int idPlane, Status status) {

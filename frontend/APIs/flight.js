@@ -1,61 +1,56 @@
 import { BASE_URL } from "./init.js";
+import axios from 'axios';
 
 const API_BASE = BASE_URL + '/flight';
 
 
 // Lấy thông tin 1 chuyến bay theo ID
 export async function getFlightById(id) {
-  const res = await fetch(`${API_BASE}/${id}`, {
-    credentials: 'include'
+  const res = await axios.get(`${API_BASE}/${id}`, {
+    withCredentials: true
   });
-  return await res.json();
+  return res.data;
 }
 
 // Thêm chuyến bay mới
 export async function addFlight(flight) {
-  await fetch(API_BASE, {
-    method: "POST",
+  await axios.post(API_BASE, flight, {
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(flight),
-    credentials: 'include'
+    withCredentials: true
   });
 }
 
 // Cập nhật chuyến bay theo ID
 export async function updateFlight(id, flight) {
-  await fetch(`${API_BASE}/${id}`, {
-    method: "PUT",
+  await axios.put(`${API_BASE}/${id}`, flight, {
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(flight),
-    credentials: 'include'
+    withCredentials: true
   });
 }
 
 // Xoá chuyến bay theo ID
 export async function deleteFlight(id) {
-  await fetch(`${API_BASE}/${id}`, {
-    method: "DELETE",
-    credentials: 'include'
+  await axios.delete(`${API_BASE}/${id}`, {
+    withCredentials: true
   });
 }
 
 
 export async function getAllFlights() {
-  const res = await fetch(API_BASE + '/all_flights', {
-    credentials: 'include'
+  const res = await axios.get(API_BASE + '/all_flights', {
+    withCredentials: true
   });
-  return await res.json();
+  return res.data;
 }
 
 export async function getFlightSeatsByFlightId(flightId) {
-  const response = await fetch(API_BASE + '/flight_seats?flightId=' + flightId, {
-    method: "GET",
+  const response = await axios.get(API_BASE + '/flight_seats?flightId=' + flightId, {
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include'
+    withCredentials: true
   });
-  return await response.json();
+  return response.data;
 }
 //tìm tat cac cac chuyen bayy
 export async function findFlight(fromLocationId, toLocationId, departureDate) {
@@ -70,24 +65,31 @@ export async function findFlight(fromLocationId, toLocationId, departureDate) {
   const finalUrl = `${bEUrl}?${queryString}`;
 
   try {
-    const response = await fetch(finalUrl, {
-      method: "GET",
+    const response = await axios.get(finalUrl, {
       headers: {
         'Content-Type': 'application/json',
       },
-      credentials: 'include'
+      withCredentials: true
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
+    return response.data;
 
   } catch (e) {
     console.error('error: of get flight');
   }
   return [];
+}
 
+export async function getFlightInformation(flightId) {
+  try {
+    const response = await axios.get(`${API_BASE}/${flightId}/information`, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 }
