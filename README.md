@@ -1,6 +1,6 @@
 # ✈️ App
 
-Ứng dụng quản lý vé máy bay gồm 2 phần: **Frontend (React/Vite)** và **Backend (Spring Boot + SQL Server)**.
+Ứng dụng quản lý vé máy bay gồm 2 phần: **Frontend (Vite)** và **Backend (Spring Boot + SQL Server)**.
 
 ---
 
@@ -97,7 +97,7 @@ mvn spring-boot:run
 
 ---
 
-### 🌐 Chạy Frontend (React)
+### 🌐 Chạy Frontend (vite)
 
 1. Mở terminal tại thư mục `frontend`
 
