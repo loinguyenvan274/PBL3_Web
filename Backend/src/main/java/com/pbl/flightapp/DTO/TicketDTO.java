@@ -1,122 +1,117 @@
-// package com.pbl.flightapp.DTO;
+package com.pbl.flightapp.DTO;
 
-// import com.pbl.flightapp.Enum.TicketType;
-// import com.pbl.flightapp.Model.Ticket;
+import com.pbl.flightapp.Enum.TicketType;
+import com.pbl.flightapp.Model.Ticket;
 
-// public class TicketDTO {
-//     private int idTicket;
-//     private UserDTO user;
-//     private FlightDTO flight;
-//     private TicketType ticketType;
-//     private String SeatName;
-//     private Long price;
-//     private int baggageId;
-//     private ReturnTicketDTO returnTicket;
-//     private int bookingId;
-//     private Long createdAt;
+public class TicketDTO {
+    private int idTicket;
+    private UserDTO user;
+    private FlightDTO flight;
+    private TicketType ticketType;
+    private String SeatName;
+    private Long price;
+    private int baggageId;
+    private ReturnTicketDTO returnTicket;
+    private int bookingId;
+    private Long createdAt;
 
-//     public TicketDTO() {
-//     }
+    public TicketDTO() {
+    }
+    public TicketDTO(Ticket ticket){
+        this.idTicket = ticket.getIdTicket();
+        this.user = new UserDTO(ticket.getUser());
+        this.flight = new FlightDTO(ticket.getFlight());
+        this.ticketType = ticket.getTicketType();
+        if(ticket.getSeat()!=null){
+            this.SeatName = ticket.getSeat().getSeatNumber();
+        }
+        this.price = ticket.getPrice();
+        if(ticket.getBaggage()!=null){
+            this.baggageId = ticket.getBaggage().getIdBaggage();
+        }
+        if(ticket.getReturnTicket()!=null){
+            this.returnTicket = new ReturnTicketDTO(ticket.getReturnTicket());
+        }
+        this.createdAt = ticket.getCreatedAt().getTime();
+    }
 
-//     public TicketDTO(int idTicket, int userId, int flightId, String ticketType, int flightSeatId, int seatFlightId, Long price, int baggageId, int returnTicketId, int bookingId, Long createdAt) {
-//         this.idTicket = idTicket;
-//         this.userId = userId;
-//         this.flightId = flightId;
-//         this.ticketType = ticketType;
-//         this.flightSeatId = flightSeatId;
-//         this.seatFlightId = seatFlightId;
-//         this.price = price;
-//         this.baggageId = baggageId;
-//         this.returnTicket = returnTicket;
-//         this.bookingId = bookingId;
-//         this.createdAt = createdAt;
-//     }
+    public Long getCreatedAt() {
+        return createdAt;
+    }
 
-//     public int getIdTicket() {
-//         return idTicket;
-//     }
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
+    }
 
-//     public void setIdTicket(int idTicket) {
-//         this.idTicket = idTicket;
-//     }
+    public int getBookingId() {
+        return bookingId;
+    }
 
-//     public int getUserId() {
-//         return userId;
-//     }
+    public void setBookingId(int bookingId) {
+        this.bookingId = bookingId;
+    }
 
-//     public void setUserId(int userId) {
-//         this.userId = userId;
-//     }
+    public ReturnTicketDTO getReturnTicket() {
+        return returnTicket;
+    }
 
-//     public int getFlightId() {
-//         return flightId;
-//     }
+    public void setReturnTicket(ReturnTicketDTO returnTicket) {
+        this.returnTicket = returnTicket;
+    }
 
-//     public void setFlightId(int flightId) {
-//         this.flightId = flightId;
-//     }
+    public int getBaggageId() {
+        return baggageId;
+    }
 
-//     public String getTicketType() {
-//         return ticketType;
-//     }
+    public void setBaggageId(int baggageId) {
+        this.baggageId = baggageId;
+    }
 
-//     public void setTicketType(String ticketType) {
-//         this.ticketType = ticketType;
-//     }
+    public Long getPrice() {
+        return price;
+    }
 
-//     public int getFlightSeatId() {
-//         return flightSeatId;
-//     }
+    public void setPrice(Long price) {
+        this.price = price;
+    }
 
-//     public void setFlightSeatId(int flightSeatId) {
-//         this.flightSeatId = flightSeatId;
-//     }
+    public String getSeatName() {
+        return SeatName;
+    }
 
-//     public int getSeatFlightId() {
-//         return seatFlightId;
-//     }
+    public void setSeatName(String seatName) {
+        SeatName = seatName;
+    }
 
-//     public void setSeatFlightId(int seatFlightId) {
-//         this.seatFlightId = seatFlightId;
-//     }
+    public TicketType getTicketType() {
+        return ticketType;
+    }
 
-//     public Long getPrice() {
-//         return price;
-//     }
+    public void setTicketType(TicketType ticketType) {
+        this.ticketType = ticketType;
+    }
 
-//     public void setPrice(Long price) {
-//         this.price = price;
-//     }
+    public FlightDTO getFlight() {
+        return flight;
+    }
 
-//     public int getBaggageId() {
-//         return baggageId;
-//     }
+    public void setFlight(FlightDTO flight) {
+        this.flight = flight;
+    }
 
-//     public void setBaggageId(int baggageId) {
-//         this.baggageId = baggageId;
-//     }
+    public UserDTO getUser() {
+        return user;
+    }
 
-//     public ReturnTicketDTO getReturnTicket() {
-//         return returnTicket;
-//     }
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
 
-//     public void setReturnTicket(ReturnTicketDTO returnTicket) {
-//         this.returnTicket = returnTicket;
-//     }
+    public int getIdTicket() {
+        return idTicket;
+    }
 
-//     public int getBookingId() {
-//         return bookingId;
-//     }
-
-//     public void setBookingId(int bookingId) {
-//         this.bookingId = bookingId;
-//     }
-
-//     public Long getCreatedAt() {
-//         return createdAt;
-//     }
-
-//     public void setCreatedAt(Long createdAt) {
-//         this.createdAt = createdAt;
-//     }
-// }
+    public void setIdTicket(int idTicket) {
+        this.idTicket = idTicket;
+    }
+}

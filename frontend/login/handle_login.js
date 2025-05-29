@@ -26,6 +26,7 @@ document.querySelector('form').addEventListener('submit', async function(e) {
     console.log(res);
     if (res.status === 200) {
         alert('Đăng nhập thành công!');
+        window.location.href = '/admin/';
     } else {
         alert('Đăng nhập thất bại!');
     }

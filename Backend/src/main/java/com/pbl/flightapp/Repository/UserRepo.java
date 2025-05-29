@@ -1,5 +1,5 @@
 package com.pbl.flightapp.Repository;
-    
+
 import com.pbl.flightapp.DTO.UserDTO;
 import com.pbl.flightapp.Model.User;
 import java.util.List;
@@ -20,19 +20,26 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRepo extends JpaRepository<User, Integer> {
-//    Customer findByIdCard(int idCustomer);
-//
-//    List<Customer> findByFullName(String nameCustomer);
-//
-//    List<Customer> findByTel(String teleplone);
+    // Customer findByIdCard(int idCustomer);
+    //
+    // List<Customer> findByFullName(String nameCustomer);
+    //
+    // List<Customer> findByTel(String teleplone);
 
     @Query("SELECT new com.pbl.flightapp.DTO.UserDTO(u) FROM User u WHERE u.email = :email OR :email IS NULL")
     List<UserDTO> findUser(@Param("email") String email);
-//
-   User findByEmail(String email);
-   User findByCardNumber(String cardNumber);
-   User findByPhone(String phone);
-   
-//
-//    List<Customer> findByCountry(String address);
+
+    //
+    User findByEmail(String email);
+
+    User findByCardNumber(String cardNumber);
+
+    User findByPhone(String phone);
+
+    @Query("SELECT u FROM User u WHERE (u.email = :email AND :email IS NOT NULL) OR (u.phone = :phone AND :phone IS NOT NULL) OR (u.cardNumber = :cardNumber AND :cardNumber IS NOT NULL)")
+    User findAnyMatch(@Param("email") String email, @Param("phone") String phone,
+            @Param("cardNumber") String cardNumber);
+
+    //
+    // List<Customer> findByCountry(String address);
 }

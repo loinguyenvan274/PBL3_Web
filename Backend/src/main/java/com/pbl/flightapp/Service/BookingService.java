@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.pbl.flightapp.Enum.UserType;
 import com.pbl.flightapp.Repository.UserRepo;
+import com.pbl.flightapp.appExc.NotFoundException;
 import com.pbl.flightapp.appExc.UserException;
 import com.pbl.flightapp.requestObj.BookingRequest;
 import jakarta.transaction.Transactional;
@@ -19,7 +20,6 @@ import com.pbl.flightapp.Repository.BookingRepo;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
-
 
 @Service
 public class BookingService {
@@ -45,6 +45,12 @@ public class BookingService {
     // return bookingRepo.save(booking);
     // }
 
+    public List<Ticket> getTicketsByBookingId(int id) {
+        Booking booking = bookingRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Booking not found", "BOOKING_NOT_FOUND"));
+        return booking.getTickets();
+    }
+
     // 予約を作成する
     @Transactional
     public Booking createBooking(BookingRequest bookingRequest) {
@@ -59,6 +65,9 @@ public class BookingService {
         User bookingUser = bookingRequest.getTickets().getFirst().getUser();
 
         bookingUser.setUserType(UserType.CUSTOMER);
+        if(bookingUser.getEmail() == null || bookingUser.getEmail().isEmpty()) {
+            throw new UserException("Email is required", "EMAIL_REQUIRED");
+        }
         bookingUser = userService.createUpdateUser(bookingUser);
 
         booking.setUser(bookingUser);
@@ -83,14 +92,15 @@ public class BookingService {
     public void deleteBooking(int id) {
         bookingRepo.deleteById(id);
     }
-    public List<BookingDTO> findByCustomerId(int customerId){
+
+    public List<BookingDTO> findByCustomerId(int customerId) {
         return bookingRepo.findByCustomerId(customerId);
     }
+
     public List<BookingDTO> findByFromDate(LocalDate fromDate, LocalDate toDate) {
         Timestamp fromTimestamp = Timestamp.valueOf(fromDate.atStartOfDay());
         Timestamp toTimestamp = Timestamp.valueOf(toDate.atTime(LocalTime.MAX));
         return bookingRepo.findByFromDate(fromTimestamp, toTimestamp);
     }
-    
 
 }

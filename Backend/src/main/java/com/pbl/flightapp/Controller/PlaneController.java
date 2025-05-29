@@ -25,7 +25,8 @@ public class PlaneController {
     // Get all planes
     @GetMapping("/all_plane")
     public List<Plane> getAllPlanes() {
-        return planeService.getAllPlane();
+        return  planeService.getAllPlane();
+
     }
 
     // Get plane by id

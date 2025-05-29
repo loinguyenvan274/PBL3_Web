@@ -56,7 +56,24 @@ public class AuthController {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         // Trả response (tùy bạn)
         return ResponseEntity.ok(jwtService.getPermissions(jwtToken));
-    }   
+    }
+
+    @PostMapping("/logoutApp")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+      
+        ResponseCookie deleteCookie = ResponseCookie.from("token", "")
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(0) 
+                .build();
+        // Gửi cookie xoá về trình duyệt
+        response.addHeader(HttpHeaders.SET_COOKIE, deleteCookie.toString());
+
+        // Phản hồi (tuỳ bạn muốn gửi gì)
+        return ResponseEntity.ok("Đăng xuất thành công");
+    }
 
     class UserInfoResponse {
         private String notification;

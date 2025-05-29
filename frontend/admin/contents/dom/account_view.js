@@ -28,12 +28,17 @@ export default async function loadAccountView() {
     const roleOptions = await getAllRoles();
     // Thêm tất cả các role vào select
 
-    roleOptions.forEach(option => {
-        const opt = document.createElement("option");
-        opt.value = option.id;
-        opt.textContent = option.name;
-        searchRoleInput.appendChild(opt);
-    });
+
+    try {
+        roleOptions.forEach(option => {
+            const opt = document.createElement("option");
+            opt.value = option.id;
+            opt.textContent = option.name;
+            searchRoleInput.appendChild(opt);
+        });
+    } catch (error) {
+        console.log("error -----", error);
+    }
 
 
     // hiển thị form thêm tài khoản

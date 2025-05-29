@@ -1,4 +1,4 @@
-import { findByCustomerId, findByFromDate } from '../../../APIs/booking.js';
+import { findByCustomerId, findByFromDate, getTicketsByBookingId } from '../../../APIs/booking.js';
 
 let selectedBooking;
 
@@ -84,11 +84,13 @@ function loadBookingsTable(bookings) {
     });
 }
 
+// ... existing code ...
 // Hiển thị chi tiết đơn đặt vé
-function showBookingDetail(booking) {
+async function showBookingDetail(booking) {
     const container = document.getElementById("booking-detail-container");
     const customerInfo = document.getElementById("customer-info");
     const paymentInfo = document.getElementById("payment-info");
+    const ticketsList = document.getElementById("tickets-list");
 
     // Hiển thị thông tin khách hàng
     customerInfo.innerHTML = `
@@ -105,9 +107,74 @@ function showBookingDetail(booking) {
         <p><strong>Tổng tiền:</strong> ${formatPrice(booking.totalPrice) || ""}</p>
     `;
 
+    // Lấy danh sách vé
+    const tickets = await getTicketsByBookingId(booking.id);
+    
+    // Hiển thị danh sách vé
+    ticketsList.innerHTML = tickets.map(ticket => `
+        <div class="bg-white rounded-lg shadow-md min-w-3xl p-4 border border-gray-200 hover:shadow-lg transition-shadow">
+            <div class="flex justify-between items-start mb-3">
+                <div>
+                    <h4 class="font-semibold text-lg">Vé ${ticket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}</h4>
+                    <p class="text-sm text-gray-600">Mã vé: ${ticket.idTicket}</p>
+                </div>
+                <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                    ${ticket.seatName}
+                </div>
+            </div>
+            
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Hành khách:</span>
+                    <span class="font-medium">${ticket.user.fullName}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Chuyến bay:</span>
+                    <span class="font-medium">VN${ticket.flight.idFlight}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Ngày bay:</span>
+                    <span class="font-medium">${formatDate(ticket.flight.departureDate)}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Điểm đi:</span>
+                    <span class="font-medium">${ticket.flight.fromLocation.name}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Điểm đến:</span>
+                    <span class="font-medium">${ticket.flight.toLocation.name}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Giờ bay:</span>
+                    <span class="font-medium">${ticket.flight.departureTime.slice(0, 5)}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Giá vé:</span>
+                    <span class="font-medium text-green-600">${formatPrice(ticket.price)}</span>
+                </div>
+            </div>
+
+            ${ticket.returnTicket ? `
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <h5 class="font-medium text-gray-700 mb-2">Vé về</h5>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Chuyến bay:</span>
+                        <span class="font-medium">VN${ticket.returnTicket.flight.idFlight}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Loại vé:</span>
+                        <span class="font-medium">${ticket.returnTicket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}</span>
+                    </div>
+                </div>
+            </div>
+            ` : ''}
+        </div>
+    `).join('');
+
     container.classList.remove("hidden");
 }
-
+// ... existing code ...
 // Format ngày tháng
 function formatDate(timestamp) {
     if (!timestamp) return "";
@@ -129,3 +196,430 @@ function formatPrice(price) {
         currency: 'VND'
     }).format(price);
 }
+
+/*
+[
+    {
+        "idTicket": 1,
+        "user": {
+            "idUser": 12,
+            "fullName": "Nguy?n Van C",
+            "phone": "0123456789",
+            "address": "123 Ðu?ng ABC, Qu?n XYZ, TP.HCM",
+            "email": "nguyenvana@example.com",
+            "dateOfBirth": "1990-01-01T00:00:00.000+00:00",
+            "userType": "CUSTOMER",
+            "cardNumber": "123456789",
+            "sex": "MALE"
+        },
+        "flight": {
+            "idFlight": 5,
+            "planeId": 3,
+            "departureDate": "2025-05-07",
+            "departureTime": "16:54:00",
+            "durationMinutes": 1000,
+            "commonFare": 23232,
+            "vipFare": 3232,
+            "fromLocation": {
+                "id": 1,
+                "name": "Noi Bai International Airport",
+                "nameCode": "HAN"
+            },
+            "toLocation": {
+                "id": 6,
+                "name": "Cam Ranh International Airport",
+                "nameCode": "CXR"
+            },
+            "createdAt": null,
+            "bookedEconomyCustomerNumber": 0,
+            "bookedVipCustomerNumber": 0,
+            "economySeats": 0,
+            "vipSeats": 0
+        },
+        "ticketType": "ECONOMY",
+        "price": 23232,
+        "baggageId": 0,
+        "returnTicket": {
+            "idReturnTicket": 1,
+            "ticketId": 1,
+            "flight": {
+                "idFlight": 7,
+                "planeId": 3,
+                "departureDate": "2025-06-08",
+                "departureTime": "16:54:00",
+                "durationMinutes": 100,
+                "commonFare": 323,
+                "vipFare": 2321,
+                "fromLocation": {
+                    "id": 1,
+                    "name": "Noi Bai International Airport",
+                    "nameCode": "HAN"
+                },
+                "toLocation": {
+                    "id": 16,
+                    "name": "Pleiku Airport",
+                    "nameCode": "PXU"
+                },
+                "createdAt": null,
+                "bookedEconomyCustomerNumber": 0,
+                "bookedVipCustomerNumber": 0,
+                "economySeats": 0,
+                "vipSeats": 0
+            },
+            "ticketType": "ECONOMY",
+            "seatName": "2B",
+            "price": null,
+            "baggageId": 0
+        },
+        "bookingId": 0,
+        "createdAt": 1748342712568,
+        "seatName": "2A"
+    },
+    {
+        "idTicket": 2,
+        "user": {
+            "idUser": 13,
+            "fullName": "Tr?n Th? B",
+            "phone": "0987654321",
+            "address": "456 Ðu?ng XYZ, Qu?n ABC, TP.HCM",
+            "email": "tranthib@example.com",
+            "dateOfBirth": "1992-02-02T00:00:00.000+00:00",
+            "userType": "CUSTOMER",
+            "cardNumber": "987654321",
+            "sex": "FEMALE"
+        },
+        "flight": {
+            "idFlight": 5,
+            "planeId": 3,
+            "departureDate": "2025-05-07",
+            "departureTime": "16:54:00",
+            "durationMinutes": 1000,
+            "commonFare": 23232,
+            "vipFare": 3232,
+            "fromLocation": {
+                "id": 1,
+                "name": "Noi Bai International Airport",
+                "nameCode": "HAN"
+            },
+            "toLocation": {
+                "id": 6,
+                "name": "Cam Ranh International Airport",
+                "nameCode": "CXR"
+            },
+            "createdAt": null,
+            "bookedEconomyCustomerNumber": 0,
+            "bookedVipCustomerNumber": 0,
+            "economySeats": 0,
+            "vipSeats": 0
+        },
+        "ticketType": "ECONOMY",
+        "price": 23232,
+        "baggageId": 0,
+        "returnTicket": {
+            "idReturnTicket": 2,
+            "ticketId": 2,
+            "flight": {
+                "idFlight": 7,
+                "planeId": 3,
+                "departureDate": "2025-06-08",
+                "departureTime": "16:54:00",
+                "durationMinutes": 100,
+                "commonFare": 323,
+                "vipFare": 2321,
+                "fromLocation": {
+                    "id": 1,
+                    "name": "Noi Bai International Airport",
+                    "nameCode": "HAN"
+                },
+                "toLocation": {
+                    "id": 16,
+                    "name": "Pleiku Airport",
+                    "nameCode": "PXU"
+                },
+                "createdAt": null,
+                "bookedEconomyCustomerNumber": 0,
+                "bookedVipCustomerNumber": 0,
+                "economySeats": 0,
+                "vipSeats": 0
+            },
+            "ticketType": "ECONOMY",
+            "seatName": "3B",
+            "price": null,
+            "baggageId": 0
+        },
+        "bookingId": 0,
+        "createdAt": 1748342717832,
+        "seatName": "1A"
+    },
+    {
+        "idTicket": 3,
+        "user": {
+            "idUser": 12,
+            "fullName": "Nguy?n Van C",
+            "phone": "0123456789",
+            "address": "123 Ðu?ng ABC, Qu?n XYZ, TP.HCM",
+            "email": "nguyenvana@example.com",
+            "dateOfBirth": "1990-01-01T00:00:00.000+00:00",
+            "userType": "CUSTOMER",
+            "cardNumber": "123456789",
+            "sex": "MALE"
+        },
+        "flight": {
+            "idFlight": 5,
+            "planeId": 3,
+            "departureDate": "2025-05-07",
+            "departureTime": "16:54:00",
+            "durationMinutes": 1000,
+            "commonFare": 23232,
+            "vipFare": 3232,
+            "fromLocation": {
+                "id": 1,
+                "name": "Noi Bai International Airport",
+                "nameCode": "HAN"
+            },
+            "toLocation": {
+                "id": 6,
+                "name": "Cam Ranh International Airport",
+                "nameCode": "CXR"
+            },
+            "createdAt": null,
+            "bookedEconomyCustomerNumber": 0,
+            "bookedVipCustomerNumber": 0,
+            "economySeats": 0,
+            "vipSeats": 0
+        },
+        "ticketType": "ECONOMY",
+        "price": 23232,
+        "baggageId": 0,
+        "returnTicket": null,
+        "bookingId": 0,
+        "createdAt": 1748392734441,
+        "seatName": null
+    },
+    {
+        "idTicket": 4,
+        "user": {
+            "idUser": 13,
+            "fullName": "Tr?n Th? B",
+            "phone": "0987654321",
+            "address": "456 Ðu?ng XYZ, Qu?n ABC, TP.HCM",
+            "email": "tranthib@example.com",
+            "dateOfBirth": "1992-02-02T00:00:00.000+00:00",
+            "userType": "CUSTOMER",
+            "cardNumber": "987654321",
+            "sex": "FEMALE"
+        },
+        "flight": {
+            "idFlight": 5,
+            "planeId": 3,
+            "departureDate": "2025-05-07",
+            "departureTime": "16:54:00",
+            "durationMinutes": 1000,
+            "commonFare": 23232,
+            "vipFare": 3232,
+            "fromLocation": {
+                "id": 1,
+                "name": "Noi Bai International Airport",
+                "nameCode": "HAN"
+            },
+            "toLocation": {
+                "id": 6,
+                "name": "Cam Ranh International Airport",
+                "nameCode": "CXR"
+            },
+            "createdAt": null,
+            "bookedEconomyCustomerNumber": 0,
+            "bookedVipCustomerNumber": 0,
+            "economySeats": 0,
+            "vipSeats": 0
+        },
+        "ticketType": "ECONOMY",
+        "price": 23232,
+        "baggageId": 0,
+        "returnTicket": null,
+        "bookingId": 0,
+        "createdAt": 1748392734484,
+        "seatName": null
+    },
+    {
+        "idTicket": 5,
+        "user": {
+            "idUser": 12,
+            "fullName": "Nguy?n Van C",
+            "phone": "0123456789",
+            "address": "123 Ðu?ng ABC, Qu?n XYZ, TP.HCM",
+            "email": "nguyenvana@example.com",
+            "dateOfBirth": "1990-01-01T00:00:00.000+00:00",
+            "userType": "CUSTOMER",
+            "cardNumber": "123456789",
+            "sex": "MALE"
+        },
+        "flight": {
+            "idFlight": 5,
+            "planeId": 3,
+            "departureDate": "2025-05-07",
+            "departureTime": "16:54:00",
+            "durationMinutes": 1000,
+            "commonFare": 23232,
+            "vipFare": 3232,
+            "fromLocation": {
+                "id": 1,
+                "name": "Noi Bai International Airport",
+                "nameCode": "HAN"
+            },
+            "toLocation": {
+                "id": 6,
+                "name": "Cam Ranh International Airport",
+                "nameCode": "CXR"
+            },
+            "createdAt": null,
+            "bookedEconomyCustomerNumber": 0,
+            "bookedVipCustomerNumber": 0,
+            "economySeats": 0,
+            "vipSeats": 0
+        },
+        "ticketType": "ECONOMY",
+        "price": 23232,
+        "baggageId": 0,
+        "returnTicket": null,
+        "bookingId": 0,
+        "createdAt": 1748392825510,
+        "seatName": null
+    },
+    {
+        "idTicket": 6,
+        "user": {
+            "idUser": 13,
+            "fullName": "Tr?n Th? B",
+            "phone": "0987654321",
+            "address": "456 Ðu?ng XYZ, Qu?n ABC, TP.HCM",
+            "email": "tranthib@example.com",
+            "dateOfBirth": "1992-02-02T00:00:00.000+00:00",
+            "userType": "CUSTOMER",
+            "cardNumber": "987654321",
+            "sex": "FEMALE"
+        },
+        "flight": {
+            "idFlight": 5,
+            "planeId": 3,
+            "departureDate": "2025-05-07",
+            "departureTime": "16:54:00",
+            "durationMinutes": 1000,
+            "commonFare": 23232,
+            "vipFare": 3232,
+            "fromLocation": {
+                "id": 1,
+                "name": "Noi Bai International Airport",
+                "nameCode": "HAN"
+            },
+            "toLocation": {
+                "id": 6,
+                "name": "Cam Ranh International Airport",
+                "nameCode": "CXR"
+            },
+            "createdAt": null,
+            "bookedEconomyCustomerNumber": 0,
+            "bookedVipCustomerNumber": 0,
+            "economySeats": 0,
+            "vipSeats": 0
+        },
+        "ticketType": "ECONOMY",
+        "price": 23232,
+        "baggageId": 0,
+        "returnTicket": null,
+        "bookingId": 0,
+        "createdAt": 1748392825522,
+        "seatName": null
+    },
+    {
+        "idTicket": 7,
+        "user": {
+            "idUser": 16,
+            "fullName": "Nguyên thanh h?u",
+            "phone": "",
+            "address": "",
+            "email": "",
+            "dateOfBirth": "2001-09-08T00:00:00.000+00:00",
+            "userType": "CUSTOMER",
+            "cardNumber": "",
+            "sex": "MALE"
+        },
+        "flight": {
+            "idFlight": 5,
+            "planeId": 3,
+            "departureDate": "2025-05-07",
+            "departureTime": "16:54:00",
+            "durationMinutes": 1000,
+            "commonFare": 23232,
+            "vipFare": 3232,
+            "fromLocation": {
+                "id": 1,
+                "name": "Noi Bai International Airport",
+                "nameCode": "HAN"
+            },
+            "toLocation": {
+                "id": 6,
+                "name": "Cam Ranh International Airport",
+                "nameCode": "CXR"
+            },
+            "createdAt": null,
+            "bookedEconomyCustomerNumber": 0,
+            "bookedVipCustomerNumber": 0,
+            "economySeats": 0,
+            "vipSeats": 0
+        },
+        "ticketType": "ECONOMY",
+        "price": 23232,
+        "baggageId": 0,
+        "returnTicket": null,
+        "bookingId": 0,
+        "createdAt": 1748394675226,
+        "seatName": null
+    },
+    {
+        "idTicket": 8,
+        "user": {
+            "idUser": 16,
+            "fullName": "Nguyên thanh h?u",
+            "phone": "",
+            "address": "",
+            "email": "",
+            "dateOfBirth": "2001-09-08T00:00:00.000+00:00",
+            "userType": "CUSTOMER",
+            "cardNumber": "",
+            "sex": "MALE"
+        },
+        "flight": {
+            "idFlight": 5,
+            "planeId": 3,
+            "departureDate": "2025-05-07",
+            "departureTime": "16:54:00",
+            "durationMinutes": 1000,
+            "commonFare": 23232,
+            "vipFare": 3232,
+            "fromLocation": {
+                "id": 1,
+                "name": "Noi Bai International Airport",
+                "nameCode": "HAN"
+            },
+            "toLocation": {
+                "id": 6,
+                "name": "Cam Ranh International Airport",
+                "nameCode": "CXR"
+            },
+            "createdAt": null,
+            "bookedEconomyCustomerNumber": 0,
+            "bookedVipCustomerNumber": 0,
+            "economySeats": 0,
+            "vipSeats": 0
+        },
+        "ticketType": "ECONOMY",
+        "price": 23232,
+        "baggageId": 0,
+        "returnTicket": null,
+        "bookingId": 0,
+        "createdAt": 1748394675250,
+        "seatName": null
+    }
+]
+*/

@@ -113,6 +113,8 @@ export default async function loadFlightJS() {
 async function showFlight(flight) {
     const viewFlightContainer = document.getElementById("view-flight-container");
     const viewFlightContent = document.getElementById("view-flight-content");
+    const ticketsList = document.getElementById("tickets-list");
+
     viewFlightContainer.classList.remove("hidden");
     // viewFlightContent.innerHTML = '';
     // Điền thông tin máy bay
@@ -134,11 +136,17 @@ async function showFlight(flight) {
     // Thống kê số ghế
     const flightInformation = await getFlightInformation(flight.idFlight);
 
-    console.log(flightInformation);
-    
+    console.log("flightInformation: ", flightInformation);
+
     // Đếm số vé đã đặt theo loại
-    const bookedEconomyTickets = flightInformation.bookedTickets.filter(ticket => ticket.ticketType === "ECONOMY");
-    const bookedBusinessTickets = flightInformation.bookedTickets.filter(ticket => ticket.ticketType === "BUSINESS");
+    const bookedEconomyTickets = flightInformation.bookedTickets.filter(ticket => (ticket.ticketType === "ECONOMY" && ticket.flight.idFlight === flight.idFlight)
+        || (ticket.returnTicket && ticket.returnTicket.flight.idFlight === flight.idFlight && ticket.returnTicket.ticketType === "ECONOMY")
+    );
+
+
+    const bookedBusinessTickets = flightInformation.bookedTickets.filter(ticket => (ticket.ticketType === "BUSINESS" && ticket.flight.idFlight === flight.idFlight)
+        || (ticket.returnTicket && ticket.returnTicket.flight.idFlight === flight.idFlight && ticket.returnTicket.ticketType === "BUSINESS")
+    );
     flightInformation.bookedEconomyTickets = bookedEconomyTickets;
     flightInformation.bookedBusinessTickets = bookedBusinessTickets;
 
@@ -147,7 +155,92 @@ async function showFlight(flight) {
     viewFlightContainer.querySelector("#economy-booked").textContent = flightInformation.bookedEconomyTickets.length;
     viewFlightContainer.querySelector("#economy-available").textContent = flightInformation.economySeatNumber - flightInformation.bookedEconomyTickets.length;
 
+    //show danh sách vé
+    ticketsList.innerHTML = flightInformation.bookedTickets.map(ticket => {
+        console.log("ticket: ", ticket);
+        return `
+        <div class="bg-white rounded-lg shadow-md min-w-3xl p-4 border border-gray-200 hover:shadow-lg transition-shadow">
+            <div class="flex justify-between items-start mb-3">
+                <div>
+                    <h4 class="font-semibold text-lg">Vé ${ticket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}  ${ticket.returnTicket ? '- vé khứ hồi' : ''}</h4>
+                    <p class="text-sm text-gray-600">Mã vé: ${ticket.idTicket}</p>
+                </div>
+                <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                    ${ticket.seatName}
+                </div>
+            </div>
+            
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Hành khách:</span>
+                    <span class="font-medium">${ticket.user.fullName}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Chuyến bay:</span>
+                    <span class="font-medium">VN${ticket.flight.idFlight}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Ngày bay:</span>
+                    <span class="font-medium">${formatDate(ticket.flight.departureDate)}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Giờ bay:</span>
+                    <span class="font-medium">${ticket.flight.departureTime.slice(0, 5)}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Giá vé:</span>
+                    <span class="font-medium text-green-600">${formatPrice(ticket.price)}</span>
+                </div>
+            </div>
+
+            ${ticket.returnTicket ? `
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <h5 class="font-medium text-gray-700 mb-2">Thông tin chuyến bay về</h5>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Chuyến bay:</span>
+                        <span class="font-medium">VN${ticket.returnTicket.flight.idFlight}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Loại vé:</span>
+                        <span class="font-medium">${ticket.returnTicket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Ngày bay:</span>
+                        <span class="font-medium">${formatDate(ticket.returnTicket.flight.departureDate)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Giờ bay:</span>
+                        <span class="font-medium">${ticket.returnTicket.flight.departureTime.slice(0, 5)}</span>
+                    </div>
+
+                </div>
+            </div>
+            ` : ''}
+        </div>
+    `;
+    }).join('');
 }
+function formatDate(timestamp) {
+    if (!timestamp) return "";
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('vi-VN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+// Format giá tiền
+function formatPrice(price) {
+    if (!price) return "";
+    return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND'
+    }).format(price);
+}
+
 /*
 {
     "flight": {
@@ -179,7 +272,7 @@ async function showFlight(flight) {
             },
             "ticketType": "ECONOMY"
         },
-        {
+        { 
             "Customer": {
                 "idUser": 13,
                 "fullName": "Tr?n Th? B",

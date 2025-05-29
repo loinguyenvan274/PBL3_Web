@@ -5,6 +5,7 @@ import loadRoleView from '../contents/dom/roleView.js';
 import loadUserView from '../contents/dom/user_view.js';
 import loadCreateBookingView from '../contents/dom/create_booking_view.js';
 import loadBookedView from '../contents/dom/booked_view.js';
+import { logout } from '../../APIs/auth.js';
 const barButtons = {
     planeBarBtn: {
         html: 'contents/plane.html',
@@ -69,9 +70,42 @@ window.addEventListener('unhandledrejection', function (event) {
     console.error("Lỗi Promise không được bắt:");
     console.log("Reason:", event.reason);
     if (event.reason.response.data.code == 'LOGIN_REQUIRED') {
-        alert('Vui lòng đăng nhập lại');
+        showNotification('Vui lòng đăng nhập lại');
         // window.location.href = '/login/';
     } else {
-        alert('Lỗi: ' + event.reason.response.data.message);
+
+        console.log("event.reason -----", event.reason);
+        if (event.reason.response.data != null) {
+            showNotification('Lỗi: ' + event.reason.response.data.message);
+        } else if (event.reason.response != null) {
+            showNotification('Lỗi: ' + event.reason.response.data);
+        }
+
     }
 });
+
+function showNotification(message) {
+    const container = document.getElementById('notification-container');
+    const box = document.createElement('div');
+    box.style.background = '#005a9e';
+    box.style.color = '#fff';
+    box.style.padding = '16px 24px';
+    box.style.borderRadius = '10px';
+    box.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+    box.style.marginBottom = '10px';
+    box.style.fontSize = '16px';
+    box.style.display = 'flex';
+    box.style.alignItems = 'center';
+    box.innerHTML = `<span style="margin-right: 8px;">&#9432;</span> <b>Notice</b><br><span> ${message}</span>`;
+    container.appendChild(box);
+
+    setTimeout(() => {
+        box.remove();
+    }, 3000);
+}
+
+async function logoutApp() {
+    await logout();
+    window.location.href = '/login/';
+}
+window.logoutApp = logoutApp;

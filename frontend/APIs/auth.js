@@ -23,12 +23,7 @@ export const login = async (email, password) => {
 };
 
 // Đăng xuất
-export const logout = async () => {
-    const response = await axios.get(`${BASE_URL}/logout`, {
-        withCredentials: true
-    });
-    return response;
-};
+
 
 // Lấy thông tin người dùng đã đăng nhập
 export const getCurrentUser = async () => {
@@ -46,4 +41,19 @@ export const isAuthenticated = async () => {
     return response;
 };
 
+// Đăng xuất
+export const logout = async () => {
+    try {
+        const response = await axios.post(`${BASE_URL}/logoutApp`, {}, {
+            withCredentials: true
+        });
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response;
+        } else {
+            throw error;
+        }
+    }
+};
 

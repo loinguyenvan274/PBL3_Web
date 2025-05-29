@@ -15,8 +15,7 @@ export const getAllAccountByEmail = async (username, roleId) => {
         });
         return response.data;
     } catch (error) {
-        // throw error;
-        
+        throw error;
         console.log(error.response);
         return [];
     }
@@ -30,7 +29,7 @@ export const getAccountById = async (id) => {
         });
         return response.data;
     } catch (error) {
-        // throw error;
+        throw error;
         console.log(error.response);
         return null;
     }
@@ -44,7 +43,7 @@ export const createAccount = async (account) => {
         });
         return response.data;
     } catch (error) {
-        // throw error;
+        throw error;
         console.log(error.response);
         return [];
     }
@@ -58,6 +57,7 @@ export const updateAccount = async (id, account) => {
         });
         return response.data;
     } catch (error) {
+        throw error;
         console.log(error.response);
         return null;
     }
@@ -71,6 +71,7 @@ export const deleteAccount = async (id) => {
         });
         return response.data;
     } catch (error) {
+        throw error;
         console.log(error.response);
         return null;
     }

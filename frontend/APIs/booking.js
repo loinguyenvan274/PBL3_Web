@@ -67,3 +67,34 @@ export const findByFromDate = async (fromDate, toDate) => {
         return [];
     }
 };
+
+// Lấy danh sách vé theo bookingId
+export const getTicketsByBookingId = async (id) => {
+    try {
+        const response = await axios.get(`${API_URL}/${id}/tickets`, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+// Tìm danh sách booking theo thông tin khách hàng
+export const findByCustomerInformation = async (email, phone, cardNumber) => {
+    try {
+        const params = new URLSearchParams();
+        if (email) params.append('email', email);
+        if (phone) params.append('phone', phone); 
+        if (cardNumber) params.append('cardNumber', cardNumber);
+
+        const response = await axios.get(`${API_URL}/findByCustomerInformation?${params.toString()}`, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        console.log(error.response);
+        return [];
+    }
+};

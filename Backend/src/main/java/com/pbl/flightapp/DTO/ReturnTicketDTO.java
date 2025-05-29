@@ -5,33 +5,40 @@ import com.pbl.flightapp.Model.ReturnTicket;
 public class ReturnTicketDTO {
     private int idReturnTicket;
     private int ticketId;
-    private int flightId;
+    private FlightDTO flight;
     private String ticketType;
-    private int flightSeatId;
-    private int seatFlightId;
+    private String seatName;
     private Long price;
     private int baggageId;
 
     public ReturnTicketDTO() {
     }
 
-    public ReturnTicketDTO(int idReturnTicket, int ticketId, int flightId, String ticketType, 
-                       int flightSeatId, int seatFlightId, Long price, int baggageId) {
-        this.idReturnTicket = idReturnTicket;
-        this.ticketId = ticketId;
-        this.flightId = flightId;
-        this.ticketType = ticketType;
-        this.flightSeatId = flightSeatId;
-        this.seatFlightId = seatFlightId;
-        this.price = price;
-        this.baggageId = baggageId;
-    }
+    // public ReturnTicketDTO(int idReturnTicket, int ticketId, int flightId, String ticketType, 
+    //                    int flightSeatId, int seatFlightId, Long price, int baggageId) {
+    //     this.idReturnTicket = idReturnTicket;
+    //     this.ticketId = ticketId;
+    //     this.flightId = flightId;
+    //     this.ticketType = ticketType;
+    //     this.flightSeatId = flightSeatId;
+    //     this.seatFlightId = seatFlightId;
+    //     this.price = price;
+    //     this.baggageId = baggageId;
+    // }
     public ReturnTicketDTO(ReturnTicket returnTicket) {
+        if(returnTicket!=null){
         this.idReturnTicket = returnTicket.getIdReturnTicket();
         this.ticketId = returnTicket.getTicket().getIdTicket();
-        this.flightId = returnTicket.getFlight().getIdFlight();
-        this.ticketType = returnTicket.getTicketType().toString();
+        this.flight = new FlightDTO(returnTicket.getFlight());
+        this.ticketType = returnTicket.getTicketType().name();
         this.price = returnTicket.getPrice();
+        if(returnTicket.getSeat()!=null){
+            this.seatName = returnTicket.getSeat().getSeatNumber();
+        }
+        if(returnTicket.getBaggage()!=null){
+            this.baggageId = returnTicket.getBaggage().getIdBaggage();
+        }
+        }
     }
 
     public int getIdReturnTicket() {
@@ -50,12 +57,12 @@ public class ReturnTicketDTO {
         this.ticketId = ticketId;
     }
 
-    public int getFlightId() {
-        return flightId;
+    public FlightDTO getFlight() {
+        return flight;
     }
 
-    public void setFlightId(int flightId) {
-        this.flightId = flightId;
+    public void setFlight(FlightDTO flight) {
+        this.flight = flight;
     }
 
     public String getTicketType() {
@@ -66,20 +73,12 @@ public class ReturnTicketDTO {
         this.ticketType = ticketType;
     }
 
-    public int getFlightSeatId() {
-        return flightSeatId;
+    public String getSeatName() {
+        return seatName;
     }
 
-    public void setFlightSeatId(int flightSeatId) {
-        this.flightSeatId = flightSeatId;
-    }
-
-    public int getSeatFlightId() {
-        return seatFlightId;
-    }
-
-    public void setSeatFlightId(int seatFlightId) {
-        this.seatFlightId = seatFlightId;
+    public void setSeatName(String seatName) {
+        this.seatName = seatName;
     }
 
     public Long getPrice() {

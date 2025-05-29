@@ -31,7 +31,7 @@ public class AccountController {
 
     // Lấy tất cả account dạng DTO
     @GetMapping("/find-account-by-email")
-    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PreAuthorize("hasPermission(null, 'MANAGE_USER')")
     public ResponseEntity<?> getAllAccountByEmail(@RequestParam String username, @RequestParam(required = false) Integer roleId) {
         try {
             List<AccountDTO> accounts = accountService.getAllAccountByUsername(username, roleId);
@@ -48,12 +48,14 @@ public class AccountController {
 
     // Lấy account theo id
     @GetMapping("/{id}")
+    @PreAuthorize("hasPermission(null, 'MANAGE_USER')")
     public Optional<Account> getAccountById(@PathVariable int id) {
         return accountService.getAccountById(id);
     }
 
     // Tạo account mới
     @PostMapping
+    @PreAuthorize("hasPermission(null, 'MANAGE_USER')")
     public ResponseEntity<?> createAccount(@RequestBody AccountDTO createAccountRequest) {
         Map<String, String> response = new HashMap<>();
         try {
@@ -70,6 +72,7 @@ public class AccountController {
     }
 
     @PutMapping("/{id}/change-profile")
+    @PreAuthorize("hasPermission(null, 'MANAGE_USER')")
     public ResponseEntity<?> changeProfile(@PathVariable int id, @RequestBody User updatedUser) {
 
         Optional<Account> account = accountService.getAccountById(id);
@@ -85,6 +88,7 @@ public class AccountController {
      */
     // Cập nhật account theo id
     @PutMapping("/{id}")
+    @PreAuthorize("hasPermission(null, 'MANAGE_USER')")
     public ResponseEntity<?> updateAccount(@PathVariable int id, @RequestBody Account updatedAccount) {
         try {
             Account account = accountService.updateAccount(id, updatedAccount);
@@ -99,6 +103,7 @@ public class AccountController {
 
     // Xóa account theo id
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasPermission(null, 'MANAGE_USER')")
     public ResponseEntity<?> deleteAccount(@PathVariable int id) {
         boolean deleted = accountService.deleteAccount(id);
         return deleted ? ResponseEntity.ok("Deleted successfully")

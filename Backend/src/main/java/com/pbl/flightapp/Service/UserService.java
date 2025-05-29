@@ -32,13 +32,23 @@ public class UserService {
         validateUser(user);        
         return userRepo.save(user);
     }
+    public User findByCustomerInformation(String email, String phone, String cardNumber) {
+        return userRepo.findAnyMatch(email, phone, cardNumber);
+    }
 
     @Transactional
     public User createUpdateUser(User user) throws UserException {
-        User userExist = userRepo.findByEmail(user.getEmail());
-        if(userExist == null) userExist = userRepo.findByCardNumber(user.getCardNumber());
-        if(userExist == null) userExist = userRepo.findByPhone(user.getPhone());
-        
+        User userExist = null;
+        if(user.getEmail() != null && user.getEmail().isEmpty()) {
+            user.setEmail(null);
+        }
+        if(user.getPhone() != null && user.getPhone().isEmpty()) {
+            user.setPhone(null);
+        }
+        if(user.getCardNumber() != null && user.getCardNumber().isEmpty()) {
+            user.setCardNumber(null);
+        }
+        userExist = userRepo.findAnyMatch(user.getEmail(), user.getPhone(), user.getCardNumber());
         if(userExist != null) {
             return updateUser(userExist.getIdUser(), user);
         }

@@ -2,6 +2,7 @@ package com.pbl.flightapp.Controller;
 
 import com.pbl.flightapp.DTO.FlightDTO;
 import com.pbl.flightapp.DTO.FlightSeatDTO;
+import com.pbl.flightapp.DTO.TicketDTO;
 import com.pbl.flightapp.DTO.UserDTO;
 import com.pbl.flightapp.Enum.SeatType;
 import com.pbl.flightapp.Enum.TicketType;
@@ -71,15 +72,9 @@ public class FlightController {
             throw new NotFoundException("Flight not found", "FLIGHT_NOT_FOUND");
         }
         flightInformation.put("flight", flight);
-        List<Map<String, Object>> bookedTickets = new ArrayList<>();
+        List<TicketDTO> bookedTickets = new ArrayList<>();
         for(Ticket ticket : flightService.getBookedTickets(idFlight, null)){
-            Map<String, Object> ticketInformation = new HashMap<>();
-            ticketInformation.put("Customer", new UserDTO(ticket.getUser()));
-            ticketInformation.put("ticketType", ticket.getTicketType());
-            if(ticket.getReturnTicket() != null && ticket.getReturnTicket().getFlight().getIdFlight() == idFlight){
-                ticketInformation.put("ticketType", ticket.getReturnTicket().getTicketType());
-            }
-            bookedTickets.add(ticketInformation);
+            bookedTickets.add(new TicketDTO(ticket));
         }
         flightInformation.put("bookedTickets", bookedTickets);
         flightInformation.put("economySeatNumber", flightService.getFlightSeats(idFlight, SeatType.ECONOMY, null).size());
@@ -88,14 +83,22 @@ public class FlightController {
     }
 
     @GetMapping("/find_flight")
-    public List<Flight> searchFlights(
+    public List<FlightDTO> searchFlights(
             @RequestParam int fromLocationId,
             @RequestParam int toLocationId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate) {
 
         Location from = locationRepo.findById(fromLocationId).orElseThrow();
         Location to = locationRepo.findById(toLocationId).orElseThrow();
-        return flightService.getFlightByFromAndToAndDepartureDate(from, to, java.sql.Date.valueOf(departureDate));
+        List<Flight> flights = flightService.getFlightByFromAndToAndDepartureDate(from, to, java.sql.Date.valueOf(departureDate));
+        List<FlightDTO> flightDTOs = new ArrayList<>();
+        for(Flight flight : flights){
+            FlightDTO flightDTO = new FlightDTO(flight);
+            flightDTO.setAvailableEconomyTicket(flightService.getAvailableSlots(flight.getIdFlight(), TicketType.ECONOMY));
+            flightDTO.setAvailableBusinessTicket(flightService.getAvailableSlots(flight.getIdFlight(), TicketType.BUSINESS));
+            flightDTOs.add(flightDTO);
+        }
+        return flightDTOs;
     }
 
     // Lấy toàn bộ chuyến bay

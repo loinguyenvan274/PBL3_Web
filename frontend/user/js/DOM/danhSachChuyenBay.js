@@ -22,7 +22,7 @@ function renderRouteInfo(data, direction) {
   }
 
   const formattedDate = `${days[date.getDay()]}, ${date.getDate()} Tháng ${date.getMonth() + 1}, ${date.getFullYear()}`;
-  const passengerCount = Number(data.adultNumber) + Number(data.childNumber) + Number(data.infantNumber);
+  const passengerCount = Number(data.adultNumber);
 
   document.querySelector('.route').textContent = `${beginLocation.name} (${beginLocation.nameCode}) → ${endLocation.name} (${endLocation.nameCode})`;
   document.querySelector('.details div').textContent = `${formattedDate} | ${passengerCount} Hành khách`;
@@ -57,6 +57,9 @@ function selectFlight() {
   return new Promise((resolve) => {
     document.querySelectorAll('.flight-card').forEach(card => {
       card.querySelectorAll('[stylebutton="buttonCard"]').forEach(btCard => {
+        if(btCard.getAttribute("disabled") === "disabled"){
+          return;
+        }
         btCard.addEventListener('click', () => {
           resolve({
             flight: JSON.parse(card.dataset.flight),
@@ -79,7 +82,7 @@ async function loadDataForCard(fromLocationId, toLocationId, departureDate) {
   data.forEach(f => {
     const fullDateTimeString = `${f.departureDate}T${f.departureTime}`; // "2025-05-15T14:36:00"
     const departure = new Date(fullDateTimeString);
-    let   arrival = null;
+    let arrival = null;
     if (!isNaN(departure.getTime())) {
       arrival = new Date(departure.getTime() + f.durationMinutes * 60000);
       console.log("Arrival time:", arrival.toISOString());
@@ -107,6 +110,7 @@ async function loadDataForCard(fromLocationId, toLocationId, departureDate) {
         </div>
         <div class="button-card-1" stylebutton="buttonCard" TicketType="ECONOMY">
           <div class="price">
+            <div class="seat-left">${f.availableEconomyTicket} ghế còn lại</div>
             <p>PHỔ THÔNG</p>
             <div class="price-amount">${f.commonFare}</div>
             <p>VND</p>
@@ -114,13 +118,61 @@ async function loadDataForCard(fromLocationId, toLocationId, departureDate) {
         </div>
         <div class="button-card-2" stylebutton="buttonCard" TicketType="BUSINESS">
           <div class="price">
+            <div class="seat-left">${f.availableBusinessTicket} ghế còn lại</div>
             <p>THƯƠNG GIA</p>
             <div class="price-amount">${f.vipFare}</div>
             <p>VND</p>
           </div>
         </div>
       `;
+      if(searchFormData.adultNumber > f.availableEconomyTicket){
+        card.querySelector('.button-card-1').style.backgroundColor = 'gray';
+        card.querySelector('.button-card-1').style.color = 'black';
+        card.querySelector('.button-card-1').style.cursor = 'not-allowed';
+        card.querySelector('.button-card-1').setAttribute('disabled', 'disabled');
+      }
+      if(searchFormData.adultNumber > f.availableBusinessTicket){
+        card.querySelector('.button-card-2').style.backgroundColor = 'gray';
+        card.querySelector('.button-card-2').style.color = 'black';
+        card.querySelector('.button-card-2').style.cursor = 'not-allowed';
+        card.querySelector('.button-card-2').setAttribute('disabled', 'disabled');
+      }    
     container.appendChild(card);
   });
 }
 
+/*
+{
+    "idFlight": 8,
+    "planeId": 5,
+    "departureDate": "2025-05-30",
+    "departureTime": "13:14:00",
+    "durationMinutes": 120,
+    "commonFare": 12030,
+    "vipFare": 222333,
+    "fromLocation": {
+        "id": 1,
+        "name": "Noi Bai International Airport",
+        "nameCode": "HAN"
+    },
+    "toLocation": {
+        "id": 3,
+        "name": "Da Nang International Airport",
+        "nameCode": "DAD"
+    },
+    "createdAt": null,
+    "bookedEconomyCustomerNumber": 0,
+    "bookedVipCustomerNumber": 0,
+    "economySeats": 0,
+    "vipSeats": 0,
+    "plane": {
+        "idPlane": 5,
+        "namePlane": "Mitsubishi SpaceJet",
+        "status": "ACTIVE",
+        "flightHours": 121,
+        "seatCount": 0
+    },
+    "availableEconomyTicket": 34,
+    "availableBusinessTicket": 4
+}
+*/

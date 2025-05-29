@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="./css/index.css" rel="stylesheet">
-    <title>Quản lý hệ thống hàng không</title>   
+    <link href="../css/index.css" rel="stylesheet">
+    <title>Quản lý hệ thống hàng không</title>
 </head>
 
 <body class="bg-gray-100 flex h-screen">
@@ -25,7 +25,7 @@
         </div>
 
         <!-- Search and Inbox -->
-        <div class="border-b border-gray-700">
+        <!-- <div class="border-b border-gray-700">
             <div class="p-4 flex items-center text-gray-400">
                 <i class="fas fa-search mr-3"></i>
                 <span>Search</span>
@@ -34,42 +34,46 @@
                 <i class="fas fa-inbox mr-3"></i>
                 <span>Inbox</span>
             </div>
-        </div>
-        
+        </div> -->
+
         <!-- Main Navigation -->
         <div class="flex-1 overflow-y-auto">
             <div class="py-2">
-                <div class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
+                <!-- <div class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
                     <i class="fas fa-home mr-3"></i>
                     <span>Home</span>
-                </div>
-                <div onclick="setContent('planeBarBtn')" class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
+                </div> -->
+                <div onclick="setContent('planeBarBtn')"
+                    class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
                     <i class="fas fa-calendar mr-3"></i>
                     <span>Máy bay</span>
                 </div>
-                <div  onclick="setContent('flightBarBtn')" class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800 ">
+                <div onclick="setContent('flightBarBtn')"
+                    class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800 ">
                     <i class="fas fa-shopping-cart mr-3"></i>
                     <span>Chuyến bay</span>
                 </div>
-                <div  onclick="setContent('userBarBtn')" class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
+                <div onclick="setContent('userBarBtn')"
+                    class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
                     <i class="fas fa-bullhorn mr-3"></i>
                     <span>Người dùng</span>
                 </div>
 
 
 
-               
+
             </div>
             <div class="mt-6">
                 <div class="px-4 pb-2 text-xs text-gray-500">
                     vé - booking
                 </div>
-                <div  onclick="setContent('createBookingBarBtn')" class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
+                <!-- <div  onclick="setContent('createBookingBarBtn')" class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
                     <i class="fas fa-cog mr-3"></i>
                     <span>tạo Booking</span>
-                </div>
+                </div> -->
 
-                <div onclick="setContent('viewBookedBarBtn')" class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
+                <div onclick="setContent('viewBookedBarBtn')"
+                    class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
                     <i class="fas fa-cog mr-3"></i>
                     <span>Đã booking</span>
                 </div>
@@ -80,31 +84,37 @@
                 <div class="px-4 pb-2 text-xs text-gray-500">
                     Quản lý tài khoảng - role
                 </div>
-                <div  onclick="setContent('roleBarBtn')" class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
+                <div onclick="setContent('roleBarBtn')"
+                    class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
                     <i class="fas fa-cog mr-3"></i>
                     <span>tài khoảng - role</span>
                 </div>
-                <div  onclick="setContent('accountBarBtn')" class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
+                <div onclick="setContent('accountBarBtn')"
+                    class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
                     <i class="fas fa-bullhorn mr-3"></i>
                     <span>Tài khoảng</span>
                 </div>
             </div>
         </div>
 
-        <!-- Support
+
         <div class="p-4 border-t border-gray-700 flex items-center text-gray-400">
-            <i class="fas fa-question-circle mr-3"></i>
-            <span>Support</span>
-        </div> -->
+            <div onclick="logoutApp()"
+                class="px-4 py-2 flex items-center text-gray-400 hover:bg-gray-800">
+                <i class="fas fa-bullhorn mr-3"></i>
+                <span>Logout</span>
+            </div>
+        </div>
 
 
     </div>
 
     <!-- Main Content -->
-     
+
     <div class="flex flex-1 bg-amber-300 overflow-y-auto" id="main-content">
         <!-- Orders content would go here -->
     </div>
+    <div id="notification-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
     <script type="module" src="js/index.js"></script>
 </body>
 
