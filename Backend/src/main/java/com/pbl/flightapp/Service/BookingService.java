@@ -79,6 +79,9 @@ public class BookingService {
         long totalPrice = 0;
         for (Ticket ticket : createdTickets) {
             totalPrice += ticket.getPrice();
+            if(ticket.getReturnTicket() != null){
+                totalPrice += ticket.getReturnTicket().getPrice();
+            }
         }
         booking.setAmount(totalPrice);
         booking.setPaymentDate(Timestamp.valueOf(LocalDateTime.now()));

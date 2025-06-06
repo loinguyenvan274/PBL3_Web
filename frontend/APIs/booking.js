@@ -9,10 +9,10 @@ export const createBooking = async (bookingRequest) => {
         const response = await axios.post(API_URL, bookingRequest, {
             withCredentials: true
         });
-        return response.data;
+        return response;
     } catch (error) {
-        console.log(error.response);
-        return null;
+        console.log("loi roi ban oi");
+        throw error;
     }
 };
 

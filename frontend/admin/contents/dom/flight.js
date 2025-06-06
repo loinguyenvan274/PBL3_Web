@@ -290,14 +290,15 @@ function formatPrice(price) {
 }
 */
 
+
 function showSeatMap(flight_seats) {
+    const SeatNumber = { bookedBusiness: 0, bookedEconomy: 0, notBookedBusiness: 0, notBookedEconomy: 0 };
     //show sơ đồ ghế
-    const seat_map_view_container = document.getElementById('view-map-seat-container');
-    seat_map_view_container.classList.remove("hidden");
-
-
     const seat_map = document.getElementById('seat-map-container');
+    const view_map_seat_container = document.getElementById('view-map-seat-container');
+    view_map_seat_container.classList.remove('hidden');
     seat_map.innerHTML = '';
+
 
     const head_seat_map = document.createElement('div');
     head_seat_map.className = "flex w-full mb-4";
@@ -350,42 +351,75 @@ function showSeatMap(flight_seats) {
         const row = document.createElement('div');
         row.className = "flex mt-3 w-full";
         row.innerHTML = `
-                <div class="w-10 text-center font-semibold">${i + 1}</div> 
+                <div class="w-10 text-center font-semibold">${i}</div> 
                 <div id="seat-map-row-${i}" class="flex justify-around flex-1 w-full">
                 </div>`;
         seat_map.appendChild(row);
         const current_row_seat = row.querySelector(`#seat-map-row-${i}`);
         for (let j = 0; j < rowSeat; j++) {
             const seat = document.createElement('div');
-            seat.className = "text-center font-semibold bg-blue-500 hover:bg-white text-white px-4 py-2 rounded-md";
-            seat.setAttribute('seat', 'economy-seat');
-            seat.setAttribute('seat-number', `${i}${String.fromCharCode(65 + j)}`);
+            seat.className = "seat seat-blocked invisible";
 
             const seatObject = getSeatByNumber(flight_seats, `${i}${String.fromCharCode(65 + j)}`);
             if (seatObject) {
-                if (seatObject.seatType == 'BUSINESS') {
-                    seat.className = "text-center font-semibold bg-yellow-500 hover:bg-white text-white px-4 py-2 rounded-md";
+
+                if (seatObject.seatStatus != 'NOT_BOOKED') {
+                    if (seatObject.seat.seatType == 'BUSINESS') {
+                        seat.className = "seat seat-booked-business";
+                        SeatNumber.bookedBusiness++;
+                    }// booked cho vip
+                    else {
+                        seat.className = "seat seat-booked-economy";
+                        SeatNumber.bookedEconomy++;
+                    } // booked cho economy-class
+
                 }
-                else if (seatObject.seatType == 'ECONOMY') {
-                    seat.className = "text-center font-semibold bg-blue-400 hover:bg-white text-white px-4 py-2 rounded-md";
+                else {
+                    if (seatObject.seat.seatType == 'BUSINESS') {
+                        seat.className = "seat seat-not-booked-business";
+                        SeatNumber.notBookedBusiness++;
+                    } //  cho vip
+                    else {
+                        SeatNumber.notBookedEconomy++;
+                        seat.className = "seat seat-not-booked-economy"
+                    }; // cho economy-class
                 }
 
-                seat.setAttribute('seat', seatObject);
-
-            } else {
-                seat.className = "text-center font-semibold bg-amber-100 hover:bg-white text-white px-4 py-2 rounded-md";
             }
             current_row_seat.appendChild(seat);
         }
     }
+    const inforSeatmapDiv = document.getElementById('infor-Seat-map-Div');
+    inforSeatmapDiv.innerHTML = `
+    <div class="flex flex-col items-center w-full bg-amber-50 rounded-xl mt-4 p-4">
+                    <div class="flex gap-4">
+                        <div class="text-sm">
+                            Thương gia đã chọn: <span class="font-semibold">${SeatNumber.bookedBusiness}</span>
+                        </div>
+                       <div class="text-sm">
+                            Phổ thông đã chọn: <span class="font-semibold">${SeatNumber.bookedEconomy}</span>
+                        </div>
+                       <div class="text-sm">
+                            Thương gia trống: <span class="font-semibold">${SeatNumber.notBookedBusiness}</span>
+                        </div>
+                        <div class="text-sm">
+                            Phổ thông trống: <span class="font-semibold">${SeatNumber.notBookedEconomy}</span>
+                        </div>
+                        <div class="text-sm">
+                            Tổng số ghế: <span class="font-semibold">${SeatNumber.bookedBusiness + SeatNumber.bookedEconomy + SeatNumber.notBookedBusiness + SeatNumber.notBookedEconomy}</span>
+                        </div>
+                    </div>
+                </div>
+    `
+    document.getElementById('view-map-seat-content-container').appendChild(inforSeatmapDiv);
+
 }
 function getSeatByNumber(flight_seats, seatNumber) {
     const result = flight_seats.find(
         flight_seat => flight_seat.seat.seatNumber === seatNumber
     );
-    return result ? result.seat : null;
+    return result ? result : null;
 }
-
 
 function planesSelect(selectId, planes) {
     const select = document.getElementById(selectId);
@@ -467,6 +501,7 @@ function loadFlightsTable(flights) {
         row.setAttribute("flight", JSON.stringify(flight));
 
         row.innerHTML = `
+            <td class="border px-2 py-1">F_${flight.idFlight}</td>
             <td class="border px-2 py-1">${flight.plane?.namePlane || ""}</td>
             <td class="border px-2 py-1">${flight.fromLocation?.name || ""}</td>
             <td class="border px-2 py-1">${flight.toLocation?.name || ""}</td>

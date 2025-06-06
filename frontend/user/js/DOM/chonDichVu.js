@@ -13,14 +13,18 @@ async function handleThanhToan() {
         departureFlightId: customerSelectedFight.departureFlightASeat.flight.idFlight,
         departureTicketType: customerSelectedFight.departureFlightASeat.TicketType,
         tickets: customerData.map(user => ({
+            seatId: user.departureSeat,
             user: {
                 fullName: user.fullName,
                 phone: user.phone,
                 email: user.email,
                 cardNumber: user.cardNumber,
                 address: user.address,
-                sex: user.sex,
+                sex: (user.sex === "") ? null : user.sex,
                 dayOfBirth: user.dayOfBirth,
+            },
+            returnTicket: {
+                seatId: user.returnSeat
             }
         }))
     };
@@ -31,9 +35,10 @@ async function handleThanhToan() {
     }
     // sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
     console.log(bookingData);
-    await createBooking(bookingData);
+    const response = await createBooking(bookingData);
     alert('Đặt vé thành công');
     window.location.href = 'timChuyenBay.html';
+
 }
 
 function createViewFlights() {
@@ -164,12 +169,7 @@ window.addEventListener('error', function (event) {
 window.addEventListener('unhandledrejection', function (event) {
     console.error("Lỗi Promise không được bắt:");
     console.log("Reason:", event.reason);
-    if (event.reason.response.data.code == 'LOGIN_REQUIRED') {
-        alert('Vui lòng đăng nhập lại');
-        // window.location.href = '/login/';
-    } else {
-        alert('Lỗi: ' + event.reason.response.data.message);
-    }
+    alert('Lỗi: ' + event.reason?.response?.data?.message);
 });
 
 

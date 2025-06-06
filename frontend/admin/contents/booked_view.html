@@ -43,29 +43,31 @@
         <div class="w-full max-w-4xl p-8 bg-white rounded-2xl shadow-xl">
             <h2 class="text-2xl font-semibold text-center mb-8">Chi tiết đơn đặt vé</h2>
 
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                    <h3 class="text-lg font-medium mb-2">Thông tin khách hàng</h3>
-                    <div id="customer-info" class="space-y-2">
-                        <!-- Thông tin khách hàng sẽ được điền bằng JavaScript -->
+            <div class="w-full max-h-[70vh] overflow-y-auto">
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <h3 class="text-lg font-medium mb-2">Thông tin khách hàng</h3>
+                        <div id="customer-info" class="space-y-2">
+                            <!-- Thông tin khách hàng sẽ được điền bằng JavaScript -->
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-medium mb-2">Thông tin thanh toán</h3>
+                        <div id="payment-info" class="space-y-2">
+                            <!-- Thông tin thanh toán sẽ được điền bằng JavaScript -->
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <h3 class="text-lg font-medium mb-2">Thông tin thanh toán</h3>
-                    <div id="payment-info" class="space-y-2">
-                        <!-- Thông tin thanh toán sẽ được điền bằng JavaScript -->
+
+                <div class="mt-8">
+                    <h3 class="text-lg font-medium mb-4">Danh sách vé</h3>
+                    <div id="tickets-list" class="flex gap-4 overflow-x-auto">
+                        <!-- Danh sách vé sẽ được điền bằng JavaScript -->
                     </div>
                 </div>
             </div>
 
-            <div class="mt-8">
-                <h3 class="text-lg font-medium mb-4">Danh sách vé</h3>
-                <div id="tickets-list" class="flex gap-4 overflow-x-auto">
-                    <!-- Danh sách vé sẽ được điền bằng JavaScript -->
-                </div>
-            </div>
-
-            <div class="flex justify-end gap-4">
+            <div class="flex justify-end gap-4 mt-8">
                 <button id="close-detail-btn" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600">
                     Đóng
                 </button>

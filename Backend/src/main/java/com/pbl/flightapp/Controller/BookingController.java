@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pbl.flightapp.Service.BookingService;
 import com.pbl.flightapp.Service.UserService;
+
 import com.pbl.flightapp.Model.User;
 import com.pbl.flightapp.requestObj.BookingRequest;
 import com.pbl.flightapp.DTO.BookingDTO;
@@ -26,8 +27,11 @@ import com.pbl.flightapp.DTO.UserDTO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+
 import java.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/bookings")
@@ -44,8 +48,9 @@ public class BookingController {
     // }
     // 予約を作成する
     @PostMapping
-    public Booking createBooking(@RequestBody BookingRequest request) {
-        return bookingService.createBooking(request);
+    public ResponseEntity<?> createBooking(@RequestBody BookingRequest request) {
+        bookingService.createBooking(request);
+        return ResponseEntity.ok("Booking created successfully");
     }
 
     @GetMapping("/{id}")

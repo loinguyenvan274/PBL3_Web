@@ -119,9 +119,15 @@ public class FlightService {
         for (ReturnTicket returnTicket : returnTickets) {
             tickets.add(returnTicket.getTicket());
         }
-        tickets = tickets.stream()
-                .filter(ticket -> ticket.getTicketType() == ticketType || ticketType == null)
-                .collect(Collectors.toList());
+        if(ticketType != null) {
+            tickets = tickets.stream()
+                    .filter(ticket -> {
+                        if (ticket.getReturnTicket() != null && ticket.getReturnTicket().getFlight().getIdFlight() == flightId)
+                            return ticket.getReturnTicket().getTicketType() == ticketType;
+                        return ticket.getTicketType() == ticketType;
+                    })
+                    .collect(Collectors.toList());
+        }
         return tickets;
     }
 
@@ -129,11 +135,7 @@ public class FlightService {
     // ghế thì ghế có thể đặt trước hoặc không. nên phải kiểm tra qua vé. ta chỉ
     // biết số vé tối đa của từng loại theo ghế
     public int getAvailableSlots(int flightId, TicketType ticketType) {
-        SeatType seatType = SeatType.ECONOMY;
-         if (ticketType == TicketType.BUSINESS) {
-            seatType = SeatType.BUSINESS;
-        }
-        List<Flights_Seat> allFSOfSeatType = getFlightSeats(flightId, seatType, null);
+        List<Flights_Seat> allFSOfSeatType = getFlightSeats(flightId, SeatType.getByTicketType(ticketType), null);
         List<Ticket> bookedTickets = getBookedTickets(flightId, ticketType);
         // Trả về số lượng ghế trống
         return allFSOfSeatType.size() - bookedTickets.size();

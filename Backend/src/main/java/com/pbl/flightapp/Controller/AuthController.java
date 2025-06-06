@@ -74,23 +74,4 @@ public class AuthController {
         // Phản hồi (tuỳ bạn muốn gửi gì)
         return ResponseEntity.ok("Đăng xuất thành công");
     }
-
-    class UserInfoResponse {
-        private String notification;
-        private List<String> permissions;
-
-        public UserInfoResponse(String notification, List<String> permissions) {
-            this.notification = notification;
-            this.permissions = permissions;
-        }
-
-        // Getters
-        public String getNotification() {
-            return notification;
-        }
-
-        public List<String> getPermissions() {
-            return permissions;
-        }
-    }
 }

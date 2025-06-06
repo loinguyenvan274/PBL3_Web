@@ -122,8 +122,8 @@ function createFormForMainPerson() {
           <label class="form-label required">Giới tính</label>
           <select name="gender" class="form-input" required>
            <option value="" disabled selected>Chọn giới tính</option>
-            <option value="male">Nam</option>
-            <option value="female">Nữ</option>
+            <option value="MALE">Nam</option>
+            <option value="FEMALE">Nữ</option>
           </select>
         </div>
         <div class="form-row">

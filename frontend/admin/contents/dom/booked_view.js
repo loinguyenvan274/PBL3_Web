@@ -9,10 +9,10 @@ export default async function loadBookedView() {
     const searchCustomerIdInput = document.getElementById("search-customer-id");
     const fromDateInput = document.getElementById("from-date");
     const toDateInput = document.getElementById("to-date");
-    
-    fromDateInput.addEventListener('change', function() {
+
+    fromDateInput.addEventListener('change', function () {
         toDateInput.min = fromDateInput.value;
-        if(toDateInput.value && toDateInput.value < fromDateInput.value) {
+        if (toDateInput.value && toDateInput.value < fromDateInput.value) {
             toDateInput.value = '';
         }
     });
@@ -29,7 +29,7 @@ export default async function loadBookedView() {
         // if (customerId) {
         //     bookings = await findByCustomerId(customerId);
         // } else if (fromDate && toDate) {
-            bookings = await findByFromDate(fromDate, toDate);
+        bookings = await findByFromDate(fromDate, toDate);
         // }
 
         loadBookingsTable(bookings);
@@ -109,7 +109,7 @@ async function showBookingDetail(booking) {
 
     // Lấy danh sách vé
     const tickets = await getTicketsByBookingId(booking.id);
-    
+
     // Hiển thị danh sách vé
     ticketsList.innerHTML = tickets.map(ticket => `
         <div class="bg-white rounded-lg shadow-md min-w-3xl p-4 border border-gray-200 hover:shadow-lg transition-shadow">
@@ -119,7 +119,7 @@ async function showBookingDetail(booking) {
                     <p class="text-sm text-gray-600">Mã vé: ${ticket.idTicket}</p>
                 </div>
                 <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                    ${ticket.seatName}
+                  Ghế: ${ticket.seatName ?  ticket.seatName : "chưa chọn"}
                 </div>
             </div>
             
@@ -156,15 +156,33 @@ async function showBookingDetail(booking) {
 
             ${ticket.returnTicket ? `
             <div class="mt-4 pt-4 border-t border-gray-200">
+                 
+                 <div class="flex justify-between items-start mb-3">
                 <h5 class="font-medium text-gray-700 mb-2">Vé về</h5>
+                <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                  Ghế: ${ticket.returnTicket.seatName ?  ticket.returnTicket.seatName : "chưa chọn"}
+                </div>
+            </div>
                 <div class="space-y-2">
                     <div class="flex justify-between">
                         <span class="text-gray-600">Chuyến bay:</span>
                         <span class="font-medium">VN${ticket.returnTicket.flight.idFlight}</span>
                     </div>
                     <div class="flex justify-between">
+                    <span class="text-gray-600">Ngày bay:</span>
+                        <span class="font-medium">${formatDate(ticket.returnTicket.flight.departureDate)}</span>
+                    </div>
+                     <div class="flex justify-between">
+                    <span class="text-gray-600">Giờ bay:</span>
+                        <span class="font-medium">${ticket.returnTicket.flight.departureTime.slice(0, 5)}</span>
+                    </div>
+                    <div class="flex justify-between">
                         <span class="text-gray-600">Loại vé:</span>
                         <span class="font-medium">${ticket.returnTicket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Giá vé:</span>
+                        <span class="font-medium  text-green-600">${formatPrice(ticket.returnTicket.price)}</span>
                     </div>
                 </div>
             </div>
@@ -182,9 +200,7 @@ function formatDate(timestamp) {
     return date.toLocaleDateString('vi-VN', {
         year: 'numeric',
         month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
+        day: '2-digit'
     });
 }
 

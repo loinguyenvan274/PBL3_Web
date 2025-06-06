@@ -1,12 +1,11 @@
 package com.pbl.flightapp.DTO;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+
 
 import com.pbl.flightapp.Enum.PaymentMethod;
 import com.pbl.flightapp.Model.Booking;
-import com.pbl.flightapp.Model.Ticket;
-import com.pbl.flightapp.Model.User;
+
 
 public class BookingDTO {
     private int id;

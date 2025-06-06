@@ -1,6 +1,8 @@
 package com.pbl.flightapp.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,6 +24,8 @@ import com.pbl.flightapp.Enum.TicketType;
 import com.pbl.flightapp.Model.*;
 import com.pbl.flightapp.requestObj.BookingRequest;
 import com.pbl.flightapp.requestObj.TicketRequest;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Service
 public class TicketService {
@@ -119,6 +123,16 @@ public class TicketService {
      * @return list of tickets save in db
      */
 
+    void checkFlight(Flight flight) {
+        if (flight == null) {
+            throw new RuntimeException("Flight not found");
+        } else if (LocalDateTime.of(
+                flight.getDepartureDate().toLocalDate(),
+                flight.getDepartureTime().toLocalTime()).isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Flight has already departed");
+        }
+    }
+
     @Transactional
     List<Ticket> addTickets(BookingRequest bookingRequest, Booking booking) {
         // bước kiểm tra
@@ -137,17 +151,19 @@ public class TicketService {
 
         List<Ticket> tickets = new ArrayList<>();
         Flight departureFlight = flightRepo.findByIdFlight(departureFlightId);
+        checkFlight(departureFlight);
         Flight returnFlight = null;
-        SeatType seatType = departureTicketType == TicketType.ECONOMY ? SeatType.ECONOMY : SeatType.BUSINESS;
+
 
         Map<String, Flights_Seat> departureSeats = flightService
-                .getFlightSeats(departureFlightId, seatType, SeatStatus.NOT_BOOKED).stream()
+                .getFlightSeats(departureFlightId, SeatType.getByTicketType(departureTicketType), SeatStatus.NOT_BOOKED).stream()
                 .collect(Collectors.toMap(seat -> seat.getSeat().getSeatNumber(), seat -> seat));
         Map<String, Flights_Seat> returnSeats = null;
         if (returnFlightId != null) {
             returnFlight = flightRepo.findByIdFlight(returnFlightId);
+            checkFlight(returnFlight);
             returnSeats = flightService
-                    .getFlightSeats(returnFlightId, seatType, SeatStatus.NOT_BOOKED).stream()
+                    .getFlightSeats(returnFlightId, SeatType.getByTicketType(returnTicketType), SeatStatus.NOT_BOOKED).stream()
                     .collect(Collectors.toMap(seat -> seat.getSeat().getSeatNumber(), seat -> seat));
         }
 
@@ -163,9 +179,9 @@ public class TicketService {
                 }
                 departureSeat.setSeatStatus(SeatStatus.BOOKED);
             }
-            if (ticketRequest.getReturnTicket() != null) {
+            if (ticketRequest.getReturnTicket() != null && returnFlight != null) {
                 Flights_Seat returnSeat = null;
-                if (ticketRequest.getReturnTicket().getSeatId() != null) {
+                if (ticketRequest.getReturnTicket().getSeatId() != null && returnSeats != null) {
                     returnSeat = returnSeats.get(ticketRequest.getReturnTicket().getSeatId());
                     if (returnSeat == null) {
                         throw new RuntimeException("Seat not available");
@@ -173,6 +189,7 @@ public class TicketService {
                     returnSeat.setSeatStatus(SeatStatus.BOOKED);
                 }
                 returnTicket = new ReturnTicket(null, returnFlight, returnTicketType, returnSeat);
+                returnTicket.setPrice(returnFlight.getPrice(returnTicketType));
             }
 
             ticketRequest.getUser().setUserType(UserType.CUSTOMER);

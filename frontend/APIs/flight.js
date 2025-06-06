@@ -52,6 +52,7 @@ export async function getFlightSeatsByFlightId(flightId) {
   });
   return response.data;
 }
+
 //tìm tat cac cac chuyen bayy
 export async function findFlight(fromLocationId, toLocationId, departureDate) {
   const bEUrl = API_BASE + '/find_flight';

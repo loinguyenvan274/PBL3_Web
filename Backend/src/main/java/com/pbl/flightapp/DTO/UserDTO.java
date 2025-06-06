@@ -28,7 +28,9 @@ public class UserDTO {
         this.dateOfBirth = user.getDayOfBirth();
         this.userType = user.getUserType();
         this.cardNumber = user.getCardNumber();
-        this.sex = user.getSex().toString();
+        if (user.getSex() != null) {
+            this.sex = user.getSex().toString();
+        }
     }
 
     public int getIdUser() {
