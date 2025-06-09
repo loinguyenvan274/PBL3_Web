@@ -1,13 +1,13 @@
 package com.pbl.flightapp.appExc;
 
-public class LoginFailedException extends Exception {
-    private String why;
-    public LoginFailedException(String message, Throwable cause, String why) {
+public class LoginFailedException extends RuntimeException {
+    private String code;
+    public LoginFailedException(String message, Throwable cause, String code) {
         super(message, cause);
-        this.why = why;
+        this.code = code;
     }
 
-    public String getWhy() {
-        return why;
+    public String getCode() {
+        return code;
     }
 }

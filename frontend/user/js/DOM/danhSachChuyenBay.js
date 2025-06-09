@@ -1,12 +1,11 @@
 import { findFlight } from "../../../APIs/flight.js";
 
 const searchFormData = JSON.parse(sessionStorage.getItem('search-form-data'));
+let allFlights = [];
+
 function renderRouteInfo(data, direction) {
   const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
-
-  let date;
-  let beginLocation;
-  let endLocation;
+  let date, beginLocation, endLocation;
 
   if (direction === 'departure') {
     date = new Date(data.departureDate);
@@ -16,9 +15,6 @@ function renderRouteInfo(data, direction) {
     date = new Date(data.returnDate);
     beginLocation = data.endLocation;
     endLocation = data.beginLocation;
-  } else {
-    console.error('Direction must be "departure" or "return"');
-    return;
   }
 
   const formattedDate = `${days[date.getDay()]}, ${date.getDate()} Tháng ${date.getMonth() + 1}, ${date.getFullYear()}`;
@@ -28,151 +24,146 @@ function renderRouteInfo(data, direction) {
   document.querySelector('.details div').textContent = `${formattedDate} | ${passengerCount} Hành khách`;
 }
 
-
-window.addEventListener('load', async function selectFightHandleChange() {
-
-  //set thông báo biển hiệu
+window.addEventListener('load', async () => {
   if (searchFormData) {
-    renderRouteInfo(searchFormData, 'departure'); // Chiều đi
+    renderRouteInfo(searchFormData, 'departure');
   }
+
   await loadDataForCard(searchFormData.beginLocation.id, searchFormData.endLocation.id, searchFormData.departureDate);
+
+  document.getElementById('sortOption').addEventListener('change', () => {
+    const selected = document.getElementById('sortOption').value;
+    const sorted = sortFlights(allFlights, selected);
+    renderFlights(sorted);
+  });
+
   let departureFlightASeat = await selectFlight();
-  let returnFlightASeat = null
+  let returnFlightASeat = null;
+
   if (searchFormData.isRoundTrip) {
-    //set thông báo chọn chuyến về
     window.scrollTo(0, 0);
-    if (searchFormData) {
-      renderRouteInfo(searchFormData, 'return'); // chiều về
-    }
-    //truyền lại các giá trị mới
+    renderRouteInfo(searchFormData, 'return');
     await loadDataForCard(searchFormData.endLocation.id, searchFormData.beginLocation.id, searchFormData.returnDate);
     returnFlightASeat = await selectFlight();
   }
-  sessionStorage.setItem('customerSelectedFight', JSON.stringify({ departureFlightASeat, returnFlightASeat }))
 
+  sessionStorage.setItem('customerSelectedFight', JSON.stringify({ departureFlightASeat, returnFlightASeat }));
   window.location.href = 'nhapThongTin.html';
+});
 
-})
+let waitingTicket = null;
+
 function selectFlight() {
-  return new Promise((resolve) => {
-    document.querySelectorAll('.flight-card').forEach(card => {
-      card.querySelectorAll('[stylebutton="buttonCard"]').forEach(btCard => {
-        if(btCard.getAttribute("disabled") === "disabled"){
-          return;
-        }
-        btCard.addEventListener('click', () => {
-          resolve({
-            flight: JSON.parse(card.dataset.flight),
-            TicketType: btCard.getAttribute("TicketType")
-          });
-        }, { once: true });
-      });
-    });
+  return new Promise(resolve => {
+    const interval = setInterval(() => {
+      if (waitingTicket != null) {
+        clearInterval(interval);
+        resolve(waitingTicket);
+        waitingTicket = null;
+      }
+    }, 200);
   });
 }
 
-async function loadDataForCard(fromLocationId, toLocationId, departureDate) {
-
+async function loadDataForCard(fromLocationId, toLocationId, departureDate, sortOption = "priceAsc") {
   const data = await findFlight(fromLocationId, toLocationId, departureDate);
-  const container = document.querySelector('.flight-list');
+  allFlights = data;
+  const sortedData = sortFlights(data, sortOption);
+  renderFlights(sortedData);
+}
 
-  // Clear existing content
+function sortFlights(flights, option) {
+  const sorted = [...flights];
+  switch (option) {
+    case "priceAsc":
+      sorted.sort((a, b) => a.commonFare - b.commonFare);
+      break;
+    case "priceAscVip":
+      sorted.sort((a, b) => a.vipFare - b.vipFare);
+      break;
+    case "departureTime":
+      sorted.sort((a, b) => new Date(`1970-01-01T${a.departureTime}`) - new Date(`1970-01-01T${b.departureTime}`));
+      break;
+    case "duration":
+      sorted.sort((a, b) => a.durationMinutes - b.durationMinutes);
+      break;
+  }
+  return sorted;
+}
+
+function renderFlights(flightData) {
+  const container = document.querySelector('.flight-list');
   container.innerHTML = '';
 
-  data.forEach(f => {
-    const fullDateTimeString = `${f.departureDate}T${f.departureTime}`; // "2025-05-15T14:36:00"
+  flightData.forEach(f => {
+    const fullDateTimeString = `${f.departureDate}T${f.departureTime}`;
     const departure = new Date(fullDateTimeString);
-    let arrival = null;
-    if (!isNaN(departure.getTime())) {
-      arrival = new Date(departure.getTime() + f.durationMinutes * 60000);
-      console.log("Arrival time:", arrival.toISOString());
-    } else {
-      console.error("Thời gian không hợp lệ:", fullDateTimeString);
-    }
+    const arrival = new Date(departure.getTime() + f.durationMinutes * 60000);
 
     const card = document.createElement('div');
     card.dataset.flight = JSON.stringify(f);
     card.className = 'flight-card';
     card.innerHTML = `
-        <div class="flight-info">
-          <div class="airline-logo">${f.plane.namePlane}</div>
-          <div class="flight-times">
-            <div class="time">${f.departureTime}</div>
-            <div class="airport">${f.fromLocation.nameCode}</div>
-          </div>
-          <div class="flight-times">
-            <div class="time">${arrival.toTimeString().split(' ')[0]}</div>
-            <div class="airport">${f.toLocation.nameCode}</div>
-          </div>
+      <div class="flight-info">
+        <div class="airline-logo">${f.plane.namePlane}</div>
+        <div class="flight-times">
+          <div class="time">${f.departureTime}</div>
+          <div class="airport">${f.fromLocation.nameCode}</div>
         </div>
-        <div class="duration">
-          <div class="direct">Bay thẳng</div>
+        <div class="flight-times">
+          <div class="time">${arrival.toTimeString().split(' ')[0]}</div>
+          <div class="airport">${f.toLocation.nameCode}</div>
         </div>
-        <div class="button-card-1" stylebutton="buttonCard" TicketType="ECONOMY">
-          <div class="price">
-            <div class="seat-left">${f.availableEconomyTicket} ghế còn lại</div>
-            <p>PHỔ THÔNG</p>
-            <div class="price-amount">${f.commonFare}</div>
-            <p>VND</p>
-          </div>
+      </div>
+      <div class="duration">
+        <div class="direct">Bay thẳng</div>
+      </div>
+      <div class="button-card-1" stylebutton="buttonCard" TicketType="ECONOMY">
+        <div class="price">
+          <div class="seat-left">${f.availableEconomyTicket} ghế còn lại</div>
+          <p>PHỔ THÔNG</p>
+          <div class="price-amount">${f.commonFare}</div>
+          <p>VND</p>
         </div>
-        <div class="button-card-2" stylebutton="buttonCard" TicketType="BUSINESS">
-          <div class="price">
-            <div class="seat-left">${f.availableBusinessTicket} ghế còn lại</div>
-            <p>THƯƠNG GIA</p>
-            <div class="price-amount">${f.vipFare}</div>
-            <p>VND</p>
-          </div>
+      </div>
+      <div class="button-card-2" stylebutton="buttonCard" TicketType="BUSINESS">
+        <div class="price">
+          <div class="seat-left">${f.availableBusinessTicket} ghế còn lại</div>
+          <p>THƯƠNG GIA</p>
+          <div class="price-amount">${f.vipFare}</div>
+          <p>VND</p>
         </div>
-      `;
-      if(searchFormData.adultNumber > f.availableEconomyTicket){
-        card.querySelector('.button-card-1').style.backgroundColor = 'gray';
-        card.querySelector('.button-card-1').style.color = 'black';
-        card.querySelector('.button-card-1').style.cursor = 'not-allowed';
-        card.querySelector('.button-card-1').setAttribute('disabled', 'disabled');
-      }
-      if(searchFormData.adultNumber > f.availableBusinessTicket){
-        card.querySelector('.button-card-2').style.backgroundColor = 'gray';
-        card.querySelector('.button-card-2').style.color = 'black';
-        card.querySelector('.button-card-2').style.cursor = 'not-allowed';
-        card.querySelector('.button-card-2').setAttribute('disabled', 'disabled');
-      }    
+      </div>
+    `;
+
+    if (searchFormData.adultNumber > f.availableEconomyTicket) {
+      const btn = card.querySelector('.button-card-1');
+      btn.style.backgroundColor = 'gray';
+      btn.style.color = 'black';
+      btn.style.cursor = 'not-allowed';
+      btn.setAttribute('disabled', 'disabled');
+    }
+
+    if (searchFormData.adultNumber > f.availableBusinessTicket) {
+      const btn = card.querySelector('.button-card-2');
+      btn.style.backgroundColor = 'gray';
+      btn.style.color = 'black';
+      btn.style.cursor = 'not-allowed';
+      btn.setAttribute('disabled', 'disabled');
+    }
+
     container.appendChild(card);
+
+
+    document.querySelectorAll('[stylebutton="buttonCard"]').forEach(btCard => {
+      if (btCard.getAttribute("disabled") === "disabled") return;
+      btCard.addEventListener('click', () => {
+        waitingTicket = {
+          flight: JSON.parse(card.dataset.flight),
+          TicketType: btCard.getAttribute("TicketType")
+        };
+      }, { once: true });
+    });
+
   });
 }
-
-/*
-{
-    "idFlight": 8,
-    "planeId": 5,
-    "departureDate": "2025-05-30",
-    "departureTime": "13:14:00",
-    "durationMinutes": 120,
-    "commonFare": 12030,
-    "vipFare": 222333,
-    "fromLocation": {
-        "id": 1,
-        "name": "Noi Bai International Airport",
-        "nameCode": "HAN"
-    },
-    "toLocation": {
-        "id": 3,
-        "name": "Da Nang International Airport",
-        "nameCode": "DAD"
-    },
-    "createdAt": null,
-    "bookedEconomyCustomerNumber": 0,
-    "bookedVipCustomerNumber": 0,
-    "economySeats": 0,
-    "vipSeats": 0,
-    "plane": {
-        "idPlane": 5,
-        "namePlane": "Mitsubishi SpaceJet",
-        "status": "ACTIVE",
-        "flightHours": 121,
-        "seatCount": 0
-    },
-    "availableEconomyTicket": 34,
-    "availableBusinessTicket": 4
-}
-*/

@@ -5,6 +5,7 @@ import loadRoleView from '../contents/dom/roleView.js';
 import loadUserView from '../contents/dom/user_view.js';
 import loadCreateBookingView from '../contents/dom/create_booking_view.js';
 import loadBookedView from '../contents/dom/booked_view.js';
+import loadProfileView from '../contents/dom/profile_view.js'
 import { logout } from '../../APIs/auth.js';
 const barButtons = {
     planeBarBtn: {
@@ -35,6 +36,10 @@ const barButtons = {
     viewBookedBarBtn: {
         html: 'contents/booked_view.html',
         jsFunction: loadBookedView,
+    },
+    profileBtn: {
+        html: 'contents/profile_view.html',
+        jsFunction: loadProfileView,
     }
 }
 
@@ -44,6 +49,10 @@ async function setContent(key) {
     mainContent.innerHTML = await getHTMLFromFile(barButtons[key].html);
     //load js
     barButtons[key].jsFunction();
+
+    document.querySelectorAll('[btn]').forEach(task => task.classList = 'px-6 py-2 flex items-center text-gray-400 hover:bg-gray-800'
+    );
+    document.querySelector(`[btn="${key}"]`).classList = 'border-l-2 border-amber-600 px-6 py-2 flex items-center bg-gradient-to-r from-gray-800 to-transparent'
 }
 
 
@@ -53,7 +62,7 @@ async function getHTMLFromFile(filePath) {
 
 }
 window.addEventListener('load', () => {
-    setContent('planeBarBtn');
+    setContent('profileBtn');
 })
 window.setContent = setContent;
 
@@ -69,40 +78,54 @@ window.addEventListener('error', function (event) {
 window.addEventListener('unhandledrejection', function (event) {
     console.error("Lỗi Promise không được bắt:");
     console.log("Reason:", event.reason);
-    if (event.reason.response.data.code == 'LOGIN_REQUIRED') {
-        showNotification('Vui lòng đăng nhập lại');
+    if (event.reason.response?.data?.code === 'LOGIN_REQUIRED') {
+        showNotification('Vui lòng đăng nhập lại', 'bg-red-500');
+        setTimeout(() => {
+            window.location.href = '/login/';
+        }, 3000);
         // window.location.href = '/login/';
-    } else {
-
+    }
+    else {
         console.log("event.reason -----", event.reason);
-        if (event.reason.response.data != null) {
-            showNotification('Lỗi: ' + event.reason.response.data.message);
+        if (event.reason.response?.data != null) {
+            showNotification(event.reason.response.data.message);
         } else if (event.reason.response != null) {
-            showNotification('Lỗi: ' + event.reason.response.data);
+            showNotification(event.reason.response.data, 'bg-[#005a9e]');
+        }
+        else if (event.reason != null) {
+            showNotification(event.reason);
         }
 
     }
 });
 
-function showNotification(message) {
+
+function showNotification(message, colorCode) {
+    if (colorCode == null) {
+        colorCode = 'bg-[#005a9e]'
+    }
     const container = document.getElementById('notification-container');
     const box = document.createElement('div');
-    box.style.background = '#005a9e';
-    box.style.color = '#fff';
-    box.style.padding = '16px 24px';
-    box.style.borderRadius = '10px';
-    box.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
-    box.style.marginBottom = '10px';
-    box.style.fontSize = '16px';
-    box.style.display = 'flex';
-    box.style.alignItems = 'center';
-    box.innerHTML = `<span style="margin-right: 8px;">&#9432;</span> <b>Notice</b><br><span> ${message}</span>`;
-    container.appendChild(box);
-
+    box.className = `
+    ${colorCode}
+    text-white
+    px-6 py-4
+    rounded-[10px]
+    shadow-md
+    mb-2.5
+    text-base
+    flex items-center
+`;
+    box.innerHTML = `
+    <span>&#9432;<b>Thông báo</b></span> 
+    <div class="ml-1">${message}</div>
+    `;
+    container.insertBefore(box, container.firstChild);
     setTimeout(() => {
         box.remove();
     }, 3000);
 }
+window.showNotification = showNotification;
 
 async function logoutApp() {
     await logout();

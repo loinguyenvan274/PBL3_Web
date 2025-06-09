@@ -20,23 +20,18 @@
         </div>
         
         <div class="filter-bar">
-            <div class="filter-group">
-                <button class="filter-button">Bộ lọc</button>
-                <button class="filter-button">Giờ khởi hành</button>
-                <button class="filter-button">Giá vé</button>
-                <button class="filter-button">Hãng hàng không</button>
-            </div>
             <div>
-                <select>
-                    <option>Sắp xếp theo: Giá tăng dần</option>
-                    <option>Giờ khởi hành</option>
-                    <option>Thời gian bay</option>
+                <select id="sortOption">
+                    <option value="priceAsc">Giá phổ thông tăng dần</option>
+                    <option value="priceAscVip">Giá thương gia tăng dần</option>
+                    <option value="departureTime">Giờ khởi hành</option>
+                    <option value="duration">Thời gian bay</option>
                 </select>
             </div>
         </div>
          
         <div class="flight-list">
-            <!-- Chuyến bay 1 -->
+            <!-- Danh sách chuyến bay -->
         </div>
     </div>
     <div data-include="share/footer.html"></div>

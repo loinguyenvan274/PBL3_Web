@@ -74,9 +74,9 @@ public class JwtService {
         claims.put("permissions", permissions);
 
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(username) // phần payload: sub = username
                 .setIssuedAt(new Date()) // thời điểm tạo token
-                .setClaims(claims)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // hạn token
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256) // ký bằng khóa bí mật
                 .compact(); // tạo chuỗi token

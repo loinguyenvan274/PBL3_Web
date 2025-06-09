@@ -6,6 +6,7 @@ import com.pbl.flightapp.Model.Account;
 import com.pbl.flightapp.Model.Role;
 import com.pbl.flightapp.Model.User;
 
+import com.pbl.flightapp.appExc.LoginFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pbl.flightapp.Repository.AccountRepo;
 import com.pbl.flightapp.Repository.RoleRepo;
-import com.pbl.flightapp.Repository.UserRepo;
 import com.pbl.flightapp.appExc.AccountException;
 import com.pbl.flightapp.appExc.UserException;
 
@@ -30,7 +30,7 @@ public class AccountService {
     @Autowired
     private RoleRepo roleRepo;
     @Autowired
-    private UserRepo userRepo;
+    private UserService userService;
 
     // Lấy tất cả account
     public List<AccountDTO> getAllAccountByUsername(String username, Integer roleId) {
@@ -48,11 +48,10 @@ public class AccountService {
         if (account.getPassword() == null || account.getPassword().isEmpty())
             throw new AccountException("Password is required", "PASSWORD_REQUIRED");
     }
-    
 
     // Tạo mới account
     @Transactional
-    public Account createAccount(AccountDTO createAccountRequest) throws AccountException ,UserException{
+    public Account createAccount(AccountDTO createAccountRequest) throws AccountException, UserException {
         Account account = createAccountRequest.getAccount();
         User user = createAccountRequest.getUser();
         Role requestRole = createAccountRequest.getRole();
@@ -61,7 +60,7 @@ public class AccountService {
         Long roleId = null;
         if (requestRole != null)
             roleId = requestRole.getId();
-       
+
         Role role = null;
         user.setUserType(UserType.CUSTOMER);
         if (roleId != null) {
@@ -75,23 +74,17 @@ public class AccountService {
         account.setRole(role);
         account.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
         account.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        try {
-            account.setUser(userRepo.save(user));
-        } catch (DataIntegrityViolationException e) {
-            throw new AccountException("Email or card number or phone already exists", "EMAIL_OR_CARD_NUMBER_OR_PHONE_ALREADY_EXISTS");
-        }catch (Exception e) {
-            e.printStackTrace(); // In ra để biết lỗi thật
-            throw new AccountException("Unknown error saving user: " + e.getMessage(), "UNKNOWN_USER_SAVE_ERROR");
-        }
+
+        account.setUser(userService.createUser(user));
+
         try {
             return accountRepo.save(account);
-        } catch (DataIntegrityViolationException  e) {
+        } catch (DataIntegrityViolationException e) {
             throw new AccountException("Username already exists", "USERNAME_ALREADY_EXISTS");
         } catch (Exception e) {
             throw new AccountException("Error creating account", "ERROR_CREATING_ACCOUNT");
         }
     }
-    
 
     // Lấy account theo id
     public Optional<Account> getAccountById(int id) {
@@ -101,8 +94,17 @@ public class AccountService {
     public Optional<Account> getByUsername(String username) {
         return Optional.ofNullable(accountRepo.findByUsername(username));
     }
+    @Transactional
+    public void changePassword( int idAccount,String newPass, String oldPass){
+        Account account = accountRepo.getReferenceById(idAccount);
+        if(!new BCryptPasswordEncoder().matches(oldPass, account.getPassword())){
+            throw new AccountException("Mật khẩu hiện tại không chính xác","PASSWORD_INCORRECT");
+        }
+        account.setPassword(new BCryptPasswordEncoder().encode(newPass));
+    }
 
-    //chi cập nhật account và role không cập nhật user
+
+    // chi cập nhật account và role không cập nhật user
     // Cập nhật account
     @Transactional
     public Account updateAccount(int id, Account updatedAccount) throws AccountException {
@@ -114,14 +116,14 @@ public class AccountService {
         }
         account.copyFrom(updatedAccount);
         account.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
-        if(updatedAccount.getRole() != null){
+        if (updatedAccount.getRole() != null) {
             Role role = roleRepo.findById(updatedAccount.getRole().getId()).orElse(null);
             if (role == null) {
                 throw new AccountException("Role not found", "ROLE_NOT_FOUND");
             }
             account.setRole(role);
             account.getUser().setUserType(UserType.ADMIN);
-        }else{
+        } else {
             account.setRole(null);
             account.getUser().setUserType(UserType.CUSTOMER);
         }

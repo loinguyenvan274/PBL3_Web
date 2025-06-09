@@ -3,6 +3,7 @@ package com.pbl.flightapp.Model;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pbl.flightapp.Enum.UserType;
 import com.pbl.flightapp.Enum.userSex;
 
@@ -48,6 +49,7 @@ public class User {
     private UserType userType;
 
     @OneToOne(mappedBy = "user")
+    @JsonIgnore
     private Account account;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)

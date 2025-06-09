@@ -1,6 +1,6 @@
 package com.pbl.flightapp.appExc;
 
-public class AccountException extends Exception {
+public class AccountException extends RuntimeException {
     String code;
     public AccountException(String message, String code) {
         super(message);

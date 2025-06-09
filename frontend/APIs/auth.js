@@ -3,11 +3,14 @@ import axios from 'axios';
 
 
 // Đăng nhập
-export const login = async (email, password) => {
+export const login = async (email, password, keeplogin) => {
     try {
         const response = await axios.post(`${BASE_URL}/login`, {
-            username: email,
-            password: password
+            account: {
+                username: email,
+                password: password,
+            },
+            keepLoggedIn: keeplogin,
         }, {
             withCredentials: true
         });
@@ -22,15 +25,33 @@ export const login = async (email, password) => {
     }
 };
 
+export const changePassword = async (oldPassword, newPassword) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/change-password`, {
+            oldPassword,
+            newPassword
+        }, {
+            withCredentials: true
+        });
+        return response;
+    } catch (error) {
+       throw error
+    }
+};
+
 // Đăng xuất
 
 
 // Lấy thông tin người dùng đã đăng nhập
 export const getCurrentUser = async () => {
-    const response = await axios.get(`${BASE_URL}/current-user`, {
-        withCredentials: true
-    });
-    return response;
+    try {
+        const response = await axios.get(`${BASE_URL}/current-user`, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 };
 
 // Kiểm tra xem người dùng đã đăng nhập chưa

@@ -24,11 +24,9 @@ public class userController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable int id, @RequestBody User updatedUser) {
-        try {
-            return ResponseEntity.ok(userService.updateUser(id, updatedUser));
-        } catch (UserException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+
+        return ResponseEntity.ok(userService.updateUser(id, updatedUser));
+
     }
 
     @PostMapping("/create")
@@ -44,6 +42,7 @@ public class userController {
     public ResponseEntity<?> findUser(@RequestParam(required = false) String email) {
         return ResponseEntity.ok(userService.getAllUser(email));
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable int id) {
         return ResponseEntity.ok(userService.deleteUser(id));
