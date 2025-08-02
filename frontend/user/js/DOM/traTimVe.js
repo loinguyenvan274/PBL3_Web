@@ -1,5 +1,5 @@
 import { findByCustomerInformation, getTicketsByBookingId } from "../../../APIs/booking";
-
+let bookings = null
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('form');
     const searchType = document.getElementById('searchType');
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
         }
 
-        const bookings = await findByCustomerInformation(email, phone, cardNumber);
+        bookings = await findByCustomerInformation(email, phone, cardNumber);
         displayResults(bookings);
     });
 
@@ -57,7 +57,7 @@ function displayResults(bookings) {
 
     if (!bookings || bookings.length === 0) {
         const noResults = document.createElement('div');
-        noResults.className = 'bg-white rounded-lg shadow-md p-6 text-center';
+        noResults.className = 'booking-results bg-white rounded-lg shadow-md p-6 text-center';
         noResults.innerHTML = `
             <p class="text-gray-600 text-lg">Không tìm thấy đơn đặt vé nào</p>
         `;
@@ -123,23 +123,24 @@ async function viewTickets(bookingId) {
 
     try {
         const tickets = await getTicketsByBookingId(bookingId);
+        const booking = bookings.find(booking => booking.bookingId = bookingId);
 
         if (tickets && tickets.length > 0) {
-            const booking = tickets[0]; // Lấy thông tin booking từ ticket đầu tiên
+            // Lấy thông tin booking từ ticket đầu tiên
 
             // Hiển thị thông tin khách hàng
             customerInfo.innerHTML = `
-                <p><strong>Họ tên:</strong> ${booking.user.fullName}</p>
-                <p><strong>Email:</strong> ${booking.user.email || 'Chưa cập nhật'}</p>
-                <p><strong>Số điện thoại:</strong> ${booking.user.phone || 'Chưa cập nhật'}</p>
-                <p><strong>Địa chỉ:</strong> ${booking.user.address || 'Chưa cập nhật'}</p>
+                <p><strong>Họ tên:</strong> ${booking.customerWhoBought.fullName}</p>
+                <p><strong>Email:</strong> ${booking.customerWhoBought.email || 'Chưa cập nhật'}</p>
+                <p><strong>Số điện thoại:</strong> ${booking.customerWhoBought.phone || 'Chưa cập nhật'}</p>
+                <p><strong>Địa chỉ:</strong> ${booking.customerWhoBought.address || 'Chưa cập nhật'}</p>
             `;
 
             // Hiển thị thông tin thanh toán
             paymentInfo.innerHTML = `
-                <p><strong>Ngày thanh toán:</strong> ${formatDate(booking.createdAt)}</p>
-                <p><strong>Loại vé:</strong> ${booking.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}</p>
-                <p><strong>Giá vé:</strong> ${formatPrice(booking.price)}</p>
+            <p><strong>Ngày thanh toán:</strong> ${formatDate(booking.paymentDate)}</p>
+            <p><strong>Phương thức thanh toán:</strong> ${booking.paymentMethod}</p>
+            <p><strong>Số tiền thanh toán:</strong> ${formatPrice(booking.totalPrice)}</p>
             `;
 
             // Hiển thị danh sách vé
@@ -151,7 +152,7 @@ async function viewTickets(bookingId) {
                             <p class="text-sm text-gray-600">Mã vé: ${ticket.idTicket}</p>
                         </div>
                         <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                            ${ticket.seatName || 'Chưa chọn ghế'}
+                           Ghế: ${ticket.seatName || 'Chưa chọn ghế'}
                         </div>
                     </div>
                     
@@ -182,13 +183,21 @@ async function viewTickets(bookingId) {
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-600">Giá vé:</span>
-                            <span class="font-medium text-green-600">${formatPrice(ticket.price)}</span>
+                              <span class="font-medium text-green-600"> ${formatPrice(ticket.price + (ticket.returnTicket?.price || 0))}</span>
                         </div>
                     </div>
 
                     ${ticket.returnTicket ? `
                     <div class="mt-4 pt-4 border-t border-gray-200">
-                        <h5 class="font-medium text-gray-700 mb-2">Vé về</h5>
+                      <div class="flex justify-between items-start mb-3">
+                         <div>
+                            <h4 class="font-semibold text-lg">Chuyến về - ${ticket.returnTicket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}</h4>
+                        
+                        </div>
+                        <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                          Ghế: ${ticket.returnTicket.seatName || 'Chưa chọn ghế'}
+                        </div>
+                    </div>
                         <div class="space-y-2">
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Chuyến bay:</span>
@@ -196,11 +205,11 @@ async function viewTickets(bookingId) {
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Từ:</span>
-                                <span class="font-medium">${ticket.returnTicket.flight.fromLocation.nameCode}</span>
+                                <span class="font-medium">${ticket.returnTicket.flight.fromLocation.name}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Đến:</span>
-                                <span class="font-medium">${ticket.returnTicket.flight.toLocation.nameCode}</span>
+                                <span class="font-medium">${ticket.returnTicket.flight.toLocation.name}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Ngày bay:</span>
@@ -209,14 +218,6 @@ async function viewTickets(bookingId) {
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Giờ bay:</span>
                                 <span class="font-medium">${ticket.returnTicket.flight.departureTime.slice(0, 5)}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Loại vé:</span>
-                                <span class="font-medium">${ticket.returnTicket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Ghế:</span>
-                                <span class="font-medium">${ticket.returnTicket.seatName || 'Chưa chọn ghế'}</span>
                             </div>
                         </div>
                     </div>
@@ -241,8 +242,6 @@ function formatDate(timestamp) {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
     });
 }
 

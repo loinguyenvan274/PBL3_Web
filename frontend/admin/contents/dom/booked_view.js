@@ -112,80 +112,82 @@ async function showBookingDetail(booking) {
 
     // Hiển thị danh sách vé
     ticketsList.innerHTML = tickets.map(ticket => `
-        <div class="bg-white rounded-lg shadow-md min-w-3xl p-4 border border-gray-200 hover:shadow-lg transition-shadow">
-            <div class="flex justify-between items-start mb-3">
-                <div>
-                    <h4 class="font-semibold text-lg">Vé ${ticket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}</h4>
-                    <p class="text-sm text-gray-600">Mã vé: ${ticket.idTicket}</p>
-                </div>
-                <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                  Ghế: ${ticket.seatName ?  ticket.seatName : "chưa chọn"}
-                </div>
-            </div>
-            
-            <div class="space-y-2">
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Hành khách:</span>
-                    <span class="font-medium">${ticket.user.fullName}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Chuyến bay:</span>
-                    <span class="font-medium">VN${ticket.flight.idFlight}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Ngày bay:</span>
-                    <span class="font-medium">${formatDate(ticket.flight.departureDate)}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Điểm đi:</span>
-                    <span class="font-medium">${ticket.flight.fromLocation.name}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Điểm đến:</span>
-                    <span class="font-medium">${ticket.flight.toLocation.name}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Giờ bay:</span>
-                    <span class="font-medium">${ticket.flight.departureTime.slice(0, 5)}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Giá vé:</span>
-                    <span class="font-medium text-green-600">${formatPrice(ticket.price)}</span>
-                </div>
-            </div>
+       <div class="bg-white  min-w-2xl rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition-shadow">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h4 class="font-semibold text-lg">Vé ${ticket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}</h4>
+                            <p class="text-sm text-gray-600">Mã vé: ${ticket.idTicket}</p>
+                        </div>
+                        <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                           Ghế: ${ticket.seatName || 'Chưa chọn ghế'}
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Hành khách:</span>
+                            <span class="font-medium">${ticket.user.fullName}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Chuyến bay:</span>
+                            <span class="font-medium">VN${ticket.flight.idFlight}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Từ:</span>
+                            <span class="font-medium">${ticket.flight.fromLocation.name}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Đến:</span>
+                            <span class="font-medium">${ticket.flight.toLocation.name}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Ngày bay:</span>
+                            <span class="font-medium">${formatDate(ticket.flight.departureDate)}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Giờ bay:</span>
+                            <span class="font-medium">${ticket.flight.departureTime.slice(0, 5)}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Giá vé:</span>
+                            <span class="font-medium text-green-600"> ${formatPrice(ticket.price + (ticket.returnTicket?.price || 0))}</span>
+                        </div>
+                    </div>
 
-            ${ticket.returnTicket ? `
-            <div class="mt-4 pt-4 border-t border-gray-200">
-                 
-                 <div class="flex justify-between items-start mb-3">
-                <h5 class="font-medium text-gray-700 mb-2">Vé về</h5>
-                <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                  Ghế: ${ticket.returnTicket.seatName ?  ticket.returnTicket.seatName : "chưa chọn"}
-                </div>
-            </div>
-                <div class="space-y-2">
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Chuyến bay:</span>
-                        <span class="font-medium">VN${ticket.returnTicket.flight.idFlight}</span>
+                    ${ticket.returnTicket ? `
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                      <div class="flex justify-between items-start mb-3">
+                         <div>
+                            <h4 class="font-semibold text-lg">Chuyến về - ${ticket.returnTicket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}</h4>
+                        
+                        </div>
+                        <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                          Ghế: ${ticket.returnTicket.seatName || 'Chưa chọn ghế'}
+                        </div>
                     </div>
-                    <div class="flex justify-between">
-                    <span class="text-gray-600">Ngày bay:</span>
-                        <span class="font-medium">${formatDate(ticket.returnTicket.flight.departureDate)}</span>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Chuyến bay:</span>
+                                <span class="font-medium">VN${ticket.returnTicket.flight.idFlight}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Từ:</span>
+                                <span class="font-medium">${ticket.returnTicket.flight.fromLocation.name}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Đến:</span>
+                                <span class="font-medium">${ticket.returnTicket.flight.toLocation.name}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Ngày bay:</span>
+                                <span class="font-medium">${formatDate(ticket.returnTicket.flight.departureDate)}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Giờ bay:</span>
+                                <span class="font-medium">${ticket.returnTicket.flight.departureTime.slice(0, 5)}</span>
+                            </div>
+                        </div>
                     </div>
-                     <div class="flex justify-between">
-                    <span class="text-gray-600">Giờ bay:</span>
-                        <span class="font-medium">${ticket.returnTicket.flight.departureTime.slice(0, 5)}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Loại vé:</span>
-                        <span class="font-medium">${ticket.returnTicket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Giá vé:</span>
-                        <span class="font-medium  text-green-600">${formatPrice(ticket.returnTicket.price)}</span>
-                    </div>
-                </div>
-            </div>
             ` : ''}
         </div>
     `).join('');

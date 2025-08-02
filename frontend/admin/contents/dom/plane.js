@@ -17,6 +17,8 @@ export default async function loadPlane() {
     const editPlaneBtn = document.getElementById("edit-plane-btn");
     const planeFormContainer = document.getElementById("plane-form-container");
     const planeForm = document.getElementById('plane-form');
+    const seatMapParentContainer = document.getElementById('seat-map-parent-container');
+    const creatmapbox = document.getElementById('tao-so-do-box');
 
     // Lắng nghe sự kiện click vào nút "Thêm máy bay"
     addPlaneBtn.addEventListener("click", function () {
@@ -28,21 +30,24 @@ export default async function loadPlane() {
         planeFormContainer.querySelector('#namePlane').value = '';
         planeFormContainer.querySelector('#status').value = '';
         planeFormContainer.querySelector('#flightHours').value = '';
+        seatMapParentContainer.classList.remove("hidden");
+        creatmapbox.classList.remove("hidden");
 
         planeFormContainer.classList.toggle("hidden");
+
     });
+
     //set edit btn
     editPlaneBtn.addEventListener('click', function () {
         if (selectedPlane == null) return;
         planeFormContainer.querySelector('#form-title').innerHTML = 'Chỉnh sửa thông tin máy bay';
         planeFormContainer.querySelector('#submit-form-btn').innerHTML = 'Hoàn tất chỉnh sửa';
-
-
         planeFormContainer.querySelector('#namePlane').value = selectedPlane.namePlane;
         planeFormContainer.querySelector('#status').value = selectedPlane.status;
         planeFormContainer.querySelector('#flightHours').value = selectedPlane.flightHours;
-
         planeFormContainer.classList.toggle("hidden");
+        seatMapParentContainer.classList.add("hidden");
+        creatmapbox.classList.add("hidden");
     })
 
     planeForm.addEventListener('submit', function (e) {
@@ -53,7 +58,7 @@ export default async function loadPlane() {
 
 
 
-    const seatMapParentContainer = document.getElementById('seat-map-parent-container');
+   
     planeFormContainer.addEventListener("click", function (event) {
         if (!planeForm.contains(event.target) && !seatMapParentContainer.contains(event.target)) {
             planeFormContainer.classList.add("hidden");

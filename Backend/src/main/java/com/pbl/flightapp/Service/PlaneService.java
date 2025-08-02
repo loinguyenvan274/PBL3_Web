@@ -2,6 +2,7 @@ package com.pbl.flightapp.Service;
 
 import java.util.List;
 
+import com.pbl.flightapp.Model.Flight;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,9 @@ public class PlaneService {
     private PlaneRepo planeRepo;
     @Autowired
     private SeatRepo seatRepo;
+    @Autowired
+    private  FlightService flightService;
+
 
     public PlaneService() {
     }
@@ -29,6 +33,11 @@ public class PlaneService {
         List<Plane> allPlane = planeRepo.findAll();
         allPlane.forEach(plane -> plane.setSeatCount(seatRepo.countByPlane(plane)));
         return allPlane;
+    }
+    @Transactional
+    void updateStatus(int idPlane, Status status){
+        Plane plane = planeRepo.findByIdPlane(idPlane);
+        plane.setStatus(status);
     }
 
     public Plane getPlaneById(int idPlane) {
@@ -57,6 +66,15 @@ public class PlaneService {
         if (exist == null) {
             throw new RuntimeException("Plane not found");
         }
+        DynamicSchedulerService.getScheduledTasks().forEach(
+                (idFlight,value) -> {
+                   Flight flight =  flightService.getFlightById(idFlight);
+                   if(flight.getPlane().getIdPlane() == idPlane){
+                       throw new RuntimeException("Máy bay đã được lên lịch ở chuyến VN"+flight.getIdFlight()+",không thể chỉnh sửa");
+                   }
+                }
+        );
+
         exist.CopyFrom(plane);
     }
 

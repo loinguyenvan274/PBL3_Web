@@ -39,4 +39,9 @@ public class Location {
             
         this.name = name; 
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pbl.flightapp.Service.UserService;
 import com.pbl.flightapp.Model.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ public class userController {
     private UserService userService;
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasPermission(null, 'EDIT_NGUOI_DUNG')")
     public ResponseEntity<?> updateUser(@PathVariable int id, @RequestBody User updatedUser) {
 
         return ResponseEntity.ok(userService.updateUser(id, updatedUser));
@@ -30,6 +32,7 @@ public class userController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasPermission(null, 'EDIT_NGUOI_DUNG')")
     public ResponseEntity<?> createUser(@RequestBody User user) {
         try {
             return ResponseEntity.ok(userService.createUser(user));
@@ -39,11 +42,13 @@ public class userController {
     }
 
     @GetMapping("/find_user")
+    @PreAuthorize("hasPermission(null, 'VIEW_NGUOI_DUNG')")
     public ResponseEntity<?> findUser(@RequestParam(required = false) String email) {
         return ResponseEntity.ok(userService.getAllUser(email));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasPermission(null, 'EDIT_NGUOI_DUNG')")
     public ResponseEntity<?> deleteUser(@PathVariable int id) {
         return ResponseEntity.ok(userService.deleteUser(id));
     }

@@ -24,6 +24,7 @@ public class PlaneController {
     
     // Get all planes
     @GetMapping("/all_plane")
+    @PreAuthorize("hasPermission(null, 'VIEW_MAY_BAY')")
     public List<Plane> getAllPlanes() {
         return  planeService.getAllPlane();
 
@@ -49,28 +50,28 @@ public class PlaneController {
 
     // Create a new plane
     @PostMapping("")
-    @PreAuthorize("hasPermission(null, 'MANAGE_PLANE')")
+    @PreAuthorize("hasPermission(null, 'EDIT_MAY_BAY')")
     public void addPlane(@RequestBody Plane plane) {
         planeService.addPlane(plane);
     }
 
     // Update a plane
     @PutMapping("")
-    @PreAuthorize("hasPermission(null, 'MANAGE_PLANE')")
+    @PreAuthorize("hasPermission(null, 'EDIT_MAY_BAY')")
     public void updatePlane(@RequestBody Plane plane) {
         planeService.updatePlane(plane.getIdPlane(), plane);
     }
 
     // Delete a plane by ID
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasPermission(null, 'MANAGE_PLANE')")
+    @PreAuthorize("hasPermission(null, 'EDIT_MAY_BAY')")
     public void deletePlane(@PathVariable int id) {
         planeService.deletePlane(id);
     }
 
     // Update only the status of a plane
     @PatchMapping("/{id}/status")
-    @PreAuthorize("hasPermission(null, 'MANAGE_PLANE')")
+    @PreAuthorize("hasPermission(null, 'EDIT_MAY_BAY')")
     public void updatePlaneStatus(@PathVariable int id, @RequestParam Status status) {
         planeService.updatePlaneStatus(id, status);
     }

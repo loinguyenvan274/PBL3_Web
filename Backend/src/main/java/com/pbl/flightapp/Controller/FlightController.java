@@ -18,6 +18,7 @@ import com.pbl.flightapp.appExc.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.ArrayList;
@@ -42,12 +43,14 @@ public class FlightController {
     ///
     // Thêm chuyến bay mới
     @PostMapping("")
+    @PreAuthorize("hasPermission(null, 'EDIT_CHUYEN_BAY')")
     public void addFlight(@RequestBody Flight flight) {
         flightService.addFlight(flight);
     }
 
     // Cập nhật chuyến bay (nếu có thì update, không có thì tạo mới)
     @PutMapping("/{id}")
+    @PreAuthorize("hasPermission(null, 'EDIT_CHUYEN_BAY')")
     public void updateFlight(@PathVariable int id, @RequestBody Flight flight) {
         flight.setIdFlight(id);
         flightService.updateFlight(flight);
@@ -55,6 +58,7 @@ public class FlightController {
 
     // Xoá chuyến bay
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasPermission(null, 'EDIT_CHUYEN_BAY')")
     public void deleteFlight(@PathVariable int id) {
         flightService.deleteFlight(id);
     }
@@ -103,6 +107,7 @@ public class FlightController {
 
     // Lấy toàn bộ chuyến bay
     @GetMapping("/all_flights")
+    @PreAuthorize("hasPermission(null, 'VIEW_CHUYEN_BAY')")
     public List<Flight> allFlights() {
         return flightService.getAllFlight();
     }

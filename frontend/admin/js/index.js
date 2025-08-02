@@ -83,7 +83,6 @@ window.addEventListener('unhandledrejection', function (event) {
         setTimeout(() => {
             window.location.href = '/login/';
         }, 3000);
-        // window.location.href = '/login/';
     }
     else {
         console.log("event.reason -----", event.reason);

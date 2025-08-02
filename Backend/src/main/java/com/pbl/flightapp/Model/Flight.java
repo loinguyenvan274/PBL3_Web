@@ -9,6 +9,9 @@ import jakarta.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -47,9 +50,6 @@ public class Flight {
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore()
     private List<Flights_Seat> flightsSeatList;
-
-    
-
 
     // @OneToMany(mappedBy = "flightReturn", cascade =
     // CascadeType.ALL,orphanRemoval = true)
@@ -146,12 +146,12 @@ public class Flight {
     }
 
     public Long getPrice(TicketType ticketType) {
-        if(ticketType == TicketType.ECONOMY) {
+        if (ticketType == TicketType.ECONOMY) {
             return commonFare;
         }
         return vipFare;
     }
-    
+
     public void setPlane(Plane plane) {
         this.plane = plane;
     }
@@ -210,5 +210,27 @@ public class Flight {
         this.toLocation = flight.toLocation;
         // createdAt bằng thời gian hiện tại
         this.createdAt = new Timestamp(System.currentTimeMillis());
+    }
+
+    public LocalDateTime getLandingTime() {
+        if (departureDate == null || departureTime == null || durationMinutes == null) {
+            return null;
+        }
+
+        return this.getDepartureLocalDateTime().plusMinutes(durationMinutes);
+    }
+
+    public LocalDateTime getDepartureLocalDateTime() {
+        if (departureDate == null || departureTime == null)
+            return null;
+        LocalDate date = departureDate.toLocalDate();
+        LocalTime time = departureTime.toLocalTime();
+        LocalDateTime departureDateTime = LocalDateTime.of(date, time);
+        return departureDateTime;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Flight &&  this.getIdFlight() == ((Flight) obj).getIdFlight();
     }
 }

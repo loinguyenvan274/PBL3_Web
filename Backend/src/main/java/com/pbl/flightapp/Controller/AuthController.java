@@ -68,7 +68,7 @@ public class AuthController {
    }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
+    public ResponseEntity<?> login (@RequestBody LoginRequest loginRequest,
             HttpServletResponse response) {
         String jwtToken = null;
         try {
@@ -89,12 +89,14 @@ public class AuthController {
         // Trả response
         return ResponseEntity.ok(jwtService.getPermissions(jwtToken));
     }
+
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest ,HttpServletRequest request){
         Account account = getAccoutByRequest(request);
         accountService.changePassword(account.getIdAccount(),changePasswordRequest.getNewPassword(),changePasswordRequest.getOldPassword());
         return ResponseEntity.ok("Đổi mật khẩu thành công");
     }
+
     public static class ChangePasswordRequest{
         private String oldPassword;
         private String newPassword;
@@ -119,7 +121,6 @@ public class AuthController {
 
     @PostMapping("/logoutApp")
     public ResponseEntity<?> logout(HttpServletResponse response) {
-
         ResponseCookie deleteCookie = ResponseCookie.from("token", "")
                 .httpOnly(true)
                 .secure(false)
@@ -129,7 +130,6 @@ public class AuthController {
                 .build();
         // Gửi cookie xoá về trình duyệt
         response.addHeader(HttpHeaders.SET_COOKIE, deleteCookie.toString());
-
         // Phản hồi
         return ResponseEntity.ok("Đăng xuất thành công");
     }

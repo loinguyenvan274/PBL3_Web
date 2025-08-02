@@ -52,14 +52,14 @@ public class WebFilters {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-//                        .requestMatchers("/role/**").permitAll()
                         .requestMatchers("/login/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/flight/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/bookings/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/bookings/**").permitAll()
 //                        .requestMatchers("/account/**").permitAll()
+//                        .requestMatchers("/role/**").permitAll()
                         .requestMatchers("/location/**").permitAll()
+
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtService),
                         UsernamePasswordAuthenticationFilter.class)

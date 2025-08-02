@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleAllExceptions(Exception e) {
         Map<String, String> error = new HashMap<>();
-        error.put("message", "Lỗi không xác định: " + e.getMessage());
+        error.put("message",e.getMessage());
         error.put("code", "UNKNOWN_ERROR");
         // In log hoặc stacktrace để tiện debug
         e.printStackTrace();

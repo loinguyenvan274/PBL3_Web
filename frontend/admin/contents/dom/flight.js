@@ -22,6 +22,8 @@ import {
 
 
 let selectedFlight;
+let allFlights = []; // Lưu tất cả chuyến bay
+let currentFilter = 'all'; // Bộ lọc hiện tại: 'all', 'upcoming', 'past'
 
 export default async function loadFlightJS() {
     selectedFlight = null;
@@ -38,6 +40,29 @@ export default async function loadFlightJS() {
     const formContainer = document.getElementById("plane-form-container");
     const flightForm = document.getElementById("plane-form");
     const viewSeatMapBtn = document.getElementById("view-seat-map-btn");
+
+    // Thêm event listeners cho các nút lọc
+    const filterAllBtn = document.getElementById("filter-all-btn");
+    const filterUpcomingBtn = document.getElementById("filter-upcoming-btn");
+    const filterPastBtn = document.getElementById("filter-past-btn");
+
+    filterAllBtn.addEventListener("click", () => {
+        currentFilter = 'all';
+        updateFilterButtons();
+        loadFlightsTable(filterFlights(allFlights));
+    });
+
+    filterUpcomingBtn.addEventListener("click", () => {
+        currentFilter = 'upcoming';
+        updateFilterButtons();
+        loadFlightsTable(filterFlights(allFlights));
+    });
+
+    filterPastBtn.addEventListener("click", () => {
+        currentFilter = 'past';
+        updateFilterButtons();
+        loadFlightsTable(filterFlights(allFlights));
+    });
 
     addBtn.addEventListener("click", () => {
         selectedFlight = null;
@@ -62,9 +87,9 @@ export default async function loadFlightJS() {
         if (!selectedFlight) return;
         await deleteFlight(selectedFlight.idFlight);
         selectedFlight = null;
-        loadFlightsTable(await getAllFlights());
+        allFlights = await getAllFlights();
+        loadFlightsTable(filterFlights(allFlights));
     });
-
 
     flightForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -77,7 +102,8 @@ export default async function loadFlightJS() {
         }
         selectedFlight = null;
         formContainer.classList.add("hidden");
-        loadFlightsTable(await getAllFlights());
+        allFlights = await getAllFlights();
+        loadFlightsTable(filterFlights(allFlights));
     });
 
     formContainer.addEventListener("click", (e) => {
@@ -90,6 +116,7 @@ export default async function loadFlightJS() {
         if (!selectedFlight) return;
         await showFlight(selectedFlight);
     });
+
     const viewFlightContainer = document.getElementById("view-flight-container");
     const viewFlightContent = document.getElementById("view-flight-content");
     viewFlightContainer.addEventListener("click", (e) => {
@@ -107,8 +134,76 @@ export default async function loadFlightJS() {
         }
     });
 
-    loadFlightsTable(await getAllFlights());
+    // Load dữ liệu ban đầu
+    allFlights = await getAllFlights();
+    updateFilterButtons();
+    loadFlightsTable(filterFlights(allFlights));
 }
+
+// Hàm lọc chuyến bay theo trạng thái
+function filterFlights(flights) {
+    const now = new Date();
+
+    switch (currentFilter) {
+        case 'upcoming':
+            return flights.filter(flight => {
+                const flightDateTime = new Date(`${flight.departureDate}T${flight.departureTime}`);
+                return flightDateTime > now;
+            });
+        case 'past':
+            return flights.filter(flight => {
+                const flightDateTime = new Date(`${flight.departureDate}T${flight.departureTime}`);
+                return flightDateTime <= now;
+            });
+        case 'all':
+        default:
+            return flights;
+    }
+}
+
+// Hàm cập nhật trạng thái nút lọc
+function updateFilterButtons() {
+    const filterAllBtn = document.getElementById("filter-all-btn");
+    const filterUpcomingBtn = document.getElementById("filter-upcoming-btn");
+    const filterPastBtn = document.getElementById("filter-past-btn");
+
+    // Reset tất cả nút về trạng thái mặc định
+    [filterAllBtn, filterUpcomingBtn, filterPastBtn].forEach(btn => {
+        btn.classList.remove("bg-blue-600", "text-white");
+        btn.classList.add("bg-gray-200", "text-gray-700");
+    });
+
+    // Highlight nút được chọn
+    switch (currentFilter) {
+        case 'all':
+            filterAllBtn.classList.remove("bg-gray-200", "text-gray-700");
+            filterAllBtn.classList.add("bg-blue-600", "text-white");
+            break;
+        case 'upcoming':
+            filterUpcomingBtn.classList.remove("bg-gray-200", "text-gray-700");
+            filterUpcomingBtn.classList.add("bg-blue-600", "text-white");
+            break;
+        case 'past':
+            filterPastBtn.classList.remove("bg-gray-200", "text-gray-700");
+            filterPastBtn.classList.add("bg-blue-600", "text-white");
+            break;
+    }
+}
+
+// Hàm kiểm tra chuyến bay đã bay hay chưa
+function isFlightPast(flight) {
+    const departure = new Date(`${flight.departureDate}T${flight.departureTime}`);
+    const landing = new Date(departure.getTime() + flight.durationMinutes * 60000);
+    return new Date() > landing;
+}
+
+function isFlightInProgress(flight) {
+    const now = new Date();
+    const departure = new Date(`${flight.departureDate}T${flight.departureTime}`);
+    const landing = new Date(departure.getTime() + flight.durationMinutes * 60000);
+    return now >= departure && now <= landing;
+}
+
 
 async function showFlight(flight) {
     const viewFlightContainer = document.getElementById("view-flight-container");
@@ -143,7 +238,6 @@ async function showFlight(flight) {
         || (ticket.returnTicket && ticket.returnTicket.flight.idFlight === flight.idFlight && ticket.returnTicket.ticketType === "ECONOMY")
     );
 
-
     const bookedBusinessTickets = flightInformation.bookedTickets.filter(ticket => (ticket.ticketType === "BUSINESS" && ticket.flight.idFlight === flight.idFlight)
         || (ticket.returnTicket && ticket.returnTicket.flight.idFlight === flight.idFlight && ticket.returnTicket.ticketType === "BUSINESS")
     );
@@ -157,81 +251,99 @@ async function showFlight(flight) {
 
     //show danh sách vé
     ticketsList.innerHTML = flightInformation.bookedTickets.map(ticket => {
-        console.log("ticket: ", ticket);
         return `
-        <div class="bg-white rounded-lg shadow-md min-w-3xl p-4 border border-gray-200 hover:shadow-lg transition-shadow">
-            <div class="flex justify-between items-start mb-3">
-                <div>
-                    <h4 class="font-semibold text-lg">Vé ${ticket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}  ${ticket.returnTicket ? '- vé khứ hồi' : ''}</h4>
-                    <p class="text-sm text-gray-600">Mã vé: ${ticket.idTicket}</p>
-                </div>
-                <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                    ${ticket.seatName}
-                </div>
-            </div>
-            
-            <div class="space-y-2">
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Hành khách:</span>
-                    <span class="font-medium">${ticket.user.fullName}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Chuyến bay:</span>
-                    <span class="font-medium">VN${ticket.flight.idFlight}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Ngày bay:</span>
-                    <span class="font-medium">${formatDate(ticket.flight.departureDate)}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Giờ bay:</span>
-                    <span class="font-medium">${ticket.flight.departureTime.slice(0, 5)}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Giá vé:</span>
-                    <span class="font-medium text-green-600">${formatPrice(ticket.price)}</span>
-                </div>
-            </div>
-
-            ${ticket.returnTicket ? `
-            <div class="mt-4 pt-4 border-t border-gray-200">
-                <h5 class="font-medium text-gray-700 mb-2">Thông tin chuyến bay về</h5>
-                <div class="space-y-2">
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Chuyến bay:</span>
-                        <span class="font-medium">VN${ticket.returnTicket.flight.idFlight}</span>
+        <div class="bg-white  min-w-2xl rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition-shadow">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h4 class="font-semibold text-lg">Vé ${ticket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}</h4>
+                            <p class="text-sm text-gray-600">Mã vé: ${ticket.idTicket}</p>
+                        </div>
+                        <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                           Ghế: ${ticket.seatName || 'Chưa chọn ghế'}
+                        </div>
                     </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Loại vé:</span>
-                        <span class="font-medium">${ticket.returnTicket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Ngày bay:</span>
-                        <span class="font-medium">${formatDate(ticket.returnTicket.flight.departureDate)}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Giờ bay:</span>
-                        <span class="font-medium">${ticket.returnTicket.flight.departureTime.slice(0, 5)}</span>
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Hành khách:</span>
+                            <span class="font-medium">${ticket.user.fullName}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Chuyến bay:</span>
+                            <span class="font-medium">VN${ticket.flight.idFlight}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Từ:</span>
+                            <span class="font-medium">${ticket.flight.fromLocation.name}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Đến:</span>
+                            <span class="font-medium">${ticket.flight.toLocation.name}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Ngày bay:</span>
+                            <span class="font-medium">${formatDate(ticket.flight.departureDate)}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Giờ bay:</span>
+                            <span class="font-medium">${ticket.flight.departureTime.slice(0, 5)}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Giá vé:</span>
+                            <span class="font-medium text-green-600"> ${formatPrice(ticket.price + (ticket.returnTicket?.price || 0))}</span>
+                        </div>
                     </div>
 
-                </div>
-            </div>
+                    ${ticket.returnTicket ? `
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                      <div class="flex justify-between items-start mb-3">
+                         <div>
+                            <h4 class="font-semibold text-lg">Chuyến về - ${ticket.returnTicket.ticketType === 'ECONOMY' ? 'Phổ thông' : 'Thương gia'}</h4>
+                        
+                        </div>
+                        <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                          Ghế: ${ticket.returnTicket.seatName || 'Chưa chọn ghế'}
+                        </div>
+                    </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Chuyến bay:</span>
+                                <span class="font-medium">VN${ticket.returnTicket.flight.idFlight}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Từ:</span>
+                                <span class="font-medium">${ticket.returnTicket.flight.fromLocation.name}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Đến:</span>
+                                <span class="font-medium">${ticket.returnTicket.flight.toLocation.name}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Ngày bay:</span>
+                                <span class="font-medium">${formatDate(ticket.returnTicket.flight.departureDate)}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Giờ bay:</span>
+                                <span class="font-medium">${ticket.returnTicket.flight.departureTime.slice(0, 5)}</span>
+                            </div>
+                        </div>
+                    </div>
             ` : ''}
         </div>
     `;
     }).join('');
 }
+
 function formatDate(timestamp) {
     if (!timestamp) return "";
     const date = new Date(timestamp);
     return date.toLocaleDateString('vi-VN', {
         year: 'numeric',
         month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
+        day: '2-digit'
     });
 }
+
 // Format giá tiền
 function formatPrice(price) {
     if (!price) return "";
@@ -241,56 +353,6 @@ function formatPrice(price) {
     }).format(price);
 }
 
-/*
-{
-    "flight": {
-        "idFlight": 7,
-        "planeId": 3,
-        "departureDate": "2025-06-08",
-        "departureTime": "16:54:00",
-        "durationMinutes": 100,
-        "commonFare": 323,
-        "vipFare": 2321,
-        "fromLocationId": 1,
-        "toLocationId": 16,
-        "createdAt": null,
-        "bookedEconomyCustomerNumber": 0,
-        "bookedVipCustomerNumber": 0,
-        "economySeats": 0,
-        "vipSeats": 0
-    },
-    "bookedTickets": [
-        {
-            "Customer": {
-                "idUser": 12,
-                "fullName": "Nguy?n Van A",
-                "phone": "0123456789",
-                "address": "123 Ðu?ng ABC, Qu?n XYZ, TP.HCM",
-                "email": "nguyenvana@example.com",
-                "dateOfBirth": "1990-01-01 07:00:00.0",
-                "userType": "CUSTOMER"
-            },
-            "ticketType": "ECONOMY"
-        },
-        { 
-            "Customer": {
-                "idUser": 13,
-                "fullName": "Tr?n Th? B",
-                "phone": "0987654321",
-                "address": "456 Ðu?ng XYZ, Qu?n ABC, TP.HCM",
-                "email": "tranthib@example.com",
-                "dateOfBirth": "1992-02-02 07:00:00.0",
-                "userType": "CUSTOMER"
-            },
-            "ticketType": "ECONOMY"
-        }
-    ],
-    "businessSeatNumber": 0,
-    "economySeatNumber": 60
-}
-*/
-
-
 function showSeatMap(flight_seats) {
     const SeatNumber = { bookedBusiness: 0, bookedEconomy: 0, notBookedBusiness: 0, notBookedEconomy: 0 };
     //show sơ đồ ghế
@@ -298,7 +360,6 @@ function showSeatMap(flight_seats) {
     const view_map_seat_container = document.getElementById('view-map-seat-container');
     view_map_seat_container.classList.remove('hidden');
     seat_map.innerHTML = '';
-
 
     const head_seat_map = document.createElement('div');
     head_seat_map.className = "flex w-full mb-4";
@@ -313,15 +374,6 @@ function showSeatMap(flight_seats) {
     //tìm số hàng lơn nhất và số ghế lớn nhất
     const seatNumbers = flight_seats.map(flight_seat => flight_seat.seat.seatNumber);
 
-    // seatNumbers.sort((a, b) => {
-    //     const [numA, charA] = [parseInt(a), a.match(/[A-Z]/i)[0]];
-    //     const [numB, charB] = [parseInt(b), b.match(/[A-Z]/i)[0]];
-
-    //     if (numA === numB) {
-    //         return charA.localeCompare(charB); // so sánh chữ cái
-    //     }
-    //     return numA - numB; // so sánh số
-    // });
     let maxNumber = 0;
     let maxLetter = '';
 
@@ -412,8 +464,8 @@ function showSeatMap(flight_seats) {
                 </div>
     `
     document.getElementById('view-map-seat-content-container').appendChild(inforSeatmapDiv);
-
 }
+
 function getSeatByNumber(flight_seats, seatNumber) {
     const result = flight_seats.find(
         flight_seat => flight_seat.seat.seatNumber === seatNumber
@@ -426,7 +478,7 @@ function planesSelect(selectId, planes) {
     select.innerHTML = `<option value="" disabled selected>Chọn máy bay</option>`;
     planes.forEach(plane => {
         const opt = document.createElement("option");
-        opt.value = JSON.stringify(plane);
+        opt.value = plane.idPlane;
         opt.textContent = plane.namePlane;
         select.appendChild(opt);
     });
@@ -443,12 +495,18 @@ function populateLocationSelect(selectId, locations) {
     });
 }
 
-
 function showForm(title, buttonLabel) {
     const container = document.getElementById("plane-form-container");
 
     container.querySelector('#form-title').textContent = title;
     container.querySelector('#submit-form-btn').textContent = buttonLabel;
+    const inputPlaneDiv = container.querySelector('#box-input-plane');
+    if (title == "Chỉnh sửa chuyến bay") {
+        inputPlaneDiv.classList.add('hidden')
+    }
+    else {
+        inputPlaneDiv.classList.remove('hidden')
+    }
     container.classList.remove("hidden");
 }
 
@@ -460,7 +518,7 @@ function clearForm() {
 function fillForm(flight) {
     const form = document.getElementById("plane-form");
 
-    form["mayBay"].value = JSON.stringify(flight.plane);
+    form["mayBay"].value = flight.plane.idPlane;
     form["from"].value = JSON.stringify(flight.fromLocation);
     form["to"].value = JSON.stringify(flight.toLocation);
 
@@ -475,13 +533,12 @@ function fillForm(flight) {
     form["vipFare"].value = flight.vipFare || "";
 }
 
-
 function getFlightFromForm(e) {
     const f = e.target.elements;
     const [datePart, rawTimePart] = f["departureDate"].value.split("T");
     const timePart = rawTimePart.length === 5 ? rawTimePart + ":00" : rawTimePart;
     return {
-        plane: JSON.parse(f["mayBay"].value),
+        plane: { idPlane: f["mayBay"].value },
         fromLocation: JSON.parse(f['from'].value),
         toLocation: JSON.parse(f['to'].value),
         departureDate: datePart,
@@ -495,32 +552,83 @@ function getFlightFromForm(e) {
 function loadFlightsTable(flights) {
     const table = document.getElementById("plane-table-body");
     table.innerHTML = '';
+
     flights.forEach(flight => {
         const row = document.createElement("tr");
-        row.className = "bg-gray-100 hover:bg-amber-100";
+
+        const isPast = isFlightPast(flight);
+        const isFlying = isFlightInProgress(flight);
+
+        if (isPast) {
+            row.className = "bg-red-50 hover:bg-red-100 opacity-75";
+        } else if (isFlying) {
+            row.className = "bg-blue-50 hover:bg-blue-100";
+        } else {
+            row.className = "bg-gray-100 hover:bg-amber-100";
+        }
+
         row.setAttribute("flight", JSON.stringify(flight));
 
+        let statusBadge = '';
+        if (isPast) {
+            statusBadge = '<span class="inline-block bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full">Đã bay</span>';
+        } else if (isFlying) {
+            statusBadge = '<span class="inline-block bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full">Đang bay</span>';
+        } else {
+            statusBadge = '<span class="inline-block bg-green-200 text-green-800 text-xs px-2 py-1 rounded-full">Chưa bay</span>';
+        }
+
+
         row.innerHTML = `
-            <td class="border px-2 py-1">F_${flight.idFlight}</td>
+            <td class="border px-2 py-1">
+                <div>VN${flight.idFlight}</div>
+                <div class="mt-1">${statusBadge}</div>
+            </td>
             <td class="border px-2 py-1">${flight.plane?.namePlane || ""}</td>
             <td class="border px-2 py-1">${flight.fromLocation?.name || ""}</td>
             <td class="border px-2 py-1">${flight.toLocation?.name || ""}</td>
             <td class="border px-2 py-1">${flight.departureDate} | ${flight.departureTime}</td>
             <td class="border px-2 py-1">${flight.durationMinutes} phút</td>
-            <td class="border px-2 py-1">${flight.vipFare}</td>
-            <td class="border px-2 py-1">${flight.commonFare}</td>
+            <td class="border px-2 py-1 ">${flight.vipFare.toLocaleString('vi-VN')}VND</td>
+            <td class="border px-2 py-1">${flight.commonFare.toLocaleString('vi-VN')}VND</td>
         `;
 
         row.addEventListener("click", () => {
             table.querySelectorAll("tr").forEach(r => {
                 r.classList.remove("bg-amber-300");
-                r.classList.add("bg-gray-100");
+                // Khôi phục class gốc
+                const flightData = JSON.parse(r.getAttribute("flight"));
+                const isFlightPast_ = isFlightPast(flightData);
+                r.className = isFlightPast_
+                    ? "bg-red-50 hover:bg-amber-100 opacity-75"
+                    : "bg-gray-100 hover:bg-amber-100";
             });
             selectedFlight = JSON.parse(row.getAttribute("flight"));
-            row.classList.remove("bg-gray-100");
+            row.classList.remove("bg-gray-100", "bg-red-50");
             row.classList.add("bg-amber-300");
         });
 
         table.appendChild(row);
     });
+
+    // Cập nhật thống kê
+    updateFlightStats(flights);
+}
+
+// Hàm cập nhật thống kê chuyến bay
+function updateFlightStats(flights) {
+    const now = new Date();
+    const upcomingFlights = flights.filter(flight => {
+        const flightDateTime = new Date(`${flight.departureDate}T${flight.departureTime}`);
+        return flightDateTime > now;
+    });
+    const pastFlights = flights.filter(flight => {
+        const flightDateTime = new Date(`${flight.departureDate}T${flight.departureTime}`);
+        return flightDateTime <= now;
+    });
+
+    // Cập nhật số liệu trên các nút lọc
+    document.getElementById("filter-all-btn").innerHTML = `Tất cả`;
+    document.getElementById("filter-upcoming-btn").innerHTML = `Chưa bay`;
+    document.getElementById("filter-past-btn").innerHTML = `Đã bay`;
 }

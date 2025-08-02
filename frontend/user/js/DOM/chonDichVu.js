@@ -154,7 +154,8 @@ function updateTotalPrice() {
     }
     const customerNumber = JSON.parse(sessionStorage.getItem('customerData')).length;
 
-    totalPriceView.innerHTML = ` ${totalPrice * customerNumber} VND`;
+    const formattedPrice = (totalPrice * customerNumber).toLocaleString('vi-VN');
+    totalPriceView.innerHTML = `${formattedPrice} VND`;
 }
 
 window.addEventListener('error', function (event) {
