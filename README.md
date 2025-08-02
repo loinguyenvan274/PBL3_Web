@@ -1,78 +1,82 @@
-# ✈️ PBL3_Web – Website Bán Vé Máy Bay
+🌐 言語: [日本語](README.md) | [Tiếng việt](README_VI.md)
+# ✈️ PBL3\_Web – 航空券販売ウェブサイト
 
-> Đồ án môn học **PBL3 – Xây dựng phần mềm**  
-> Nhóm sinh viên trường đại học Bách Khoa - Đại học Đà Nẵng
-> Hệ thống web hỗ trợ người dùng tìm kiếm, đặt vé, thanh toán và quản lý chuyến bay nhanh chóng, tiện lợi.
-
----
-
-## 📌 Mục tiêu dự án
-
-Dự án nhằm mục đích xây dựng một hệ thống đặt vé máy bay trực tuyến, giúp giải quyết các vấn đề:
-- Tốn thời gian khi đặt vé truyền thống.
-- Khó tra cứu lịch trình và thông tin chuyến bay.
-- Thiếu minh bạch trong việc quản lý hóa đơn, vé và doanh thu.
+> 科目プロジェクト **PBL3 – ソフトウェア開発**
+> ダナン大学工科大学の学生チーム
+> 本システムは、ユーザーが迅速かつ便利にフライトを検索・予約・決済・管理できるように支援します。
 
 ---
 
-## 💡 Tính năng chính
+## 📌 プロジェクトの目的
 
-### 🎫 Đối với người dùng:
+本プロジェクトは、オンライン航空券予約システムの構築を目的とし、以下の課題を解決します：
 
-- Đăng ký, đăng nhập.
-- Tìm kiếm chuyến bay theo ngày, điểm đi, điểm đến.
-- Đặt vé máy bay, chọn chỗ ngồi.
-- Xem lịch sử đặt vé.
-- Thanh toán và nhận hóa đơn.
-
-### 🛠️ Đối với quản trị viên:
-- Quản lý máy bay (CRUD).
-- Quản lý chuyến bay (CRUD).
-- Quản lý tài khoản người dùng, phân quyền (Admin/User).
-- Quản lý vé máy bay.
+* 従来の予約方法では時間がかかる
+* フライトスケジュールや詳細の検索が困難
+* 請求書、チケット、売上管理の透明性が低い
 
 ---
 
-## 🛠️ Công nghệ sử dụng
+## 💡 主な機能
 
-| Thành phần       | Công nghệ được sử dụng                        |
-|------------------|-----------------------------------------------|
-| Backend          | Java Spring Boot                              |
-| Frontend         | HTML5, CSS3, JavaScript thuần                 |
-| Cơ sở dữ liệu    | SQL Server                                          |
-| ORM              | Spring Data JPA                               |
-| IDE              | IntelliJ IDEA                                  |
-| Quản lý dự án    | GitHub                                         |
-| Công cụ hỗ trợ   | Postman             |
+### 🎫 ユーザー向け機能：
 
+* 新規登録・ログイン
+* 日付・出発地・目的地によるフライト検索
+* 航空券の予約・座席指定
+* 予約履歴の確認
+* 決済と請求書の受け取り
 
+### 🛠️ 管理者向け機能：
 
----
-## Yêu cầu hệ thống
-| Thành phần        | Phiên bản yêu cầu                     |
-| ----------------- | ------------------------------------- |
-| Java              | **JDK 22**                            |
-| Maven             | **Maven 3.8+**                        |
-| Hệ điều hành      | Windows / macOS / Linux               |
-| IDE (khuyến nghị) | IntelliJ IDEA / Eclipse               |
-| Database          | **SQL Server** (Microsoft SQL Server) |
-| Trình duyệt       | Google Chrome / Firefox / Edge        |
+* 航空機の管理（CRUD）
+* フライトの管理（CRUD）
+* ユーザーアカウントと権限管理（Admin/User）
+* 航空券の管理
 
 ---
 
-## 🚀 Hướng dẫn chạy dự án
+## 🛠️ 使用技術
 
-### 1. Clone project
+| コンポーネント  | 使用技術                       |
+| -------- | -------------------------- |
+| バックエンド   | Java Spring Boot           |
+| フロントエンド  | HTML5, CSS3, 純粋なJavaScript |
+| データベース   | SQL Server                 |
+| ORM      | Spring Data JPA            |
+| IDE      | IntelliJ IDEA              |
+| プロジェクト管理 | GitHub                     |
+| サポートツール  | Postman                    |
+
+---
+
+## システム要件
+
+| コンポーネント | 要件バージョン                        |
+| ------- | ------------------------------ |
+| Java    | **JDK 22**                     |
+| Maven   | **Maven 3.8以上**                |
+| OS      | Windows / macOS / Linux        |
+| IDE（推奨） | IntelliJ IDEA / Eclipse        |
+| データベース  | **SQL Server**（Microsoft）      |
+| ブラウザ    | Google Chrome / Firefox / Edge |
+
+---
+
+## 🚀 プロジェクト実行手順
+
+### 1. プロジェクトをクローン
+
 ```bash
 git clone https://github.com/loinguyenvan274/PBL3_Web.git
 cd PBL3_Web
-````
+```
 
-### 2. Cấu hình cơ sở dữ liệu MySQL
+### 2. MySQL データベースを設定
 
-* Tạo cơ sở dữ liệu tên `pbl3_web` trong MySQL.
-* Import file `pbl3_web.sql` nếu có (trong thư mục `database/` hoặc bạn tự export).
-* Cập nhật file `application.properties`:
+* `pbl3_web` という名前のデータベースを作成
+* `pbl3_web.sql` をインポート（`database/` フォルダにある、または手動でエクスポート）
+* `application.properties` を以下のように更新：
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/pbl3_web
@@ -80,59 +84,61 @@ spring.datasource.username=root
 spring.datasource.password=your_password
 ```
 
-### 3. Chạy ứng dụng Spring Boot
+### 3. Spring Boot アプリケーションを起動
 
 ```bash
 mvn clean install
 mvn spring-boot:run
 ```
-### 5. run frontend
+
+### 4. フロントエンドを実行
+
 ```bash
 npm run dev
 ```
 
-### 5. Truy cập web
+### 5. Webアクセス
 
-* Mở trình duyệt và truy cập: [http://localhost:5173/](http://localhost:5173/)
-
----
-
-## 🖼️ Giao diện (Screenshots)
-
-### Admin
-
-| Trang                      | Ảnh minh họa                      |
-| -------------------------- | --------------------------------- |
-| Trang chủ                  | ![Trang chủ](Screenshots/1.png)  |
-| Quản lý máy bay        | ![#](Screenshots/2.png)    |
-| Sơ đồ ghế                    | ![#](Screenshots/3.png)        |
-| Thông tin chuyến bay | ![#](Screenshots/4.png)        |
-| Đơn đặt vé | ![#](Screenshots/5.png)        |
-| Chi tiết vé | ![#](Screenshots/6.png)        |
-| Thông tin khách hàng | ![#](Screenshots/7.png)        |
-| Quản lý vai trò | ![#](Screenshots/8.png)        |
-| Tài khoảng | ![#](Screenshots/9.png)        |
-
-### Khách hàng 
-
-| Trang                      | Ảnh minh họa                      |
-| -------------------------- | --------------------------------- |
-| Trang chủ                  | ![Trang chủ](Screenshots/10.png)  |
-| Vé được tìm                  | ![Trang chủ](Screenshots/11.png)  |
-| Trang chọn ghế                 | ![Trang chủ](Screenshots/13.png)  |
+ブラウザで次のURLを開く： [http://localhost:5173/](http://localhost:5173/)
 
 ---
 
-## 🔐 Phân quyền người dùng
+## 🖼️ 画面例（スクリーンショット）
 
-| Vai trò | Quyền hạn                                         |
-| ------- | ------------------------------------------------- |
-| User    | Tìm kiếm, đặt vé, xem vé                          |
-| Admin   | Quản lý máy bay, chuyến bay, người dùng, thống kê |
+### 管理者用画面
+
+| ページ名    | 画像                          |
+| ------- | --------------------------- |
+| ホーム     | ![ホーム](Screenshots/1.png)   |
+| 航空機管理   | ![管理](Screenshots/2.png)    |
+| 座席マップ   | ![座席](Screenshots/3.png)    |
+| フライト情報  | ![情報](Screenshots/4.png)    |
+| 予約一覧    | ![予約](Screenshots/5.png)    |
+| チケット詳細  | ![詳細](Screenshots/6.png)    |
+| 顧客情報    | ![顧客](Screenshots/7.png)    |
+| 権限管理    | ![権限](Screenshots/8.png)    |
+| アカウント管理 | ![アカウント](Screenshots/9.png) |
+
+### 顧客用画面
+
+| ページ名     | 画像                         |
+| -------- | -------------------------- |
+| ホーム      | ![ホーム](Screenshots/10.png) |
+| フライト検索結果 | ![検索](Screenshots/11.png)  |
+| 座席選択ページ  | ![選択](Screenshots/13.png)  |
 
 ---
 
-## 📂 Cấu trúc thư mục
+## 🔐 ユーザー権限
+
+| 役割    | 権限                   |
+| ----- | -------------------- |
+| User  | フライト検索、予約、チケット確認     |
+| Admin | 航空機・フライト・ユーザー管理、統計表示 |
+
+---
+
+## 📂 ディレクトリ構成
 
 ```bash
 PBL3_Web/
@@ -154,53 +160,50 @@ PBL3_Web/
 
 ---
 
-## ❗ Lưu ý
+## ❗ 注意事項
 
-* Dự án được xây dựng phục vụ mục đích học tập, không dùng cho thương mại.
-* Một số tính năng thanh toán có thể giả lập (không kết nối thật với cổng thanh toán).
-
----
-## Điểm tâm huyết
-Trong suốt quá trình xây dựng hệ thống, tính năng "chọn chỗ ngồi" là phần mà chúng tôi đầu tư nhiều công sức và tâm huyết nhất. Đây không chỉ là một chức năng nhỏ, mà là điểm mấu chốt tạo nên trải nghiệm thực tế và chuyên nghiệp cho người dùng.
-
-### Tại sao lại quan trọng?
-Thay vì đặt vé ngẫu nhiên, người dùng có quyền lựa chọn chỗ ngồi mong muốn, tương tự các hệ thống đặt vé chuyên nghiệp ngoài thực tế.
-
-Việc này giúp cá nhân hóa trải nghiệm, đặc biệt với những người muốn ngồi gần cửa sổ, gần lối thoát, hoặc tránh chỗ bị đặt trước.
-
-### Cách chúng tôi thực hiện
-Thiết kế giao diện sơ đồ chỗ ngồi rõ ràng, tương tác bằng JavaScript thuần.
-
-Mỗi ghế được đánh mã và thể hiện trạng thái:
-
-✅ Có thể chọn
-
-❌ Đã có người đặt
-
-🔒 Không khả dụng
-
-Khi người dùng chọn ghế, hệ thống kiểm tra và ghi nhận chính xác ghế đã đặt vào cơ sở dữ liệu.
-
-Tránh trùng lặp bằng cách kiểm tra khóa chính hoặc unique constraint ở cả phía client và server.
-
-### Thách thức & Giải pháp
-| Thách thức                                            | Cách giải quyết                                                      |
-| ----------------------------------------------------- | -------------------------------------------------------------------- |
-| Đồng bộ trạng thái chỗ ngồi giữa nhiều người dùng     | Sử dụng logic kiểm tra trạng thái chỗ ngồi trước khi xác nhận đặt vé |
-| Giao diện trực quan cho cả người không rành công nghệ | Thiết kế layout đơn giản, dễ hiểu, mô phỏng sơ đồ máy bay thực tế    |
-| Đảm bảo an toàn dữ liệu                               | Ràng buộc dữ liệu trên DB, xác thực thông tin trước khi lưu          |
----
-
-## 🧑‍💻 Thành viên nhóm
-
-| Họ tên         | Vai trò                 |
-| -------------- | ----------------------- |
-| Nguyễn Văn Lợi | Backend, Frontend     |
-| Nguyễn Thanh Hậu | Frontend, Thiết kế UI, Xây dựng DB |
+* このプロジェクトは学習目的で作成されており、商用利用は想定していません。
+* 一部の決済機能はデモ用であり、実際の決済ゲートウェイには接続していません。
 
 ---
-## 📄 License
 
-© 2025 – Nhóm PBL3 – Trường đại học Bách Khoa - Đại học Đà Nẵng
+## ❤️ こだわりポイント
 
+本システムの開発において、特に力を入れたのは「座席選択」機能です。これは単なる付加機能ではなく、ユーザーにリアルでプロフェッショナルな体験を提供するための中核的な要素です。
 
+### なぜ重要なのか？
+
+ランダムな座席指定ではなく、ユーザー自身が希望する席を選択できるようにすることで、実際の航空券予約サービスに近い体験を提供します。窓側、非常口付近、予約済み席の回避など、細かな要望にも応えることができます。
+
+### 実装方法
+
+JavaScriptでインタラクティブな座席マップを設計。各座席には状態が示されます：
+
+✅ 選択可能
+❌ 予約済み
+🔒 利用不可
+
+選択された座席はリアルタイムでデータベースに登録され、サーバーとクライアント双方で重複防止のチェックを実施。
+
+### 課題と解決策
+
+| 課題                     | 解決策                             |
+| ---------------------- | ------------------------------- |
+| 複数ユーザーによる同時選択時の状態同期    | 座席状態を確認後に予約を確定するロジックを実装         |
+| ITに不慣れなユーザーでも使える直感的なUI | 実際の機内レイアウトを模したシンプルで分かりやすいデザインに  |
+| データの安全性確保              | DBの制約・バリデーション・認証処理を実装し、正確な保存を保証 |
+
+---
+
+## 🧑‍💻 チームメンバー
+
+| 氏名               | 担当                |
+| ---------------- | ----------------- |
+| Nguyễn Văn Lợi   | バックエンド、フロントエンド    |
+| Nguyễn Thanh Hậu | フロントエンド、UI設計、DB構築 |
+
+---
+
+## 📄 ライセンス
+
+© 2025 – PBL3チーム – ダナン大学工科大学
