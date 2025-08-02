@@ -99,14 +99,27 @@ npm run dev
 
 ## 🖼️ Giao diện (Screenshots)
 
-> *(Nếu có ảnh, lưu vào thư mục `assets/` và thêm ở đây)*
+### Admin
 
 | Trang                      | Ảnh minh họa                      |
 | -------------------------- | --------------------------------- |
-| Trang chủ                  | ![Trang chủ](assets/homepage.png) |
-| Tìm kiếm chuyến bay        | ![Tìm kiếm](assets/search.png)    |
-| Đặt vé                     | ![Đặt vé](assets/book.png)        |
-| Quản lý chuyến bay (Admin) | ![Admin](assets/admin.png)        |
+| Trang chủ                  | ![Trang chủ](Screenshots/1.png)  |
+| Quản lý máy bay        | ![#](Screenshots/2.png)    |
+| Sơ đồ ghế                    | ![#](Screenshots/3.png)        |
+| Thông tin chuyến bay | ![#](Screenshots/4.png)        |
+| Đơn đặt vé | ![#](Screenshots/5.png)        |
+| Chi tiết vé | ![#](Screenshots/6.png)        |
+| Thông tin khách hàng | ![#](Screenshots/7.png)        |
+| Quản lý vai trò | ![#](Screenshots/8.png)        |
+| Tài khoảng | ![#](Screenshots/9.png)        |
+
+### Khách hàng 
+
+| Trang                      | Ảnh minh họa                      |
+| -------------------------- | --------------------------------- |
+| Trang chủ                  | ![Trang chủ](Screenshots/10.png)  |
+| Vé được tìm                  | ![Trang chủ](Screenshots/11.png)  |
+| Trang chọn ghế                 | ![Trang chủ](Screenshots/13.png)  |
 
 ---
 
