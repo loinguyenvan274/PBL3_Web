@@ -1,6 +1,7 @@
 window.addEventListener('load', () => {
   initTilte();
   createForms();
+  createTermsAndConsent(); // Thêm function tạo điều khoản
 });
 setHandleSumitForm();
 
@@ -56,6 +57,7 @@ function initTilte() {
   // <div class="booking-info">THÔNG TIN ĐẶT CHỖ</div>
 
 }
+
 function createFormForPerson(title, formNumber) {
   if (formNumber <= 0) return;
 
@@ -100,6 +102,7 @@ function createFormForPerson(title, formNumber) {
     parentNode.appendChild(newDiv)
   }
 }
+
 function createFormForMainPerson() {
 
   const parentNode = document.querySelector('.customer-form')
@@ -142,6 +145,43 @@ function createFormForMainPerson() {
   parentNode.appendChild(newDiv)
 
 }
+
+// Thêm function tạo phần điều khoản và đồng ý
+function createTermsAndConsent() {
+  const parentNode = document.querySelector('.customer-form');
+
+  const termsDiv = document.createElement('div');
+  termsDiv.className = 'container-form terms-consent-section';
+  termsDiv.innerHTML = `
+    <div class="terms-row">
+      <div id="toast" class="toast">Vui lòng đồng ý với điều khoản dịch vụ để tiếp tục!</div>
+      <div class="checkbox_container">
+        <input type="checkbox" id="terms-checkbox" name="termsAccepted" >
+        <label for="terms-checkbox" class="checkbox_label">
+          <span class="checkmark-icon">✓</span>
+          Dữ liệu cá nhân của Quý khách thu thập trên trang này được xử lý và lưu trữ bởi Vietnam Airlines cho mục đích và theo điều kiện đã được công bố tại 
+          <a href="chinhSachBaoMat.html" class="privacy-link" target="_blank">Chính sách bảo mật thông tin của Vietnam Airlines</a>.
+        </label>
+      </div>
+      
+    </div>
+    
+    <div class="marketing-row">
+      <div class="checkbox_container">
+        <input type="checkbox" id="marketing-checkbox" name="marketingConsent">
+        <label for="marketing-checkbox" class="checkbox_label">
+          <span class="checkmark-icon">✓</span>
+          Tôi đồng ý nhận các thông tin quảng cáo, tiếp thị qua email được nêu chi tiết trong 
+          <a href="chinhSachBaoMat.html" class="privacy-link" target="_blank">Chính sách bảo mật</a> 
+          (như thông báo, bản tin, khuyến mãi, các ưu đãi khác liên quan đến sản phẩm và dịch vụ của Vietnam Airlines và các đối tác của Vietnam Airlines). Dự kiến tần suất nhận khoảng 02 email/tuần.
+        </label>
+      </div>
+    </div>
+  `;
+
+  parentNode.appendChild(termsDiv);
+}
+
 function createForms() {
   const searchFormData = JSON.parse(sessionStorage.getItem('search-form-data'));
   const { adultNumber, childNumber, infantNumber } = searchFormData;
@@ -150,9 +190,23 @@ function createForms() {
   // createFormForPerson('Trẻ em', childNumber);
   // createFormForPerson('Trẻ em dưới hai tuổi', infantNumber);
 }
+function showToast() {
+  const toast = document.getElementById("toast");
+  toast.classList.add("show");
+  setTimeout(() => { toast.classList.remove("show"); }, 3000);
+}
 function setHandleSumitForm() {
   document.getElementById('infor-customer-form').addEventListener('submit', function (e) {
     e.preventDefault();
+
+    // Kiểm tra điều khoản bắt buộc
+    const termsCheckbox = document.getElementById('terms-checkbox');
+    if (!termsCheckbox.checked) {
+      // alert('Vui lòng đồng ý với điều khoản dịch vụ để tiếp tục!');
+      showToast();
+      termsCheckbox.focus();
+      return;
+    }
 
     if (!isValidSubmit()) {
       return;
@@ -182,6 +236,9 @@ function setHandleSumitForm() {
       });
     });
 
+    // Lưu thông tin đồng ý nhận marketing
+    const marketingConsent = document.getElementById('marketing-checkbox').checked;
+    sessionStorage.setItem('marketingConsent', JSON.stringify(marketingConsent));
     sessionStorage.setItem('customerData', JSON.stringify(customerData));
     window.location.href = 'chonDichVu.html';
   });
@@ -209,7 +266,6 @@ function isValidSubmit() {
 
   return valid;
 }
-
 
 function findDuplicateInputs(selector) {
   const map = {};

@@ -8,7 +8,8 @@ public class Flights_Seat_Id implements Serializable {
     private int seat;
 
     // Default constructor
-    public Flights_Seat_Id() {}
+    public Flights_Seat_Id() {
+    }
 
     public Flights_Seat_Id(int flight, int seat) {
         this.flight = flight;
@@ -18,8 +19,10 @@ public class Flights_Seat_Id implements Serializable {
     // equals() và hashCode() là bắt buộc khi dùng @IdClass
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Flights_Seat_Id)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Flights_Seat_Id))
+            return false;
         Flights_Seat_Id that = (Flights_Seat_Id) o;
         return Objects.equals(flight, that.flight) && Objects.equals(seat, that.seat);
     }

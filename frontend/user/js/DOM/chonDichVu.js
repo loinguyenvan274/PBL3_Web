@@ -3,43 +3,46 @@ window.addEventListener('load', async () => {
     createViewFlights();
     createViewCustomers();
     updateTotalPrice();
-    document.getElementById('bt-thanh-toan').addEventListener('click', handleThanhToan);
+    document.getElementById('bt-thanh-toan').addEventListener('click', tranferToThanhToan);
 })
-async function handleThanhToan() {
-    const customerSelectedFight = JSON.parse(sessionStorage.getItem('customerSelectedFight'));
-    const customerData = JSON.parse(sessionStorage.getItem('customerData'));
-    const bookingData = {
-        paymentMethod: "CREDIT_CARD",
-        departureFlightId: customerSelectedFight.departureFlightASeat.flight.idFlight,
-        departureTicketType: customerSelectedFight.departureFlightASeat.TicketType,
-        tickets: customerData.map(user => ({
-            seatId: user.departureSeat,
-            user: {
-                fullName: user.fullName,
-                phone: user.phone,
-                email: user.email,
-                cardNumber: user.cardNumber,
-                address: user.address,
-                sex: (user.sex === "") ? null : user.sex,
-                dayOfBirth: user.dayOfBirth,
-            },
-            returnTicket: {
-                seatId: user.returnSeat
-            }
-        }))
-    };
-
-    if (customerSelectedFight.returnFlightASeat) {
-        bookingData.returnFlightId = customerSelectedFight.returnFlightASeat.flight.idFlight;
-        bookingData.returnTicketType = customerSelectedFight.returnFlightASeat.TicketType;
-    }
-    // sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
-    console.log(bookingData);
-    const response = await createBooking(bookingData);
-    alert('Đặt vé thành công');
-    window.location.href = 'timChuyenBay.html';
-
+function tranferToThanhToan() {
+    window.location.href = 'thanhToan.html';
 }
+// async function handleThanhToan() {
+//     const customerSelectedFight = JSON.parse(sessionStorage.getItem('customerSelectedFight'));
+//     const customerData = JSON.parse(sessionStorage.getItem('customerData'));
+//     const bookingData = {
+//         paymentMethod: "CREDIT_CARD",
+//         departureFlightId: customerSelectedFight.departureFlightASeat.flight.idFlight,
+//         departureTicketType: customerSelectedFight.departureFlightASeat.TicketType,
+//         tickets: customerData.map(user => ({
+//             seatId: user.departureSeat,
+//             user: {
+//                 fullName: user.fullName,
+//                 phone: user.phone,
+//                 email: user.email,
+//                 cardNumber: user.cardNumber,
+//                 address: user.address,
+//                 sex: (user.sex === "") ? null : user.sex,
+//                 dayOfBirth: user.dayOfBirth,
+//             },
+//             returnTicket: {
+//                 seatId: user.returnSeat
+//             }
+//         }))
+//     };
+
+//     if (customerSelectedFight.returnFlightASeat) {
+//         bookingData.returnFlightId = customerSelectedFight.returnFlightASeat.flight.idFlight;
+//         bookingData.returnTicketType = customerSelectedFight.returnFlightASeat.TicketType;
+//     }
+//     // sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
+//     console.log(bookingData);
+//     const response = await createBooking(bookingData);
+//     alert('Đặt vé thành công');
+//     window.location.href = 'timChuyenBay.html';
+
+// }
 
 function createViewFlights() {
     const parentNode = document.body.querySelector('.section');

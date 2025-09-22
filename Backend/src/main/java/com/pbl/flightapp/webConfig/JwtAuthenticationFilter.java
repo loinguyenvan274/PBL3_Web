@@ -30,8 +30,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        String token = jwtService.extractToken(request); // có thể lấy từ cookie hoặc header
 
+        String token = jwtService.extractToken(request); // có thể lấy từ cookie hoặc header
         if (token != null && jwtService.validateToken(token)) {
             String username = jwtService.getUsername(token);
             Set<String> permissions = jwtService.getPermissions(token);
@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null,
                     authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } 
+        }
         // chuyển tiếp request và response đến filter tiếp theo
         filterChain.doFilter(request, response);
     }

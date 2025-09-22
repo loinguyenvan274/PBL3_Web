@@ -11,6 +11,7 @@ import org.springframework.security.access.expression.method.MethodSecurityExpre
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,18 +50,24 @@ public class WebFilters {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
+                // .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers("/login/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/flight/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/bookings/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/bookings/**").permitAll()
-//                        .requestMatchers("/account/**").permitAll()
-//                        .requestMatchers("/role/**").permitAll()
+                        //
+                        .requestMatchers("/account/**").permitAll()
+                        .requestMatchers("/role/**").permitAll()
+                        //
+                        //
                         .requestMatchers("/location/**").permitAll()
+                        .anyRequest().authenticated()
 
-                        .anyRequest().authenticated())
+                )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtService),
                         UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex

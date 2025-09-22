@@ -28,7 +28,8 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
     }
 
     @Override
-    public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
+    public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType,
+            Object permission) {
         // Có thể mở rộng để phân quyền theo ID tài nguyên
         return hasPermission(authentication, null, permission);
     }
